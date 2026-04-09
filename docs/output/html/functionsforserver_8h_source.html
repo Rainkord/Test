@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.16.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ТМП Подгруппа 5 — Функция 9: Исходный файл /home/emperor/Documents/Study/TIMP/project/server/functionsforserver.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">ТМП Подгруппа 5 — Функция 9
+   </div>
+   <div id="projectbrief">Клиент-серверное приложение для графического отображения ветвящейся функции</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.16.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('functionsforserver_8h_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Загрузка...</div>
+<div class="SRStatus" id="Searching">Поиск...</div>
+<div class="SRStatus" id="NoMatches">Не найдено</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">functionsforserver.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="functionsforserver_8h.html">См. документацию.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef FUNCTIONSFORSERVER_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define FUNCTIONSFORSERVER_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="foldopen" id="foldopen00006" data-start="{" data-end="};">
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="classFunctionsForServer.html">    6</a></span><span class="keyword">class </span>FunctionsForServer</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>{</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    <span class="comment">// Parses the raw incoming message and dispatches to the correct handler.</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="keyword">static</span> QString <a class="code hl_function" href="classFunctionsForServer.html#a5f4561615c5c245e5b3fd7b937c47684">parsing</a>(<span class="keyword">const</span> QString &amp;input, <span class="keywordtype">int</span> socketDescriptor);</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="comment">// auth||login||password -&gt; &quot;auth+||login&quot; or &quot;auth-&quot;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keyword">static</span> QString <a class="code hl_function" href="classFunctionsForServer.html#a8b1a9f954fcd785f6efe16276eff2eea">authorization</a>(<span class="keyword">const</span> QString &amp;login, <span class="keyword">const</span> QString &amp;password);</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="comment">// registration||login||password||confirmPassword||email</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="comment">//   -&gt; &quot;reg+||login&quot; or &quot;reg-||reason&quot;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <span class="keyword">static</span> QString <a class="code hl_function" href="classFunctionsForServer.html#ab7d7c32c178d88554f1edb82de0cbda9">registration</a>(<span class="keyword">const</span> QString &amp;login, <span class="keyword">const</span> QString &amp;password,</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>                                <span class="keyword">const</span> QString &amp;confirmPassword,</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>                                <span class="keyword">const</span> QString &amp;email);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="comment">// get_task -&gt; task description string</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">static</span> QString <a class="code hl_function" href="classFunctionsForServer.html#ae737af4289808ea13a3f1660abdec6fc">getTaskParams</a>();</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="comment">// get_graph||xMin||xMax||step -&gt; graph data string</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keyword">static</span> QString <a class="code hl_function" href="classFunctionsForServer.html#a4d3d48a9d5ba3e29c7a9011575d17932">getGraphData</a>(<span class="keywordtype">double</span> xMin, <span class="keywordtype">double</span> xMax, <span class="keywordtype">double</span> step);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    FunctionsForServer() = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>};</div>
+</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#endif </span><span class="comment">// FUNCTIONSFORSERVER_H</span></div>
+<div class="ttc" id="aclassFunctionsForServer_html_a4d3d48a9d5ba3e29c7a9011575d17932"><div class="ttname"><a href="classFunctionsForServer.html#a4d3d48a9d5ba3e29c7a9011575d17932">FunctionsForServer::getGraphData</a></div><div class="ttdeci">static QString getGraphData(double xMin, double xMax, double step)</div><div class="ttdef"><b>Определения</b> <a href="functionsforserver_8cpp_source.html#l00109">functionsforserver.cpp:109</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_a5f4561615c5c245e5b3fd7b937c47684"><div class="ttname"><a href="classFunctionsForServer.html#a5f4561615c5c245e5b3fd7b937c47684">FunctionsForServer::parsing</a></div><div class="ttdeci">static QString parsing(const QString &amp;input, int socketDescriptor)</div><div class="ttdef"><b>Определения</b> <a href="functionsforserver_8cpp_source.html#l00008">functionsforserver.cpp:8</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_a8b1a9f954fcd785f6efe16276eff2eea"><div class="ttname"><a href="classFunctionsForServer.html#a8b1a9f954fcd785f6efe16276eff2eea">FunctionsForServer::authorization</a></div><div class="ttdeci">static QString authorization(const QString &amp;login, const QString &amp;password)</div><div class="ttdef"><b>Определения</b> <a href="functionsforserver_8cpp_source.html#l00066">functionsforserver.cpp:66</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_ab7d7c32c178d88554f1edb82de0cbda9"><div class="ttname"><a href="classFunctionsForServer.html#ab7d7c32c178d88554f1edb82de0cbda9">FunctionsForServer::registration</a></div><div class="ttdeci">static QString registration(const QString &amp;login, const QString &amp;password, const QString &amp;confirmPassword, const QString &amp;email)</div><div class="ttdef"><b>Определения</b> <a href="functionsforserver_8cpp_source.html#l00079">functionsforserver.cpp:79</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_ae737af4289808ea13a3f1660abdec6fc"><div class="ttname"><a href="classFunctionsForServer.html#ae737af4289808ea13a3f1660abdec6fc">FunctionsForServer::getTaskParams</a></div><div class="ttdeci">static QString getTaskParams()</div><div class="ttdef"><b>Определения</b> <a href="functionsforserver_8cpp_source.html#l00104">functionsforserver.cpp:104</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="dir_41e1742e44e2de38b3bc91f993fed282.html">server</a></li><li class="navelem"><a href="functionsforserver_8h.html">functionsforserver.h</a></li>
+    <li class="footer">Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.16.1 </li>
+  </ul>
+</div>
+</body>
+</html>

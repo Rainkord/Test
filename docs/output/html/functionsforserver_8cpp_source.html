@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.16.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ТМП Подгруппа 5 — Функция 9: Исходный файл /home/emperor/Documents/Study/TIMP/project/server/functionsforserver.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">ТМП Подгруппа 5 — Функция 9
+   </div>
+   <div id="projectbrief">Клиент-серверное приложение для графического отображения ветвящейся функции</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.16.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('functionsforserver_8cpp_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Загрузка...</div>
+<div class="SRStatus" id="Searching">Поиск...</div>
+<div class="SRStatus" id="NoMatches">Не найдено</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">functionsforserver.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="functionsforserver_8cpp.html">См. документацию.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;<a class="code" href="functionsforserver_8h.html">functionsforserver.h</a>&quot;</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="database_8h.html">database.h</a>&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="calculator_8h.html">calculator.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;QStringList&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;QDebug&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="foldopen" id="foldopen00008" data-start="{" data-end="}">
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="classFunctionsForServer.html#a5f4561615c5c245e5b3fd7b937c47684">    8</a></span>QString <a class="code hl_function" href="classFunctionsForServer.html#a5f4561615c5c245e5b3fd7b937c47684">FunctionsForServer::parsing</a>(<span class="keyword">const</span> QString &amp;input, <span class="keywordtype">int</span> socketDescriptor)</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>{</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    QStringList parts = input.split(<span class="stringliteral">&quot;||&quot;</span>);</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keywordflow">if</span> (parts.isEmpty()) {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;parsing() empty input from descriptor&quot;</span> &lt;&lt; socketDescriptor;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;error||empty_request&quot;</span>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    }</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    QString command = parts.at(0).trimmed();</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    qDebug() &lt;&lt; <span class="stringliteral">&quot;parsing() command:&quot;</span> &lt;&lt; command</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>             &lt;&lt; <span class="stringliteral">&quot;from descriptor:&quot;</span> &lt;&lt; socketDescriptor;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keywordflow">if</span> (command == <span class="stringliteral">&quot;auth&quot;</span>) {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        <span class="comment">// Expected: auth||login||password  (3 parts total)</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keywordflow">if</span> (parts.size() &lt; 3) {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;error||invalid_auth_params&quot;</span>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        }</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        QString login    = parts.at(1);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        QString password = parts.at(2);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classFunctionsForServer.html#a8b1a9f954fcd785f6efe16276eff2eea">authorization</a>(login, password);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (command == <span class="stringliteral">&quot;registration&quot;</span>) {</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        <span class="comment">// Expected: registration||login||password||confirmPassword||email</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <span class="comment">//           (5 parts total)</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        <span class="keywordflow">if</span> (parts.size() &lt; 5) {</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;error||invalid_registration_params&quot;</span>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        }</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        QString login           = parts.at(1);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        QString password        = parts.at(2);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        QString confirmPassword = parts.at(3);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        QString email           = parts.at(4);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classFunctionsForServer.html#ab7d7c32c178d88554f1edb82de0cbda9">registration</a>(login, password, confirmPassword, email);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (command == <span class="stringliteral">&quot;get_task&quot;</span>) {</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classFunctionsForServer.html#ae737af4289808ea13a3f1660abdec6fc">getTaskParams</a>();</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (command == <span class="stringliteral">&quot;get_graph&quot;</span>) {</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="comment">// Expected: get_graph||xMin||xMax||step  (4 parts total)</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keywordflow">if</span> (parts.size() &lt; 4) {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;error||invalid_graph_params&quot;</span>;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        }</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="keywordtype">bool</span> okMin, okMax, okStep;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordtype">double</span> xMin = parts.at(1).toDouble(&amp;okMin);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keywordtype">double</span> xMax = parts.at(2).toDouble(&amp;okMax);</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="keywordtype">double</span> step = parts.at(3).toDouble(&amp;okStep);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keywordflow">if</span> (!okMin || !okMax || !okStep) {</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;error||invalid_graph_values&quot;</span>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        }</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classFunctionsForServer.html#a4d3d48a9d5ba3e29c7a9011575d17932">getGraphData</a>(xMin, xMax, step);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;parsing() unknown command:&quot;</span> &lt;&lt; command;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;error||unknown_command&quot;</span>;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}</div>
+</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="foldopen" id="foldopen00066" data-start="{" data-end="}">
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classFunctionsForServer.html#a8b1a9f954fcd785f6efe16276eff2eea">   66</a></span>QString <a class="code hl_function" href="classFunctionsForServer.html#a8b1a9f954fcd785f6efe16276eff2eea">FunctionsForServer::authorization</a>(<span class="keyword">const</span> QString &amp;login,</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                                           <span class="keyword">const</span> QString &amp;password)</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>{</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">bool</span> ok = <a class="code hl_function" href="classDatabase.html#ac3325a4cc0a95ed83d10b2a9cf7541d0">Database::instance</a>().<a class="code hl_function" href="classDatabase.html#a5141df0641c934f8585da0f7e8758534">checkUser</a>(login, password);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">if</span> (ok) {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;authorization() success for login:&quot;</span> &lt;&lt; login;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;auth+||&quot;</span> + login;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;authorization() failed for login:&quot;</span> &lt;&lt; login;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;auth-&quot;</span>;</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    }</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>}</div>
+</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="foldopen" id="foldopen00079" data-start="{" data-end="}">
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classFunctionsForServer.html#ab7d7c32c178d88554f1edb82de0cbda9">   79</a></span>QString <a class="code hl_function" href="classFunctionsForServer.html#ab7d7c32c178d88554f1edb82de0cbda9">FunctionsForServer::registration</a>(<span class="keyword">const</span> QString &amp;login,</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>                                          <span class="keyword">const</span> QString &amp;password,</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>                                          <span class="keyword">const</span> QString &amp;confirmPassword,</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>                                          <span class="keyword">const</span> QString &amp;email)</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>{</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordflow">if</span> (password != confirmPassword) {</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;registration() passwords do not match for login:&quot;</span> &lt;&lt; login;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;reg-||passwords_do_not_match&quot;</span>;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    }</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="classDatabase.html#ac3325a4cc0a95ed83d10b2a9cf7541d0">Database::instance</a>().userExists(login)) {</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;registration() user already exists:&quot;</span> &lt;&lt; login;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;reg-||user_already_exists&quot;</span>;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    }</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordtype">bool</span> ok = <a class="code hl_function" href="classDatabase.html#ac3325a4cc0a95ed83d10b2a9cf7541d0">Database::instance</a>().<a class="code hl_function" href="classDatabase.html#ab844e924f8adc96c77d3033ad648f8a8">addUser</a>(login, password, email);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordflow">if</span> (ok) {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;registration() success for login:&quot;</span> &lt;&lt; login;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;reg+||&quot;</span> + login;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        qDebug() &lt;&lt; <span class="stringliteral">&quot;registration() database error for login:&quot;</span> &lt;&lt; login;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;reg-||database_error&quot;</span>;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    }</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>}</div>
+</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="foldopen" id="foldopen00104" data-start="{" data-end="}">
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classFunctionsForServer.html#ae737af4289808ea13a3f1660abdec6fc">  104</a></span>QString <a class="code hl_function" href="classFunctionsForServer.html#ae737af4289808ea13a3f1660abdec6fc">FunctionsForServer::getTaskParams</a>()</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>{</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keywordflow">return</span> <span class="stringliteral">&quot;task||Function 9: f(x) = |x|-2 for x&lt;-2, x^2+x+1 for -2&lt;=x&lt;2, |x-2|+1 for x&gt;=2&quot;</span>;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>}</div>
+</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
+<div class="foldopen" id="foldopen00109" data-start="{" data-end="}">
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="classFunctionsForServer.html#a4d3d48a9d5ba3e29c7a9011575d17932">  109</a></span>QString <a class="code hl_function" href="classFunctionsForServer.html#a4d3d48a9d5ba3e29c7a9011575d17932">FunctionsForServer::getGraphData</a>(<span class="keywordtype">double</span> xMin, <span class="keywordtype">double</span> xMax, <span class="keywordtype">double</span> step)</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>{</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="classCalculator.html#a11d0bd26058c5301dfabf7ae5cd76ea8">Calculator::generateGraphData</a>(xMin, xMax, step);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>}</div>
+</div>
+<div class="ttc" id="acalculator_8h_html"><div class="ttname"><a href="calculator_8h.html">calculator.h</a></div></div>
+<div class="ttc" id="aclassCalculator_html_a11d0bd26058c5301dfabf7ae5cd76ea8"><div class="ttname"><a href="classCalculator.html#a11d0bd26058c5301dfabf7ae5cd76ea8">Calculator::generateGraphData</a></div><div class="ttdeci">static QString generateGraphData(double xMin, double xMax, double step)</div><div class="ttdef"><b>Определения</b> <a href="calculator_8cpp_source.html#l00019">calculator.cpp:19</a></div></div>
+<div class="ttc" id="aclassDatabase_html_a5141df0641c934f8585da0f7e8758534"><div class="ttname"><a href="classDatabase.html#a5141df0641c934f8585da0f7e8758534">Database::checkUser</a></div><div class="ttdeci">bool checkUser(const QString &amp;login, const QString &amp;password)</div><div class="ttdef"><b>Определения</b> <a href="database_8cpp_source.html#l00075">database.cpp:75</a></div></div>
+<div class="ttc" id="aclassDatabase_html_ab844e924f8adc96c77d3033ad648f8a8"><div class="ttname"><a href="classDatabase.html#ab844e924f8adc96c77d3033ad648f8a8">Database::addUser</a></div><div class="ttdeci">bool addUser(const QString &amp;login, const QString &amp;password, const QString &amp;email)</div><div class="ttdef"><b>Определения</b> <a href="database_8cpp_source.html#l00056">database.cpp:56</a></div></div>
+<div class="ttc" id="aclassDatabase_html_ac3325a4cc0a95ed83d10b2a9cf7541d0"><div class="ttname"><a href="classDatabase.html#ac3325a4cc0a95ed83d10b2a9cf7541d0">Database::instance</a></div><div class="ttdeci">static Database &amp; instance()</div><div class="ttdef"><b>Определения</b> <a href="database_8cpp_source.html#l00007">database.cpp:7</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_a4d3d48a9d5ba3e29c7a9011575d17932"><div class="ttname"><a href="classFunctionsForServer.html#a4d3d48a9d5ba3e29c7a9011575d17932">FunctionsForServer::getGraphData</a></div><div class="ttdeci">static QString getGraphData(double xMin, double xMax, double step)</div><div class="ttdef"><b>Определения</b> <a href="#l00109">functionsforserver.cpp:109</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_a5f4561615c5c245e5b3fd7b937c47684"><div class="ttname"><a href="classFunctionsForServer.html#a5f4561615c5c245e5b3fd7b937c47684">FunctionsForServer::parsing</a></div><div class="ttdeci">static QString parsing(const QString &amp;input, int socketDescriptor)</div><div class="ttdef"><b>Определения</b> <a href="#l00008">functionsforserver.cpp:8</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_a8b1a9f954fcd785f6efe16276eff2eea"><div class="ttname"><a href="classFunctionsForServer.html#a8b1a9f954fcd785f6efe16276eff2eea">FunctionsForServer::authorization</a></div><div class="ttdeci">static QString authorization(const QString &amp;login, const QString &amp;password)</div><div class="ttdef"><b>Определения</b> <a href="#l00066">functionsforserver.cpp:66</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_ab7d7c32c178d88554f1edb82de0cbda9"><div class="ttname"><a href="classFunctionsForServer.html#ab7d7c32c178d88554f1edb82de0cbda9">FunctionsForServer::registration</a></div><div class="ttdeci">static QString registration(const QString &amp;login, const QString &amp;password, const QString &amp;confirmPassword, const QString &amp;email)</div><div class="ttdef"><b>Определения</b> <a href="#l00079">functionsforserver.cpp:79</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_ae737af4289808ea13a3f1660abdec6fc"><div class="ttname"><a href="classFunctionsForServer.html#ae737af4289808ea13a3f1660abdec6fc">FunctionsForServer::getTaskParams</a></div><div class="ttdeci">static QString getTaskParams()</div><div class="ttdef"><b>Определения</b> <a href="#l00104">functionsforserver.cpp:104</a></div></div>
+<div class="ttc" id="adatabase_8h_html"><div class="ttname"><a href="database_8h.html">database.h</a></div></div>
+<div class="ttc" id="afunctionsforserver_8h_html"><div class="ttname"><a href="functionsforserver_8h.html">functionsforserver.h</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="dir_41e1742e44e2de38b3bc91f993fed282.html">server</a></li><li class="navelem"><a href="functionsforserver_8cpp.html">functionsforserver.cpp</a></li>
+    <li class="footer">Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.16.1 </li>
+  </ul>
+</div>
+</body>
+</html>
