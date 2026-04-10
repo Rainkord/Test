@@ -6,7 +6,6 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTimer>
-#include <QStackedWidget>
 
 class RegWidget : public QWidget
 {
@@ -21,29 +20,22 @@ signals:
     void showAuth();
 
 private slots:
-    // Step 1 slots
     void onLoginTextChanged(const QString &text);
     void onPasswordTextChanged(const QString &text);
     void onConfirmPasswordTextChanged(const QString &text);
     void onTogglePassword1();
     void onTogglePassword2();
     void onContinueClicked();
-
-    // Step 2 slots
     void onEmailTextChanged(const QString &text);
     void onBackClicked();
     void onConfirmEmailClicked();
-
-    // Step 3 slots
+    void onRegistrationResponseReceived(const QString &response);
     void onCodeTextChanged(const QString &text);
     void onVerifyCodeClicked();
     void onCodeLockTimerFired();
-
-    // Back to auth
     void onShowAuthClicked();
 
 private:
-    // ---- Step 1 widgets ----
     QWidget     *step1Widget;
     QLineEdit   *loginEdit;
     QLabel      *loginErrorLabel;
@@ -55,13 +47,11 @@ private:
     QPushButton *togglePassBtn2;
     QPushButton *continueBtn;
 
-    // ---- Step 2 widgets ----
     QWidget     *step2Widget;
     QLineEdit   *emailEdit;
     QLabel      *emailErrorLabel;
     QPushButton *backBtn;
 
-    // ---- Step 3 widgets ----
     QWidget     *step3Widget;
     QPushButton *confirmEmailBtn;
     QLabel      *codeStatusLabel;
@@ -69,17 +59,15 @@ private:
     QLabel      *codeErrorLabel;
     QPushButton *verifyCodeBtn;
 
-    // ---- Navigation ----
     QPushButton *showAuthBtn;
 
-    // ---- State ----
-    int         codeFailedAttempts;
-    int         codeLockLevel;
-    QTimer      *codeLockTimer;
-    bool        codeIsLocked;
-    QString     currentLogin;
+    int     codeFailedAttempts;
+    int     codeLockLevel;
+    QTimer  *codeLockTimer;
+    bool    codeIsLocked;
+    bool    m_verifyingCode;
+    QString currentLogin;
 
-    // ---- Helpers ----
     void setupUI();
     void validateStep1();
     bool isEmailValid(const QString &email) const;

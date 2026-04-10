@@ -11,17 +11,20 @@
 #include <QRegularExpression>
 #include <QFont>
 #include <QString>
-#include <QFrame>
 
 RegWidget::RegWidget(QWidget *parent)
     : QWidget(parent),
       codeFailedAttempts(0),
       codeLockLevel(0),
-      codeIsLocked(false)
+      codeIsLocked(false),
+      m_verifyingCode(false)
 {
     codeLockTimer = new QTimer(this);
     codeLockTimer->setSingleShot(true);
     connect(codeLockTimer, &QTimer::timeout, this, &RegWidget::onCodeLockTimerFired);
+
+    connect(&ClientSingleton::instance(), &ClientSingleton::responseReceived,
+            this, &RegWidget::onRegistrationResponseReceived);
 
     setupUI();
 }
@@ -36,7 +39,6 @@ void RegWidget::setupUI()
     mainLayout->setContentsMargins(40, 20, 40, 20);
     mainLayout->setSpacing(0);
 
-    // Title
     QLabel *titleLabel = new QLabel("Регистрация", this);
     QFont titleFont = titleLabel->font();
     titleFont.setBold(true);
@@ -54,7 +56,6 @@ void RegWidget::setupUI()
     step1Layout->setContentsMargins(0, 0, 0, 0);
     step1Layout->setSpacing(4);
 
-    // Login field
     loginEdit = new QLineEdit(step1Widget);
     loginEdit->setPlaceholderText("Логин");
     loginEdit->setMinimumHeight(36);
@@ -68,7 +69,6 @@ void RegWidget::setupUI()
     step1Layout->addWidget(loginErrorLabel);
     step1Layout->addSpacing(6);
 
-    // Password field row
     QHBoxLayout *pass1Layout = new QHBoxLayout();
     pass1Layout->setSpacing(6);
     passwordEdit = new QLineEdit(step1Widget);
@@ -97,7 +97,6 @@ void RegWidget::setupUI()
     step1Layout->addWidget(passwordErrorLabel);
     step1Layout->addSpacing(6);
 
-    // Confirm password field row
     QHBoxLayout *pass2Layout = new QHBoxLayout();
     pass2Layout->setSpacing(6);
     confirmPasswordEdit = new QLineEdit(step1Widget);
@@ -126,7 +125,6 @@ void RegWidget::setupUI()
     step1Layout->addWidget(confirmErrorLabel);
     step1Layout->addSpacing(10);
 
-    // Continue button (initially disabled/gray)
     continueBtn = new QPushButton("Продолжить", step1Widget);
     continueBtn->setMinimumHeight(38);
     continueBtn->setEnabled(false);
@@ -184,6 +182,7 @@ void RegWidget::setupUI()
     confirmEmailBtn->setStyleSheet(
         "QPushButton { background-color: #2196F3; color: white; border: none; border-radius: 4px; font-size: 12pt; }"
         "QPushButton:hover { background-color: #1976D2; }"
+        "QPushButton:disabled { background-color: #cccccc; color: #666666; }"
     );
     connect(confirmEmailBtn, &QPushButton::clicked, this, &RegWidget::onConfirmEmailClicked);
     step3Layout->addWidget(confirmEmailBtn);
@@ -220,10 +219,8 @@ void RegWidget::setupUI()
     step3Layout->addWidget(verifyCodeBtn);
 
     mainLayout->addWidget(step3Widget);
-
     mainLayout->addSpacing(12);
 
-    // Back to auth button
     showAuthBtn = new QPushButton("Уже есть аккаунт? Войти", this);
     showAuthBtn->setFlat(true);
     showAuthBtn->setStyleSheet(
@@ -235,7 +232,6 @@ void RegWidget::setupUI()
 
     mainLayout->addStretch();
 
-    // Initially show only step 1
     showStep(1);
 }
 
@@ -246,10 +242,6 @@ void RegWidget::showStep(int step)
     step3Widget->setVisible(step == 3);
 }
 
-// =====================
-// VALIDATION HELPERS
-// =====================
-
 bool RegWidget::isEmailValid(const QString &email) const
 {
     QRegularExpression re("^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$");
@@ -258,13 +250,10 @@ bool RegWidget::isEmailValid(const QString &email) const
 
 void RegWidget::validateStep1()
 {
-    QString login = loginEdit->text();
-    QString password = passwordEdit->text();
-    QString confirm = confirmPasswordEdit->text();
-
-    bool loginOk = (login.length() >= 4);
-    bool passwordOk = (password.length() >= 8);
-    bool confirmOk = (!confirm.isEmpty() && confirm == password);
+    bool loginOk    = (loginEdit->text().length() >= 4);
+    bool passwordOk = (passwordEdit->text().length() >= 8);
+    bool confirmOk  = (!confirmPasswordEdit->text().isEmpty()
+                       && confirmPasswordEdit->text() == passwordEdit->text());
 
     if (loginOk && passwordOk && confirmOk) {
         continueBtn->setEnabled(true);
@@ -279,10 +268,6 @@ void RegWidget::validateStep1()
         );
     }
 }
-
-// =====================
-// STEP 1 SLOTS
-// =====================
 
 void RegWidget::onLoginTextChanged(const QString &text)
 {
@@ -303,7 +288,6 @@ void RegWidget::onPasswordTextChanged(const QString &text)
     } else {
         passwordErrorLabel->hide();
     }
-    // Re-validate confirm as well since password changed
     QString confirm = confirmPasswordEdit->text();
     if (!confirm.isEmpty()) {
         if (confirm != text) {
@@ -318,8 +302,7 @@ void RegWidget::onPasswordTextChanged(const QString &text)
 
 void RegWidget::onConfirmPasswordTextChanged(const QString &text)
 {
-    QString password = passwordEdit->text();
-    if (text.isEmpty() || text != password) {
+    if (text.isEmpty() || text != passwordEdit->text()) {
         confirmErrorLabel->setText("Пароли не совпадают");
         confirmErrorLabel->show();
     } else {
@@ -330,36 +313,28 @@ void RegWidget::onConfirmPasswordTextChanged(const QString &text)
 
 void RegWidget::onTogglePassword1()
 {
-    if (passwordEdit->echoMode() == QLineEdit::Password) {
-        passwordEdit->setEchoMode(QLineEdit::Normal);
-    } else {
-        passwordEdit->setEchoMode(QLineEdit::Password);
-    }
+    passwordEdit->setEchoMode(
+        passwordEdit->echoMode() == QLineEdit::Password ? QLineEdit::Normal : QLineEdit::Password
+    );
 }
 
 void RegWidget::onTogglePassword2()
 {
-    if (confirmPasswordEdit->echoMode() == QLineEdit::Password) {
-        confirmPasswordEdit->setEchoMode(QLineEdit::Normal);
-    } else {
-        confirmPasswordEdit->setEchoMode(QLineEdit::Password);
-    }
+    confirmPasswordEdit->setEchoMode(
+        confirmPasswordEdit->echoMode() == QLineEdit::Password ? QLineEdit::Normal : QLineEdit::Password
+    );
 }
 
 void RegWidget::onContinueClicked()
 {
-    // Lock step 1 fields
     loginEdit->setReadOnly(true);
     passwordEdit->setReadOnly(true);
     confirmPasswordEdit->setReadOnly(true);
 
-    // Save current login
     currentLogin = loginEdit->text().trimmed();
 
-    // Show step 2
     showStep(2);
 
-    // Clear email field and hide step 3 content
     emailEdit->clear();
     emailErrorLabel->hide();
     confirmEmailBtn->hide();
@@ -369,10 +344,6 @@ void RegWidget::onContinueClicked()
     verifyCodeBtn->hide();
 }
 
-// =====================
-// STEP 2 SLOTS
-// =====================
-
 void RegWidget::onEmailTextChanged(const QString &text)
 {
     if (text.isEmpty()) {
@@ -381,7 +352,6 @@ void RegWidget::onEmailTextChanged(const QString &text)
         step3Widget->hide();
         return;
     }
-
     if (!isEmailValid(text)) {
         emailErrorLabel->setText("Неверный формат почты");
         emailErrorLabel->show();
@@ -389,66 +359,124 @@ void RegWidget::onEmailTextChanged(const QString &text)
         step3Widget->hide();
     } else {
         emailErrorLabel->hide();
-        // Show step 3 area (confirm email button and code field)
         step3Widget->show();
         confirmEmailBtn->show();
-        // Don't show code fields yet — only after server confirms
     }
 }
 
 void RegWidget::onBackClicked()
 {
-    // Unlock step 1 fields
     loginEdit->setReadOnly(false);
     passwordEdit->setReadOnly(false);
     confirmPasswordEdit->setReadOnly(false);
 
-    // Show step 1 only
+    confirmEmailBtn->setEnabled(true);
+    confirmEmailBtn->setText("Подтвердить почту");
+    confirmEmailBtn->setStyleSheet(
+        "QPushButton { background-color: #2196F3; color: white; border: none; border-radius: 4px; font-size: 12pt; }"
+        "QPushButton:hover { background-color: #1976D2; }"
+        "QPushButton:disabled { background-color: #cccccc; color: #666666; }"
+    );
+
+    codeFailedAttempts = 0;
+    codeLockLevel = 0;
+    codeIsLocked = false;
+    m_verifyingCode = false;
+    if (codeLockTimer->isActive()) codeLockTimer->stop();
+
     showStep(1);
 }
 
-// =====================
-// STEP 3 SLOTS
-// =====================
-
 void RegWidget::onConfirmEmailClicked()
 {
-    QString login = loginEdit->text().trimmed();
+    confirmEmailBtn->setEnabled(false);
+    confirmEmailBtn->setText("Отправляем...");
+    codeStatusLabel->setText("Ожидаем ответа сервера...");
+    codeStatusLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
+    codeStatusLabel->show();
+    codeErrorLabel->hide();
+
+    m_verifyingCode = false;
+
+    QString login    = loginEdit->text().trimmed();
     QString password = passwordEdit->text();
-    QString email = emailEdit->text().trimmed();
+    QString email    = emailEdit->text().trimmed();
 
-    // Hash password with SHA-256
-    QByteArray passwordBytes = password.toUtf8();
-    QByteArray hashBytes = QCryptographicHash::hash(passwordBytes, QCryptographicHash::Sha256);
+    QByteArray hashBytes = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
     QString passwordHash = QString::fromLatin1(hashBytes.toHex());
+    QString request      = QString("registration||%1||%2||%3").arg(login, passwordHash, email);
 
-    // Send registration request
-    QString request = QString("registration||%1||%2||%3").arg(login, passwordHash, email);
-    QString response = ClientSingleton::instance().sendRequest(request);
+    ClientSingleton::instance().sendRequestAsync(request);
+}
 
-    if (response == "reg_code_sent") {
+void RegWidget::onRegistrationResponseReceived(const QString &response)
+{
+    QString r = response.trimmed();
+    if (r.isEmpty()) return;
+
+    if (m_verifyingCode) {
+        // Ответ на verify_reg
+        m_verifyingCode = false;
+        verifyCodeBtn->setEnabled(true);
+
+        if (r.startsWith("reg+")) {
+            codeStatusLabel->setText("Регистрация успешна! Выполняется вход...");
+            codeStatusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
+            codeStatusLabel->show();
+            codeErrorLabel->hide();
+            verifyCodeBtn->setEnabled(false);
+            QTimer::singleShot(2000, this, [this]() {
+                emit registrationSuccess();
+            });
+            return;
+        }
+
+        if (r.startsWith("reg-")) {
+            codeFailedAttempts++;
+            codeStatusLabel->hide();
+            if (codeFailedAttempts < 4) {
+                codeErrorLabel->setText(
+                    QString("Неверный код. Осталось попыток: %1").arg(4 - codeFailedAttempts)
+                );
+                codeErrorLabel->show();
+                return;
+            }
+            if (codeFailedAttempts == 4) { applyCodeLock(0,    "Слишком много попыток. Заблокировано на 30 секунд"); return; }
+            if (codeFailedAttempts == 5) { applyCodeLock(5,    "Слишком много попыток. Заблокировано на 5 минут");   return; }
+            if (codeFailedAttempts == 6) { applyCodeLock(10,   "Слишком много попыток. Заблокировано на 10 минут");  return; }
+            applyCodeLock(9999, "Слишком много попыток. Аккаунт заблокирован на длительное время");
+            return;
+        }
+
+        codeErrorLabel->setText("Ошибка соединения с сервером.");
+        codeErrorLabel->show();
+        codeStatusLabel->hide();
+        return;
+    }
+
+    // Ответ на registration
+    if (r == "reg_code_sent") {
         codeStatusLabel->setText("Код отправлен на почту");
+        codeStatusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
         codeStatusLabel->show();
         codeEdit->show();
         verifyCodeBtn->show();
         codeErrorLabel->hide();
         codeFailedAttempts = 0;
         codeIsLocked = false;
-    } else if (response.startsWith("reg-")) {
-        codeStatusLabel->setText("Ошибка регистрации: " + response);
-        codeStatusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
-        codeStatusLabel->show();
-    } else {
-        codeStatusLabel->setText("Ошибка соединения с сервером.");
-        codeStatusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
-        codeStatusLabel->show();
+        confirmEmailBtn->setText("Код отправлен");
+    } else if (r.startsWith("reg-")) {
+        codeStatusLabel->hide();
+        codeErrorLabel->setText("Ошибка регистрации: " + r);
+        codeErrorLabel->show();
+        confirmEmailBtn->setEnabled(true);
+        confirmEmailBtn->setText("Подтвердить почту");
     }
 }
 
 void RegWidget::onCodeTextChanged(const QString &text)
 {
     Q_UNUSED(text)
-    // Could auto-submit at 6 chars, but we use a button for explicit confirmation
 }
 
 void RegWidget::applyCodeLock(int minutes, const QString &message)
@@ -457,12 +485,7 @@ void RegWidget::applyCodeLock(int minutes, const QString &message)
     verifyCodeBtn->setEnabled(false);
     codeErrorLabel->setText(message);
     codeErrorLabel->show();
-    if (minutes == 0) {
-        // 30 seconds
-        codeLockTimer->start(30 * 1000);
-    } else {
-        codeLockTimer->start(minutes * 60 * 1000);
-    }
+    codeLockTimer->start(minutes == 0 ? 30 * 1000 : minutes * 60 * 1000);
 }
 
 void RegWidget::onCodeLockTimerFired()
@@ -475,18 +498,12 @@ void RegWidget::onCodeLockTimerFired()
 void RegWidget::onVerifyCodeClicked()
 {
     if (codeIsLocked) {
-        int remainingMs = codeLockTimer->remainingTime();
-        int remainingSec = remainingMs / 1000;
-        int remainingMin = remainingSec / 60;
+        int remainingSec    = codeLockTimer->remainingTime() / 1000;
+        int remainingMin    = remainingSec / 60;
         int remainingSecMod = remainingSec % 60;
-
-        QString timeStr;
-        if (remainingMin > 0) {
-            timeStr = QString("Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod);
-        } else {
-            timeStr = QString("Осталось %1 сек").arg(remainingSec);
-        }
-
+        QString timeStr = remainingMin > 0
+            ? QString("Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod)
+            : QString("Осталось %1 сек").arg(remainingSec);
         codeErrorLabel->setText("Аккаунт заблокирован. " + timeStr);
         codeErrorLabel->show();
         return;
@@ -499,59 +516,16 @@ void RegWidget::onVerifyCodeClicked()
         return;
     }
 
-    QString login = loginEdit->text().trimmed();
+    m_verifyingCode = true;
+    verifyCodeBtn->setEnabled(false);
+    codeErrorLabel->hide();
+    codeStatusLabel->setText("Проверяем код...");
+    codeStatusLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
+    codeStatusLabel->show();
+
+    QString login   = loginEdit->text().trimmed();
     QString request = QString("verify_reg||%1||%2").arg(login, code);
-    QString response = ClientSingleton::instance().sendRequest(request);
-
-    if (response.startsWith("reg+")) {
-        codeStatusLabel->setText("Регистрация успешна! Выполняется вход...");
-        codeStatusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
-        codeStatusLabel->show();
-        codeErrorLabel->hide();
-        verifyCodeBtn->setEnabled(false);
-
-        QTimer::singleShot(2000, this, [this]() {
-            emit registrationSuccess();
-        });
-        return;
-    }
-
-    if (response.startsWith("reg-")) {
-        codeFailedAttempts++;
-
-        if (codeFailedAttempts < 4) {
-            int remaining = 4 - codeFailedAttempts;
-            codeErrorLabel->setText(QString("Неверный код. Осталось попыток: %1").arg(remaining));
-            codeErrorLabel->show();
-            return;
-        }
-
-        if (codeFailedAttempts == 4) {
-            codeLockLevel = 1;
-            applyCodeLock(0, "Слишком много попыток. Заблокировано на 30 секунд");
-            return;
-        }
-
-        if (codeFailedAttempts == 5) {
-            codeLockLevel = 2;
-            applyCodeLock(5, "Слишком много попыток. Заблокировано на 5 минут");
-            return;
-        }
-
-        if (codeFailedAttempts == 6) {
-            codeLockLevel = 3;
-            applyCodeLock(10, "Слишком много попыток. Заблокировано на 10 минут");
-            return;
-        }
-
-        // >= 7
-        codeLockLevel = 4;
-        applyCodeLock(9999, "Слишком много попыток. Аккаунт заблокирован на длительное время");
-        return;
-    }
-
-    codeErrorLabel->setText("Ошибка соединения с сервером.");
-    codeErrorLabel->show();
+    ClientSingleton::instance().sendRequestAsync(request);
 }
 
 void RegWidget::onShowAuthClicked()

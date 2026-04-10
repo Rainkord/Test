@@ -14,7 +14,8 @@ VerifyWidget::VerifyWidget(QWidget *parent)
     : QWidget(parent),
       failedAttempts(0),
       lockLevel(0),
-      isLocked(false)
+      isLocked(false),
+      mode(AuthMode)
 {
     lockTimer = new QTimer(this);
     lockTimer->setSingleShot(true);
@@ -30,7 +31,6 @@ VerifyWidget::~VerifyWidget()
 void VerifyWidget::setLogin(const QString &loginVal)
 {
     login = loginVal;
-    // Reset state when switching to this widget
     failedAttempts = 0;
     lockLevel = 0;
     isLocked = false;
@@ -43,14 +43,18 @@ void VerifyWidget::setLogin(const QString &loginVal)
     codeEdit->clear();
 }
 
+void VerifyWidget::setMode(Mode m)
+{
+    mode = m;
+}
+
 void VerifyWidget::setupUI()
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(40, 30, 40, 30);
     mainLayout->setSpacing(12);
 
-    // Title
-    QLabel *titleLabel = new QLabel("Подтверждение входа", this);
+    QLabel *titleLabel = new QLabel("Подтверждение", this);
     QFont titleFont = titleLabel->font();
     titleFont.setBold(true);
     titleFont.setPointSize(18);
@@ -60,7 +64,6 @@ void VerifyWidget::setupUI()
 
     mainLayout->addSpacing(6);
 
-    // Info label
     infoLabel = new QLabel("Код отправлен на вашу почту", this);
     infoLabel->setAlignment(Qt::AlignCenter);
     infoLabel->setStyleSheet("QLabel { color: #555555; font-size: 11pt; }");
@@ -68,7 +71,6 @@ void VerifyWidget::setupUI()
 
     mainLayout->addSpacing(10);
 
-    // Code input
     codeEdit = new QLineEdit(this);
     codeEdit->setPlaceholderText("Введите код");
     codeEdit->setMaxLength(6);
@@ -77,7 +79,6 @@ void VerifyWidget::setupUI()
     codeEdit->setStyleSheet("QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14pt; letter-spacing: 4px; }");
     mainLayout->addWidget(codeEdit);
 
-    // Status label (errors / success)
     statusLabel = new QLabel(this);
     statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
     statusLabel->setAlignment(Qt::AlignCenter);
@@ -85,7 +86,6 @@ void VerifyWidget::setupUI()
     statusLabel->hide();
     mainLayout->addWidget(statusLabel);
 
-    // Attempts label
     attemptsLabel = new QLabel(this);
     attemptsLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
     attemptsLabel->setAlignment(Qt::AlignCenter);
@@ -94,7 +94,6 @@ void VerifyWidget::setupUI()
 
     mainLayout->addSpacing(8);
 
-    // Verify button
     verifyBtn = new QPushButton("Подтвердить", this);
     verifyBtn->setMinimumHeight(38);
     verifyBtn->setStyleSheet(
@@ -107,7 +106,6 @@ void VerifyWidget::setupUI()
 
     mainLayout->addSpacing(8);
 
-    // Back button
     backBtn = new QPushButton("Назад", this);
     backBtn->setFlat(true);
     backBtn->setStyleSheet(
@@ -145,7 +143,7 @@ void VerifyWidget::onLockTimerFired()
 void VerifyWidget::onVerifyClicked()
 {
     if (isLocked) {
-        int remainingMs = lockTimer->remainingTime();
+        int remainingMs  = lockTimer->remainingTime();
         int remainingSec = remainingMs / 1000;
         int remainingMin = remainingSec / 60;
         int remainingSecMod = remainingSec % 60;
@@ -169,24 +167,35 @@ void VerifyWidget::onVerifyClicked()
         return;
     }
 
-    QString request = QString("verify_auth||%1||%2").arg(login, code);
+    // Формируем запрос в зависимости от режима
+    QString request;
+    if (mode == RegMode) {
+        request = QString("verify_reg||%1||%2").arg(login, code);
+    } else {
+        request = QString("verify_auth||%1||%2").arg(login, code);
+    }
+
     QString response = ClientSingleton::instance().sendRequest(request);
 
-    if (response.startsWith("auth+")) {
+    // Определяем префиксы успеха/ошибки по режиму
+    QString successPrefix = (mode == RegMode) ? "reg+" : "auth+";
+    QString failPrefix    = (mode == RegMode) ? "reg-" : "auth-";
+    QString successMsg    = (mode == RegMode) ? "Регистрация прошла успешно!" : "Вход выполнен успешно!";
+
+    if (response.startsWith(successPrefix)) {
         statusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
-        statusLabel->setText("Вход выполнен успешно!");
+        statusLabel->setText(successMsg);
         statusLabel->show();
         attemptsLabel->hide();
         verifyBtn->setEnabled(false);
 
-        // Emit after a brief moment so user sees success message
         QTimer::singleShot(500, this, [this]() {
             emit verificationSuccess(login);
         });
         return;
     }
 
-    if (response.startsWith("auth-")) {
+    if (response.startsWith(failPrefix)) {
         failedAttempts++;
 
         if (failedAttempts < 4) {
@@ -216,7 +225,6 @@ void VerifyWidget::onVerifyClicked()
             return;
         }
 
-        // >= 7
         lockLevel = 4;
         applyLock(9999, "Слишком много попыток. Аккаунт заблокирован на длительное время");
         return;
