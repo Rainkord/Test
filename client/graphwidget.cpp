@@ -67,7 +67,7 @@ void GraphWidget::setupLeftPanel()
     vbox->setContentsMargins(8, 8, 8, 8);
     vbox->setSpacing(6);
 
-    // ── Formula label ────────────────────────────
+    // ── Formula label ────────────────────────────────────────────
     formulaLabel = new QLabel(leftPanel);
     formulaLabel->setWordWrap(true);
     formulaLabel->setTextFormat(Qt::RichText);
@@ -76,13 +76,13 @@ void GraphWidget::setupLeftPanel()
     updateFormulaLabel();
     vbox->addWidget(formulaLabel);
 
-    // ── Separator ────────────────────────────────
+    // ── Separator ────────────────────────────────────────────
     QFrame *sep1 = new QFrame(leftPanel);
     sep1->setFrameShape(QFrame::HLine);
     sep1->setFrameShadow(QFrame::Sunken);
     vbox->addWidget(sep1);
 
-    // ── Slider rows: a, b, c ─────────────────────
+    // ── Slider rows: a, b, c ─────────────────────────────────────
     auto makeSliderRow = [&](const QString &name, QLabel *&lbl,
                               QSlider *&slider, QDoubleSpinBox *&spin) {
         QHBoxLayout *row = new QHBoxLayout();
@@ -125,32 +125,30 @@ void GraphWidget::setupLeftPanel()
     connect(spinC, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
             this, &GraphWidget::onSpinCChanged);
 
-    // ── Separator ────────────────────────────────
+    // ── Separator ────────────────────────────────────────────
     QFrame *sep2 = new QFrame(leftPanel);
     sep2->setFrameShape(QFrame::HLine);
     sep2->setFrameShadow(QFrame::Sunken);
     vbox->addWidget(sep2);
 
-    // ── Table ────────────────────────────────────
-    table = new QTableWidget(10, 2, leftPanel);
+    // ── Table (-10 to 19, step 1, 30 rows, no fixed height) ───────────
+    table = new QTableWidget(30, 2, leftPanel);
     table->setHorizontalHeaderLabels({"x", "F(x)"});
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     table->verticalHeader()->setVisible(false);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setSelectionMode(QAbstractItemView::NoSelection);
-    table->setFixedHeight(220);
     table->setStyleSheet("QTableWidget { font-size: 11px; }");
-    vbox->addWidget(table);
+    // No setFixedHeight — table expands to fill available space
+    vbox->addWidget(table, 1);
 
-    vbox->addStretch(1);
-
-    // ── User label ───────────────────────────────
+    // ── User label ───────────────────────────────────────────
     userLabel = new QLabel("", leftPanel);
     userLabel->setStyleSheet("QLabel { color: #666; font-size: 10px; }");
     userLabel->setAlignment(Qt::AlignCenter);
     vbox->addWidget(userLabel);
 
-    // ── Logout button ────────────────────────────
+    // ── Logout button ─────────────────────────────────────────
     logoutBtn = new QPushButton("Выйти из аккаунта", leftPanel);
     logoutBtn->setStyleSheet(
         "QPushButton { background-color: #e74c3c; color: white; "
@@ -315,11 +313,13 @@ void GraphWidget::updateGraph()
 
 void GraphWidget::fillTable(double a, double b, double c)
 {
-    const double step = 2.0;
+    // x from -10 to 19 inclusive, step 1 => 30 rows
+    table->setRowCount(30);
     int row = 0;
-    for (double x = -10.0; x <= 9.0 && row < 10; x += step, ++row) {
+    for (int xi = -10; xi <= 19 && row < 30; ++xi, ++row) {
+        double x = static_cast<double>(xi);
         double y = calculate(x, a, b, c);
-        QTableWidgetItem *itemX = new QTableWidgetItem(QString::number(x, 'f', 2));
+        QTableWidgetItem *itemX = new QTableWidgetItem(QString::number(x, 'f', 0));
         QTableWidgetItem *itemY = new QTableWidgetItem(QString::number(y, 'f', 2));
         itemX->setTextAlignment(Qt::AlignCenter);
         itemY->setTextAlignment(Qt::AlignCenter);
@@ -500,10 +500,11 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     drawBranchLines(pointsBranch2, QColor(Qt::darkGreen));
     drawBranchLines(pointsBranch3, QColor(Qt::blue));
 
+    // ── Legend (all proper Unicode symbols) ───────────────────────
     {
         int lx = drawX + 10;
         int ly = drawY + 10;
-        int lw = 220;
+        int lw = 230;
         int lh = 64;
 
         painter.fillRect(lx - 4, ly - 4, lw + 8, lh + 8, QColor(255, 255, 255, 200));
@@ -512,10 +513,11 @@ void GraphWidget::paintEvent(QPaintEvent *event)
 
         painter.setFont(QFont("Arial", 9));
 
+        // Use only proper Unicode — no Latin-1 byte escapes
         struct { QColor color; QString text; } legends[] = {
-            { Qt::red,       "|x\xB7""a| \u2212 2,  x < \u22122" },
-            { Qt::darkGreen, "b\xB7(x\xB2) + x + 1,  \u22122 \u2264 x < 2" },
-            { Qt::blue,      "|x \u2212 2| + 1\xB7""c,  x \u2265 2" }
+            { Qt::red,       "|x\u00B7a| \u2212 2,  x < \u22122" },
+            { Qt::darkGreen, "b\u00B7(x\u00B2) + x + 1,  \u22122 \u2264 x < 2" },
+            { Qt::blue,      "|x \u2212 2| + 1\u00B7c,  x \u2265 2" }
         };
 
         for (int i = 0; i < 3; ++i) {
