@@ -36,7 +36,8 @@
 FlowchartWidget::FlowchartWidget(QWidget *parent)
     : QWidget(parent)
 {
-    setFixedSize(700, 735);
+    // Квадратный канвас
+    setFixedSize(728, 728);
 }
 
 void FlowchartWidget::drawRoundedBlock(QPainter &p, int cx, int cy, int w, int h,
@@ -120,18 +121,22 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
     p.setRenderHint(QPainter::Antialiasing);
     p.fillRect(rect(), FC_BG);
 
-    // Ширина схемы:
-    //   слева от centerX: dw/2 = 120
-    //   справа от centerX: bw/2(right) + 25(routeMargin) + bw(rightBlock) + bw/2 → 300 + 100 + 25 = 425
-    //   Итого ширина = 120 + 425 = 545, при канвасе 700:
-    //   centerX = 120 + (700 - 545) / 2 = 120 + 77 = 197 ≈ 200
-    int centerX = 200;
-    int rightX  = centerX + 300;   // = 500
     int bw = 200, bh = 40;
     int dw = 240, dh = 70;
     int gap = 18;
-    int routeX = rightX + bw/2 + 25; // = 625
-    int y = 25;
+
+    // Центрирование по X:
+    // ширина схемы = dw/2 (влево) + 300 + bw/2 + 25 (вправо) = 120 + 425 = 545
+    // centerX = 120 + (728 - 545) / 2 = 120 + 91 = 211
+    int centerX = 211;
+    int rightX  = centerX + 300;
+    int routeX  = rightX + bw/2 + 25;
+
+    // Центрирование по Y:
+    // Высота схемы: 36+gap + bh+gap + dh+gap + dh+gap + bh+gap + (gap+15) + (8+bh/2+bh) + gap + 36
+    // = 36+18 + 40+18 + 70+18 + 70+18 + 40+18 + 33 + (8+20+40) + 18 + 36 = ~683
+    // startY = (728 - 683) / 2 = 22
+    int y = 22;
 
     // 1. Начало
     drawRoundedBlock(p, centerX, y, 140, 36, "Начало", FC_START_FILL, FC_START_BDR);
@@ -218,15 +223,17 @@ void SchemaDialog::setupUI()
 {
     setWindowTitle("Блок-схема вычислительного процесса");
 
-    resize(760, 795);
-    setFixedSize(760, 795);
+    // Квадратное окно: канвас 728x728 + отступы 16*2 + кнопка ~44
+    resize(800, 800);
+    setFixedSize(800, 800);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(16, 16, 16, 16);
     mainLayout->setSpacing(8);
 
+    // Центрируем канвас по обоим осям
     canvas = new FlowchartWidget(this);
-    mainLayout->addWidget(canvas, 1, Qt::AlignHCenter | Qt::AlignTop);
+    mainLayout->addWidget(canvas, 0, Qt::AlignHCenter | Qt::AlignVCenter);
 
     closeBtn = new QPushButton("Закрыть", this);
     closeBtn->setMinimumHeight(36);
