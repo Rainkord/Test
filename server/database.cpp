@@ -108,3 +108,42 @@ QString Database::getUserEmail(const QString &name)
 
     return QString();
 }
+
+// ─── NEW: check if any user has this email ────────────────────────────────────
+
+bool Database::emailExists(const QString &email)
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id FROM users WHERE email = :email");
+    query.bindValue(":email", email);
+
+    if (!query.exec()) {
+        qDebug() << "[DB] emailExists query failed:" << query.lastError().text();
+        return false;
+    }
+
+    return query.next();
+}
+
+// ─── NEW: update password hash by email ──────────────────────────────────────
+
+bool Database::updatePasswordByEmail(const QString &email, const QString &newHash)
+{
+    QSqlQuery query(m_db);
+    query.prepare("UPDATE users SET password_hash = :hash WHERE email = :email");
+    query.bindValue(":hash",  newHash);
+    query.bindValue(":email", email);
+
+    if (!query.exec()) {
+        qDebug() << "[DB] updatePasswordByEmail failed:" << query.lastError().text();
+        return false;
+    }
+
+    if (query.numRowsAffected() == 0) {
+        qDebug() << "[DB] updatePasswordByEmail: no rows updated for" << email;
+        return false;
+    }
+
+    qDebug() << "[DB] Password updated for email:" << email;
+    return true;
+}
