@@ -88,7 +88,6 @@ void ClientSingleton::sendRequestAsync(const QString &request)
 void ClientSingleton::onReadyRead()
 {
     QByteArray data = socket->readAll();
-    qDebug() << "[CS] onReadyRead, data:" << data;
     QString response = QString::fromUtf8(data).trimmed();
     if (!response.isEmpty()) {
         emit responseReceived(response);
