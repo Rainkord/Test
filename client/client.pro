@@ -14,7 +14,8 @@ SOURCES += \
     graphwidget.cpp \
     clientsingleton.cpp \
     taskdialog.cpp \
-    schemadialog.cpp
+    schemadialog.cpp \
+    resetwidget.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -24,7 +25,8 @@ HEADERS += \
     graphwidget.h \
     clientsingleton.h \
     taskdialog.h \
-    schemadialog.h
+    schemadialog.h \
+    resetwidget.h
 
 # Suppress deprecation warnings for Qt5 compatibility
 DEFINES += QT_DEPRECATED_WARNINGS
