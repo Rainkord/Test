@@ -32,12 +32,17 @@
 
 #define FONT_FAMILY    "Segoe UI"
 
+// Виртуальные размеры схемы (до масштабирования)
+#define SCHEMA_W  700
+#define SCHEMA_H  735
+#define SCALE     (1.0 / 1.5)
+
 // ──────────────────────────────────────────────────────────────────────────
 FlowchartWidget::FlowchartWidget(QWidget *parent)
     : QWidget(parent)
 {
-    // Квадратный канвас
-    setFixedSize(728, 728);
+    // Размер канваса = виртуальные размеры схемы (отображается в 1.5 раза меньше через scale)
+    setFixedSize(SCHEMA_W, SCHEMA_H);
 }
 
 void FlowchartWidget::drawRoundedBlock(QPainter &p, int cx, int cy, int w, int h,
@@ -121,22 +126,32 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
     p.setRenderHint(QPainter::Antialiasing);
     p.fillRect(rect(), FC_BG);
 
+    // Схема рисуется в виртуальных координатах 700x735,
+    // затем масштабируется до 1/1.5 ≈ 467x490
+    // и центрируется через translate
+    const double sc = SCALE;
+    const double scaledW = SCHEMA_W * sc;  // ~467
+    const double scaledH = SCHEMA_H * sc;  // ~490
+    const double offX = (width()  - scaledW) / 2.0;
+    const double offY = (height() - scaledH) / 2.0;
+
+    p.save();
+    p.translate(offX, offY);
+    p.scale(sc, sc);
+
+    // Все координаты ниже — в виртуальном пространстве 700x735
     int bw = 200, bh = 40;
     int dw = 240, dh = 70;
     int gap = 18;
 
-    // Центрирование по X:
-    // ширина схемы = dw/2 (влево) + 300 + bw/2 + 25 (вправо) = 120 + 425 = 545
-    // centerX = 120 + (728 - 545) / 2 = 120 + 91 = 211
-    int centerX = 211;
+    // центр основного потока: полуширина схемы влево = dw/2=120, вправо = 300+bw/2+25=425
+    // centerX = 120 + (700-545)/2 = 120+77 = 197 ≈ 200
+    int centerX = 200;
     int rightX  = centerX + 300;
     int routeX  = rightX + bw/2 + 25;
 
-    // Центрирование по Y:
-    // Высота схемы: 36+gap + bh+gap + dh+gap + dh+gap + bh+gap + (gap+15) + (8+bh/2+bh) + gap + 36
-    // = 36+18 + 40+18 + 70+18 + 70+18 + 40+18 + 33 + (8+20+40) + 18 + 36 = ~683
-    // startY = (728 - 683) / 2 = 22
-    int y = 22;
+    // старт сверху: высота схемы ~683, (735-683)/2 = 26
+    int y = 26;
 
     // 1. Начало
     drawRoundedBlock(p, centerX, y, 140, 36, "Начало", FC_START_FILL, FC_START_BDR);
@@ -205,6 +220,8 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
 
     // 7. Конец
     drawRoundedBlock(p, centerX, y, 140, 36, "Конец", FC_START_FILL, FC_START_BDR);
+
+    p.restore();
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -223,7 +240,7 @@ void SchemaDialog::setupUI()
 {
     setWindowTitle("Блок-схема вычислительного процесса");
 
-    // Квадратное окно: канвас 728x728 + отступы 16*2 + кнопка ~44
+    // Канвас 700x735 + отступы 16*2 + кнопка 44 = ~800x800
     resize(800, 800);
     setFixedSize(800, 800);
 
@@ -231,9 +248,8 @@ void SchemaDialog::setupUI()
     mainLayout->setContentsMargins(16, 16, 16, 16);
     mainLayout->setSpacing(8);
 
-    // Центрируем канвас по обоим осям
     canvas = new FlowchartWidget(this);
-    mainLayout->addWidget(canvas, 0, Qt::AlignHCenter | Qt::AlignVCenter);
+    mainLayout->addWidget(canvas, 1, Qt::AlignHCenter | Qt::AlignVCenter);
 
     closeBtn = new QPushButton("Закрыть", this);
     closeBtn->setMinimumHeight(36);
