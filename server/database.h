@@ -14,9 +14,10 @@ public:
     bool    addUser(const QString &name, const QString &passwordHash, const QString &email);
     bool    checkUser(const QString &name, const QString &passwordHash);
     bool    userExists(const QString &name);
-    bool    emailExists(const QString &email);                                  // NEW
+    bool    emailExists(const QString &email);
     QString getUserEmail(const QString &name);
-    bool    updatePasswordByEmail(const QString &email, const QString &newHash); // NEW
+    QString getLoginByEmail(const QString &email);
+    bool    updatePasswordByEmail(const QString &email, const QString &newHash);
 
 private:
     Database() = default;
