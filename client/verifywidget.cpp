@@ -9,6 +9,62 @@
 #include <QTimer>
 #include <QFont>
 
+// ── GitHub dark palette ──────────────────────────────────────────────────
+#define GH_BG          "#0d1117"
+#define GH_CARD        "#161b22"
+#define GH_BORDER      "#30363d"
+#define GH_TEXT        "#e6edf3"
+#define GH_MUTED       "#8b949e"
+#define GH_GREEN       "#238636"
+#define GH_GREEN_H     "#2ea043"
+#define GH_BLUE        "#388bfd"
+#define GH_BLUE_H      "#58a6ff"
+#define GH_RED         "#f85149"
+#define GH_INPUT_BG    "#0d1117"
+#define GH_BTN_GHOST   "#21262d"
+#define GH_BTN_GHOST_H "#30363d"
+
+#define FONT_FAMILY     "Segoe UI"
+#define FONT_SIZE_TITLE 16
+#define FONT_SIZE_BTN   11
+#define FONT_SIZE_INPUT 11
+#define FONT_SIZE_SMALL 9
+
+static QString inputStyle()
+{
+    return QString(
+        "QLineEdit {"
+        "  background-color: %1; color: %2;"
+        "  border: 1px solid %3; border-radius: 6px;"
+        "  padding: 6px 10px; font-family: '%4'; font-size: %5pt;"
+        "}"
+        "QLineEdit:focus { border-color: %6; }"
+    ).arg(GH_INPUT_BG).arg(GH_TEXT).arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_INPUT).arg(GH_BLUE);
+}
+
+static QString primaryBtnStyle()
+{
+    return QString(
+        "QPushButton {"
+        "  background-color: %1; color: #ffffff;"
+        "  border: 1px solid rgba(240,246,252,0.1); border-radius: 6px;"
+        "  padding: 6px 16px; font-family: '%3'; font-size: %4pt; font-weight: bold;"
+        "}"
+        "QPushButton:hover { background-color: %2; }"
+        "QPushButton:disabled { background-color: rgba(35,134,54,0.35); color: rgba(255,255,255,0.4); }"
+    ).arg(GH_GREEN).arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
+}
+
+static QString linkBtnStyle()
+{
+    return QString(
+        "QPushButton { color: %1; border: none; background: transparent;"
+        "  font-family: '%2'; font-size: %3pt; }"
+        "QPushButton:hover { color: %4; text-decoration: underline; }"
+    ).arg(GH_BLUE).arg(FONT_FAMILY).arg(FONT_SIZE_BTN).arg(GH_BLUE_H);
+}
+
+// ── Constructor ──────────────────────────────────────────────────────────
 VerifyWidget::VerifyWidget(QWidget *parent)
     : QWidget(parent),
       failedAttempts(0),
@@ -23,12 +79,14 @@ VerifyWidget::VerifyWidget(QWidget *parent)
     connect(&ClientSingleton::instance(), &ClientSingleton::responseReceived,
             this, &VerifyWidget::onVerifyResponseReceived);
 
+    setStyleSheet(QString(
+        "QWidget { background-color: %1; color: %2; font-family: '%3'; font-size: %4pt; }")
+        .arg(GH_BG).arg(GH_TEXT).arg(FONT_FAMILY).arg(FONT_SIZE_INPUT));
+
     setupUI();
 }
 
-VerifyWidget::~VerifyWidget()
-{
-}
+VerifyWidget::~VerifyWidget() {}
 
 void VerifyWidget::setLogin(const QString &loginVal)
 {
@@ -37,8 +95,7 @@ void VerifyWidget::setLogin(const QString &loginVal)
     lockLevel = 0;
     isLocked = false;
     m_waitingForVerify = false;
-    if (lockTimer->isActive())
-        lockTimer->stop();
+    if (lockTimer->isActive()) lockTimer->stop();
 
     statusLabel->hide();
     attemptsLabel->hide();
@@ -48,80 +105,99 @@ void VerifyWidget::setLogin(const QString &loginVal)
 
 void VerifyWidget::setupUI()
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(40, 30, 40, 30);
-    mainLayout->setSpacing(12);
+    // Центрирующий outer layout
+    QVBoxLayout *outerV = new QVBoxLayout(this);
+    outerV->setContentsMargins(0, 0, 0, 0);
+    outerV->addStretch(1);
 
-    QLabel *titleLabel = new QLabel("Подтверждение входа", this);
-    QFont titleFont = titleLabel->font();
-    titleFont.setBold(true);
-    titleFont.setPointSize(18);
+    QHBoxLayout *outerH = new QHBoxLayout();
+    outerH->addStretch(1);
+
+    // Карточка
+    QWidget *card = new QWidget(this);
+    card->setFixedWidth(340);
+    card->setStyleSheet(QString(
+        "QWidget { background-color: %1; border: 1px solid %2; border-radius: 10px; }")
+        .arg(GH_CARD).arg(GH_BORDER));
+
+    QVBoxLayout *cardLayout = new QVBoxLayout(card);
+    cardLayout->setContentsMargins(28, 28, 28, 28);
+    cardLayout->setSpacing(10);
+
+    // Заголовок
+    QLabel *titleLabel = new QLabel("Подтверждение входа", card);
+    QFont titleFont(FONT_FAMILY, FONT_SIZE_TITLE, QFont::Bold);
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
-    mainLayout->addWidget(titleLabel);
-    mainLayout->addSpacing(6);
+    titleLabel->setStyleSheet(QString("QLabel { color: %1; border: none; }").arg(GH_TEXT));
+    cardLayout->addWidget(titleLabel);
 
-    infoLabel = new QLabel("Код отправлен на вашу почту", this);
+    infoLabel = new QLabel("Код отправлен на вашу почту", card);
     infoLabel->setAlignment(Qt::AlignCenter);
-    infoLabel->setStyleSheet("QLabel { color: #555555; font-size: 11pt; }");
-    mainLayout->addWidget(infoLabel);
-    mainLayout->addSpacing(10);
+    infoLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }")
+                             .arg(GH_MUTED).arg(FONT_SIZE_SMALL));
+    cardLayout->addWidget(infoLabel);
+    cardLayout->addSpacing(4);
 
-    codeEdit = new QLineEdit(this);
+    codeEdit = new QLineEdit(card);
     codeEdit->setPlaceholderText("Введите код");
     codeEdit->setMaxLength(6);
-    codeEdit->setMinimumHeight(36);
+    codeEdit->setMinimumHeight(38);
     codeEdit->setAlignment(Qt::AlignCenter);
     codeEdit->setStyleSheet(
-        "QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; "
-        "font-size: 14pt; letter-spacing: 4px; }"
+        inputStyle() +
+        "QLineEdit { font-size: 15pt; letter-spacing: 4px; }"
     );
-    mainLayout->addWidget(codeEdit);
+    cardLayout->addWidget(codeEdit);
 
-    statusLabel = new QLabel(this);
-    statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    statusLabel = new QLabel(card);
+    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }")
+                               .arg(GH_RED).arg(FONT_SIZE_SMALL));
     statusLabel->setAlignment(Qt::AlignCenter);
     statusLabel->setWordWrap(true);
     statusLabel->hide();
-    mainLayout->addWidget(statusLabel);
+    cardLayout->addWidget(statusLabel);
 
-    attemptsLabel = new QLabel(this);
-    attemptsLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
+    attemptsLabel = new QLabel(card);
+    attemptsLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }")
+                                 .arg(GH_MUTED).arg(FONT_SIZE_SMALL));
     attemptsLabel->setAlignment(Qt::AlignCenter);
     attemptsLabel->hide();
-    mainLayout->addWidget(attemptsLabel);
+    cardLayout->addWidget(attemptsLabel);
 
-    mainLayout->addSpacing(8);
+    cardLayout->addSpacing(4);
 
-    verifyBtn = new QPushButton("Подтвердить", this);
+    verifyBtn = new QPushButton("Подтвердить", card);
     verifyBtn->setMinimumHeight(38);
-    verifyBtn->setStyleSheet(
-        "QPushButton { background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 13pt; }"
-        "QPushButton:hover { background-color: #388E3C; }"
-        "QPushButton:disabled { background-color: #cccccc; color: #666666; }"
-    );
+    verifyBtn->setStyleSheet(primaryBtnStyle());
     connect(verifyBtn, &QPushButton::clicked, this, &VerifyWidget::onVerifyClicked);
-    mainLayout->addWidget(verifyBtn);
+    cardLayout->addWidget(verifyBtn);
 
-    mainLayout->addSpacing(8);
+    QFrame *line = new QFrame(card);
+    line->setFrameShape(QFrame::HLine);
+    line->setStyleSheet(QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
+    cardLayout->addWidget(line);
 
-    backBtn = new QPushButton("Назад", this);
+    backBtn = new QPushButton("Назад", card);
     backBtn->setFlat(true);
-    backBtn->setStyleSheet(
-        "QPushButton { color: #2196F3; border: none; text-decoration: underline; font-size: 11pt; }"
-        "QPushButton:hover { color: #1565C0; }"
-    );
+    backBtn->setStyleSheet(linkBtnStyle());
     connect(backBtn, &QPushButton::clicked, this, &VerifyWidget::onBackClicked);
-    mainLayout->addWidget(backBtn, 0, Qt::AlignCenter);
+    cardLayout->addWidget(backBtn, 0, Qt::AlignCenter);
 
-    mainLayout->addStretch();
+    outerH->addWidget(card);
+    outerH->addStretch(1);
+    outerV->addLayout(outerH);
+    outerV->addStretch(1);
+
+    setLayout(outerV);
 }
 
 void VerifyWidget::applyLock(int minutes, const QString &message)
 {
     isLocked = true;
     verifyBtn->setEnabled(false);
-    statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }")
+                               .arg(GH_RED).arg(FONT_SIZE_SMALL));
     statusLabel->setText(message);
     statusLabel->show();
     attemptsLabel->hide();
@@ -142,17 +218,16 @@ void VerifyWidget::onVerifyClicked()
         int remainingSec    = lockTimer->remainingTime() / 1000;
         int remainingMin    = remainingSec / 60;
         int remainingSecMod = remainingSec % 60;
-        QString timeStr = remainingMin > 0
-            ? QString("Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod)
-            : QString("Осталось %1 сек").arg(remainingSec);
-        statusLabel->setText("Аккаунт заблокирован. " + timeStr);
+        statusLabel->setText(remainingMin > 0
+            ? QString("Аккаунт заблокирован. Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod)
+            : QString("Аккаунт заблокирован. Осталось %1 сек").arg(remainingSec));
         statusLabel->show();
         return;
     }
 
     QString code = codeEdit->text().trimmed();
     if (code.isEmpty()) {
-        statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+        statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
         statusLabel->setText("Введите код из письма.");
         statusLabel->show();
         return;
@@ -160,12 +235,11 @@ void VerifyWidget::onVerifyClicked()
 
     m_waitingForVerify = true;
     verifyBtn->setEnabled(false);
-    statusLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
+    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_MUTED).arg(FONT_SIZE_SMALL));
     statusLabel->setText("Проверяем код...");
     statusLabel->show();
 
-    QString request = QString("verify_auth||%1||%2").arg(login, code);
-    ClientSingleton::instance().sendRequestAsync(request);
+    ClientSingleton::instance().sendRequestAsync(QString("verify_auth||%1||%2").arg(login, code));
 }
 
 void VerifyWidget::onVerifyResponseReceived(const QString &response)
@@ -177,45 +251,40 @@ void VerifyWidget::onVerifyResponseReceived(const QString &response)
 
     if (r.isEmpty()) {
         verifyBtn->setEnabled(true);
-        statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+        statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
         statusLabel->setText("Ошибка соединения с сервером.");
         statusLabel->show();
         return;
     }
 
     if (r.startsWith("auth+")) {
-        statusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
+        statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_GREEN_H).arg(FONT_SIZE_SMALL));
         statusLabel->setText("Вход выполнен успешно!");
         statusLabel->show();
         attemptsLabel->hide();
         verifyBtn->setEnabled(false);
-        QTimer::singleShot(500, this, [this]() {
-            emit verificationSuccess(login);
-        });
+        QTimer::singleShot(500, this, [this]() { emit verificationSuccess(login); });
         return;
     }
 
     verifyBtn->setEnabled(true);
-    statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
 
     if (r.startsWith("auth-")) {
         failedAttempts++;
         if (failedAttempts < 4) {
-            statusLabel->setText(
-                QString("Неверный код. Осталось попыток: %1").arg(4 - failedAttempts)
-            );
+            statusLabel->setText(QString("Неверный код. Осталось попыток: %1").arg(4 - failedAttempts));
             statusLabel->show();
             attemptsLabel->hide();
             return;
         }
-        if (failedAttempts == 4) { lockLevel = 1; applyLock(0,    "Слишком много попыток. Заблокировано на 30 секунд");          return; }
-        if (failedAttempts == 5) { lockLevel = 2; applyLock(5,    "Слишком много попыток. Заблокировано на 5 минут");            return; }
-        if (failedAttempts == 6) { lockLevel = 3; applyLock(10,   "Слишком много попыток. Заблокировано на 10 минут");           return; }
-        lockLevel = 4; applyLock(9999, "Слишком много попыток. Аккаунт заблокирован на длительное время");
+        if (failedAttempts == 4) { lockLevel = 1; applyLock(0,    "Слишком много попыток. Заблокировано на 30 секунд"); return; }
+        if (failedAttempts == 5) { lockLevel = 2; applyLock(5,    "Слишком много попыток. Заблокировано на 5 минут");  return; }
+        if (failedAttempts == 6) { lockLevel = 3; applyLock(10,   "Слишком много попыток. Заблокировано на 10 минут"); return; }
+        lockLevel = 4; applyLock(9999, "Слишком много попыток. Аккаунт заблокирован");
         return;
     }
 
-    // Ответ от другого виджета — игнорируем, восстанавливаем состояние
     m_waitingForVerify = false;
     verifyBtn->setEnabled(true);
     statusLabel->hide();
@@ -223,9 +292,7 @@ void VerifyWidget::onVerifyResponseReceived(const QString &response)
 
 void VerifyWidget::onBackClicked()
 {
-    if (lockTimer->isActive())
-        lockTimer->stop();
-
+    if (lockTimer->isActive()) lockTimer->stop();
     isLocked = false;
     failedAttempts = 0;
     lockLevel = 0;
@@ -234,6 +301,5 @@ void VerifyWidget::onBackClicked()
     attemptsLabel->hide();
     verifyBtn->setEnabled(true);
     codeEdit->clear();
-
     emit backToAuth();
 }
