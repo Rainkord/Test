@@ -12,6 +12,12 @@ struct TempRegData {
     QString code;
 };
 
+// Holds pending password-reset data
+struct TempResetData {
+    QString email;
+    QString code;
+};
+
 class FunctionsForServer
 {
 public:
@@ -25,6 +31,9 @@ private:
     // Pending registrations: login -> TempRegData
     static QMap<QString, TempRegData> pendingRegistrations;
 
+    // Pending password resets: email -> TempResetData
+    static QMap<QString, TempResetData> pendingResets;
+
     // Generates a 6-digit random code as a zero-padded string
     static QString generateCode();
 
@@ -35,6 +44,11 @@ private:
     static QString handleVerifyAuth(const QStringList &parts);
     static QString handleGetGraph(const QStringList &parts);
     static QString handleGetTask();
+
+    // Password reset handlers
+    static QString handleResetPassword(const QStringList &parts);   // reset_password||email
+    static QString handleVerifyReset(const QStringList &parts);     // verify_reset||email||code
+    static QString handleSetNewPassword(const QStringList &parts);  // set_new_password||email||code||hash
 };
 
 #endif // FUNCTIONSFORSERVER_H
