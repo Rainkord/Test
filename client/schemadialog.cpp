@@ -36,7 +36,6 @@
 FlowchartWidget::FlowchartWidget(QWidget *parent)
     : QWidget(parent)
 {
-    // Канвас 980 * 0.75 ≈ 735px
     setFixedSize(700, 735);
 }
 
@@ -121,13 +120,18 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
     p.setRenderHint(QPainter::Antialiasing);
     p.fillRect(rect(), FC_BG);
 
-    int centerX = width() / 2 - 130;
-    int rightX  = centerX + 300;
+    // Ширина схемы:
+    //   слева от centerX: dw/2 = 120
+    //   справа от centerX: bw/2(right) + 25(routeMargin) + bw(rightBlock) + bw/2 → 300 + 100 + 25 = 425
+    //   Итого ширина = 120 + 425 = 545, при канвасе 700:
+    //   centerX = 120 + (700 - 545) / 2 = 120 + 77 = 197 ≈ 200
+    int centerX = 200;
+    int rightX  = centerX + 300;   // = 500
     int bw = 200, bh = 40;
     int dw = 240, dh = 70;
-    int gap = 18;                     // уменьшенный отступ для компактности
-    int routeX = rightX + bw/2 + 25;
-    int y = 25;                       // старт с меньшего отступа сверху
+    int gap = 18;
+    int routeX = rightX + bw/2 + 25; // = 625
+    int y = 25;
 
     // 1. Начало
     drawRoundedBlock(p, centerX, y, 140, 36, "Начало", FC_START_FILL, FC_START_BDR);
@@ -214,7 +218,6 @@ void SchemaDialog::setupUI()
 {
     setWindowTitle("Блок-схема вычислительного процесса");
 
-    // 1060 * 0.75 ≈ 795px
     resize(760, 795);
     setFixedSize(760, 795);
 
