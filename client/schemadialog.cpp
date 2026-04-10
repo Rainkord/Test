@@ -36,8 +36,8 @@
 FlowchartWidget::FlowchartWidget(QWidget *parent)
     : QWidget(parent)
 {
-    // Размер канваса = размер диалога (700x750), блок-схема отцентрирована
-    setFixedSize(700, 980);
+    // Канвас 980 * 0.75 ≈ 735px
+    setFixedSize(700, 735);
 }
 
 void FlowchartWidget::drawRoundedBlock(QPainter &p, int cx, int cy, int w, int h,
@@ -121,18 +121,17 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
     p.setRenderHint(QPainter::Antialiasing);
     p.fillRect(rect(), FC_BG);
 
-    // Сдвигаем начальную точку по X, чтобы схема была по центру канваса
-    int centerX = width() / 2 - 130;   // центр основного потока
-    int rightX  = centerX + 300;        // правые блоки ветвлений
-    int bw = 200, bh = 45;
-    int dw = 240, dh = 80;
-    int gap = 30;
+    int centerX = width() / 2 - 130;
+    int rightX  = centerX + 300;
+    int bw = 200, bh = 40;
+    int dw = 240, dh = 70;
+    int gap = 18;                     // уменьшенный отступ для компактности
     int routeX = rightX + bw/2 + 25;
-    int y = 40;
+    int y = 25;                       // старт с меньшего отступа сверху
 
     // 1. Начало
-    drawRoundedBlock(p, centerX, y, 140, 40, "Начало", FC_START_FILL, FC_START_BDR);
-    int y1 = y + 20; y += 40 + gap;
+    drawRoundedBlock(p, centerX, y, 140, 36, "Начало", FC_START_FILL, FC_START_BDR);
+    int y1 = y + 18; y += 36 + gap;
     drawArrowDown(p, centerX, y1, y - bh/2);
 
     // 2. Ввод
@@ -144,32 +143,32 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
     int diamondY1 = y;
     drawDiamond(p, centerX, y, dw, dh, "x < -2 ?", FC_COND_FILL, FC_COND_BDR);
     drawArrowRight(p, centerX + dw/2, rightX - bw/2, y);
-    drawText(p, centerX + dw/2 + 25, y - 14, 40, 20, "Да");
+    drawText(p, centerX + dw/2 + 25, y - 12, 40, 20, "Да");
     drawRoundedBlock(p, rightX, diamondY1, bw, bh, "f = |x·a| − 2", FC_BR1_FILL, FC_BR1_BDR);
     int rb1Bottom = diamondY1 + bh/2;
 
     y1 = y + dh/2; y += dh + gap;
     drawArrowDown(p, centerX, y1, y - dh/2);
-    drawText(p, centerX + 16, y1 + 10, 40, 20, "Нет");
+    drawText(p, centerX + 16, y1 + 8, 40, 20, "Нет");
 
     // 4. -2 ≤ x < 2 ?
     int diamondY2 = y;
     drawDiamond(p, centerX, y, dw, dh, "-2 ≤ x < 2 ?", FC_COND_FILL, FC_COND_BDR);
     drawArrowRight(p, centerX + dw/2, rightX - bw/2, y);
-    drawText(p, centerX + dw/2 + 25, y - 14, 40, 20, "Да");
+    drawText(p, centerX + dw/2 + 25, y - 12, 40, 20, "Да");
     drawRoundedBlock(p, rightX, diamondY2, bw, bh, "f = b·(x²) + x + 1", FC_BR2_FILL, FC_BR2_BDR);
     int rb2Bottom = diamondY2 + bh/2;
 
     y1 = y + dh/2; y += dh + gap;
     drawArrowDown(p, centerX, y1, y - bh/2);
-    drawText(p, centerX + 16, y1 + 10, 40, 20, "Нет");
+    drawText(p, centerX + 16, y1 + 8, 40, 20, "Нет");
 
     // 5. Ветвь 3
     int block3CenterY = y;
     drawRoundedBlock(p, centerX, block3CenterY, bw, bh, "f = |x − 2| + 1·c", FC_BR3_FILL, FC_BR3_BDR);
     int block3Bottom = block3CenterY + bh/2;
 
-    int mergeY = block3Bottom + gap + 20;
+    int mergeY = block3Bottom + gap + 15;
     drawArrowLine(p, centerX, block3Bottom, centerX, mergeY);
 
     p.setPen(QPen(FC_ARROW, 2));
@@ -186,17 +185,17 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
     p.drawPolygon(arrowLeft);
     p.setBrush(Qt::NoBrush);
 
-    y = mergeY + 10;
+    y = mergeY + 8;
 
     // 6. Вывод
-    drawArrowDown(p, centerX, mergeY, y + bh/2 - 5);
+    drawArrowDown(p, centerX, mergeY, y + bh/2 - 4);
     y += bh/2;
     drawRoundedBlock(p, centerX, y, bw, bh, "Вывод f(x)", FC_OUT_FILL, FC_OUT_BDR);
     y1 = y + bh/2; y += bh + gap;
-    drawArrowDown(p, centerX, y1, y - 20);
+    drawArrowDown(p, centerX, y1, y - 18);
 
     // 7. Конец
-    drawRoundedBlock(p, centerX, y, 140, 40, "Конец", FC_START_FILL, FC_START_BDR);
+    drawRoundedBlock(p, centerX, y, 140, 36, "Конец", FC_START_FILL, FC_START_BDR);
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -215,15 +214,14 @@ void SchemaDialog::setupUI()
 {
     setWindowTitle("Блок-схема вычислительного процесса");
 
-    // Размер диалога = размер канваса + отступы + кнопка
-    resize(760, 1060);
-    setFixedSize(760, 1060);
+    // 1060 * 0.75 ≈ 795px
+    resize(760, 795);
+    setFixedSize(760, 795);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(16, 16, 16, 16);
     mainLayout->setSpacing(8);
 
-    // Канвас без QScrollArea — просто центрируем
     canvas = new FlowchartWidget(this);
     mainLayout->addWidget(canvas, 1, Qt::AlignHCenter | Qt::AlignTop);
 
