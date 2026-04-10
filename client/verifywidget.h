@@ -2,9 +2,9 @@
 #define VERIFYWIDGET_H
 
 #include <QWidget>
-#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QLabel>
 #include <QTimer>
 
 class VerifyWidget : public QWidget
@@ -12,13 +12,10 @@ class VerifyWidget : public QWidget
     Q_OBJECT
 
 public:
-    enum Mode { AuthMode, RegMode };
-
     explicit VerifyWidget(QWidget *parent = nullptr);
     ~VerifyWidget();
 
     void setLogin(const QString &login);
-    void setMode(Mode m);
 
 signals:
     void verificationSuccess(QString login);
@@ -28,6 +25,7 @@ private slots:
     void onVerifyClicked();
     void onBackClicked();
     void onLockTimerFired();
+    void onVerifyResponseReceived(const QString &response);
 
 private:
     QLabel      *infoLabel;
@@ -41,8 +39,8 @@ private:
     int    lockLevel;
     QTimer *lockTimer;
     bool   isLocked;
+    bool   m_waitingForVerify;
     QString login;
-    Mode   mode;
 
     void setupUI();
     void applyLock(int minutes, const QString &message);

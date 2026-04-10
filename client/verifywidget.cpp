@@ -8,18 +8,20 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QFont>
-#include <QString>
 
 VerifyWidget::VerifyWidget(QWidget *parent)
     : QWidget(parent),
       failedAttempts(0),
       lockLevel(0),
       isLocked(false),
-      mode(AuthMode)
+      m_waitingForVerify(false)
 {
     lockTimer = new QTimer(this);
     lockTimer->setSingleShot(true);
     connect(lockTimer, &QTimer::timeout, this, &VerifyWidget::onLockTimerFired);
+
+    connect(&ClientSingleton::instance(), &ClientSingleton::responseReceived,
+            this, &VerifyWidget::onVerifyResponseReceived);
 
     setupUI();
 }
@@ -34,18 +36,14 @@ void VerifyWidget::setLogin(const QString &loginVal)
     failedAttempts = 0;
     lockLevel = 0;
     isLocked = false;
-    if (lockTimer->isActive()) {
+    m_waitingForVerify = false;
+    if (lockTimer->isActive())
         lockTimer->stop();
-    }
+
     statusLabel->hide();
     attemptsLabel->hide();
     verifyBtn->setEnabled(true);
     codeEdit->clear();
-}
-
-void VerifyWidget::setMode(Mode m)
-{
-    mode = m;
 }
 
 void VerifyWidget::setupUI()
@@ -54,21 +52,19 @@ void VerifyWidget::setupUI()
     mainLayout->setContentsMargins(40, 30, 40, 30);
     mainLayout->setSpacing(12);
 
-    QLabel *titleLabel = new QLabel("Подтверждение", this);
+    QLabel *titleLabel = new QLabel("Подтверждение входа", this);
     QFont titleFont = titleLabel->font();
     titleFont.setBold(true);
     titleFont.setPointSize(18);
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
     mainLayout->addWidget(titleLabel);
-
     mainLayout->addSpacing(6);
 
     infoLabel = new QLabel("Код отправлен на вашу почту", this);
     infoLabel->setAlignment(Qt::AlignCenter);
     infoLabel->setStyleSheet("QLabel { color: #555555; font-size: 11pt; }");
     mainLayout->addWidget(infoLabel);
-
     mainLayout->addSpacing(10);
 
     codeEdit = new QLineEdit(this);
@@ -76,7 +72,10 @@ void VerifyWidget::setupUI()
     codeEdit->setMaxLength(6);
     codeEdit->setMinimumHeight(36);
     codeEdit->setAlignment(Qt::AlignCenter);
-    codeEdit->setStyleSheet("QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14pt; letter-spacing: 4px; }");
+    codeEdit->setStyleSheet(
+        "QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; "
+        "font-size: 14pt; letter-spacing: 4px; }"
+    );
     mainLayout->addWidget(codeEdit);
 
     statusLabel = new QLabel(this);
@@ -122,14 +121,11 @@ void VerifyWidget::applyLock(int minutes, const QString &message)
 {
     isLocked = true;
     verifyBtn->setEnabled(false);
+    statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
     statusLabel->setText(message);
     statusLabel->show();
     attemptsLabel->hide();
-    if (minutes == 0) {
-        lockTimer->start(30 * 1000);
-    } else {
-        lockTimer->start(minutes * 60 * 1000);
-    }
+    lockTimer->start(minutes == 0 ? 30 * 1000 : minutes * 60 * 1000);
 }
 
 void VerifyWidget::onLockTimerFired()
@@ -143,18 +139,12 @@ void VerifyWidget::onLockTimerFired()
 void VerifyWidget::onVerifyClicked()
 {
     if (isLocked) {
-        int remainingMs  = lockTimer->remainingTime();
-        int remainingSec = remainingMs / 1000;
-        int remainingMin = remainingSec / 60;
+        int remainingSec    = lockTimer->remainingTime() / 1000;
+        int remainingMin    = remainingSec / 60;
         int remainingSecMod = remainingSec % 60;
-
-        QString timeStr;
-        if (remainingMin > 0) {
-            timeStr = QString("Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod);
-        } else {
-            timeStr = QString("Осталось %1 сек").arg(remainingSec);
-        }
-
+        QString timeStr = remainingMin > 0
+            ? QString("Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod)
+            : QString("Осталось %1 сек").arg(remainingSec);
         statusLabel->setText("Аккаунт заблокирован. " + timeStr);
         statusLabel->show();
         return;
@@ -162,87 +152,84 @@ void VerifyWidget::onVerifyClicked()
 
     QString code = codeEdit->text().trimmed();
     if (code.isEmpty()) {
+        statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
         statusLabel->setText("Введите код из письма.");
         statusLabel->show();
         return;
     }
 
-    // Формируем запрос в зависимости от режима
-    QString request;
-    if (mode == RegMode) {
-        request = QString("verify_reg||%1||%2").arg(login, code);
-    } else {
-        request = QString("verify_auth||%1||%2").arg(login, code);
+    m_waitingForVerify = true;
+    verifyBtn->setEnabled(false);
+    statusLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
+    statusLabel->setText("Проверяем код...");
+    statusLabel->show();
+
+    QString request = QString("verify_auth||%1||%2").arg(login, code);
+    ClientSingleton::instance().sendRequestAsync(request);
+}
+
+void VerifyWidget::onVerifyResponseReceived(const QString &response)
+{
+    if (!m_waitingForVerify) return;
+    m_waitingForVerify = false;
+
+    QString r = response.trimmed();
+
+    if (r.isEmpty()) {
+        verifyBtn->setEnabled(true);
+        statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+        statusLabel->setText("Ошибка соединения с сервером.");
+        statusLabel->show();
+        return;
     }
 
-    QString response = ClientSingleton::instance().sendRequest(request);
-
-    // Определяем префиксы успеха/ошибки по режиму
-    QString successPrefix = (mode == RegMode) ? "reg+" : "auth+";
-    QString failPrefix    = (mode == RegMode) ? "reg-" : "auth-";
-    QString successMsg    = (mode == RegMode) ? "Регистрация прошла успешно!" : "Вход выполнен успешно!";
-
-    if (response.startsWith(successPrefix)) {
+    if (r.startsWith("auth+")) {
         statusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
-        statusLabel->setText(successMsg);
+        statusLabel->setText("Вход выполнен успешно!");
         statusLabel->show();
         attemptsLabel->hide();
         verifyBtn->setEnabled(false);
-
         QTimer::singleShot(500, this, [this]() {
             emit verificationSuccess(login);
         });
         return;
     }
 
-    if (response.startsWith(failPrefix)) {
-        failedAttempts++;
+    verifyBtn->setEnabled(true);
+    statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
 
+    if (r.startsWith("auth-")) {
+        failedAttempts++;
         if (failedAttempts < 4) {
-            int remaining = 4 - failedAttempts;
-            statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
-            statusLabel->setText(QString("Неверный код. Осталось попыток: %1").arg(remaining));
+            statusLabel->setText(
+                QString("Неверный код. Осталось попыток: %1").arg(4 - failedAttempts)
+            );
             statusLabel->show();
             attemptsLabel->hide();
             return;
         }
-
-        if (failedAttempts == 4) {
-            lockLevel = 1;
-            applyLock(0, "Слишком много попыток. Заблокировано на 30 секунд");
-            return;
-        }
-
-        if (failedAttempts == 5) {
-            lockLevel = 2;
-            applyLock(5, "Слишком много попыток. Заблокировано на 5 минут");
-            return;
-        }
-
-        if (failedAttempts == 6) {
-            lockLevel = 3;
-            applyLock(10, "Слишком много попыток. Заблокировано на 10 минут");
-            return;
-        }
-
-        lockLevel = 4;
-        applyLock(9999, "Слишком много попыток. Аккаунт заблокирован на длительное время");
+        if (failedAttempts == 4) { lockLevel = 1; applyLock(0,    "Слишком много попыток. Заблокировано на 30 секунд");          return; }
+        if (failedAttempts == 5) { lockLevel = 2; applyLock(5,    "Слишком много попыток. Заблокировано на 5 минут");            return; }
+        if (failedAttempts == 6) { lockLevel = 3; applyLock(10,   "Слишком много попыток. Заблокировано на 10 минут");           return; }
+        lockLevel = 4; applyLock(9999, "Слишком много попыток. Аккаунт заблокирован на длительное время");
         return;
     }
 
-    statusLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
-    statusLabel->setText("Ошибка соединения с сервером.");
-    statusLabel->show();
+    // Ответ от другого виджета — игнорируем, восстанавливаем состояние
+    m_waitingForVerify = false;
+    verifyBtn->setEnabled(true);
+    statusLabel->hide();
 }
 
 void VerifyWidget::onBackClicked()
 {
-    if (lockTimer->isActive()) {
+    if (lockTimer->isActive())
         lockTimer->stop();
-    }
+
     isLocked = false;
     failedAttempts = 0;
     lockLevel = 0;
+    m_waitingForVerify = false;
     statusLabel->hide();
     attemptsLabel->hide();
     verifyBtn->setEnabled(true);
