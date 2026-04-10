@@ -25,3 +25,9 @@ docs/output/
 # OS
 .DS_Store
 Thumbs.db
+
+# Credentials — ignore email.txt only when it contains data (non-empty key/email)
+# The empty template version is tracked by git.
+# Once you fill in your key locally, git will still see it as modified —
+# run this once after cloning to stop tracking local changes:
+#   git update-index --assume-unchanged server/email.txt
