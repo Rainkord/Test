@@ -70,12 +70,10 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
         return "error||invalid_params";
     }
 
-    // Check if login already taken
     if (Database::instance().userExists(login)) {
         return "reg-||user_exists";
     }
 
-    // Check if email already registered
     if (Database::instance().emailExists(email)) {
         return "reg-||email_exists";
     }
@@ -247,6 +245,9 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
         return "reset_error";
     }
 
+    // Get the login associated with this email
+    QString login = Database::instance().getLoginByEmail(email);
+
     QString code = generateCode();
 
     TempResetData data;
@@ -256,7 +257,7 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
 
     qDebug() << "[Server] Password reset code for" << email << ":" << code;
 
-    bool sent = SmtpClient::sendVerificationCode(email, code);
+    bool sent = SmtpClient::sendPasswordResetCode(email, login, code);
     if (!sent) {
         qDebug() << "[Server] Failed to send reset email to" << email;
     }
