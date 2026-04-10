@@ -6,7 +6,7 @@
 ```
 ├── client/          # Qt-приложение (виджеты, GUI)
 ├── server/          # Серверная часть (обработка запросов, БД)
-├── docker/          # Вспомогательные скрипты для Docker
+├── docker/          # Dockerfile и вспомогательные скрипты
 └── README.md
 ```
 
@@ -20,6 +20,7 @@ qmake client.pro
 make -j$(nproc)
 ./client
 ```
+
 ## Сборка сервера
 
 ```bash
@@ -30,12 +31,64 @@ cmake -B build && cmake --build build -j$(nproc)
 
 ---
 
-Если при сборке Docker-образа `docker build` падает с ошибками:
+## Docker
+
+Docker используется для запуска **серверной части** в изолированном окружении (Ubuntu 22.04).
+Образ сам собирает проект и запускает `echoServer` на порту `33333`.
+
+### Подготовка
+
+Перед сборкой образа обязательно заполните `server/email.txt` (см. раздел ниже) —
+`Dockerfile` копирует его внутрь образа.
+
+### Сборка образа
+
+Все команды выполнять из корня репозитория:
+
+```bash
+docker build -f docker/Dockerfile -t timp-server .
+```
+
+- `-f docker/Dockerfile` — указываем путь к Dockerfile
+- `-t timp-server` — даём имя образу
+- `.` — контекст сборки (корень репозитория), нужен чтобы Docker видел папку `server/`
+
+### Запуск контейнера
+
+```bash
+docker run -d --name timp-server -p 33333:33333 timp-server
+```
+
+- `-d` — запуск в фоновом режиме
+- `--name timp-server` — имя контейнера
+- `-p 33333:33333` — пробрасываем порт наружу: клиент подключается на `localhost:33333`
+
+### Полезные команды
+
+```bash
+# Посмотреть логи сервера в реальном времени
+docker logs -f timp-server
+
+# Остановить контейнер
+docker stop timp-server
+
+# Запустить снова
+docker start timp-server
+
+# Удалить контейнер полностью
+docker rm -f timp-server
+```
+
+### Проблема с DNS при сборке
+
+Если `docker build` падает с ошибкой разрешения имён (не может скачать пакеты):
 
 ```bash
 chmod +x docker/fix-dns.sh
 ./docker/fix-dns.sh
 ```
+
+После этого повторите `docker build`.
 
 ---
 
