@@ -1,0 +1,3 @@
+# Ключ можно получить: https://myaccount.google.com/apppasswords
+email=
+key=
