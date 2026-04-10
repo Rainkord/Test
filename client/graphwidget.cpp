@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <limits>
 
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────
 GraphWidget::GraphWidget(QWidget *parent)
     : QWidget(parent)
     , currentA(1.0)
@@ -39,7 +39,7 @@ GraphWidget::GraphWidget(QWidget *parent)
 
 GraphWidget::~GraphWidget() {}
 
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────
 void GraphWidget::setupUI()
 {
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
@@ -67,7 +67,7 @@ void GraphWidget::setupLeftPanel()
     vbox->setContentsMargins(8, 8, 8, 8);
     vbox->setSpacing(6);
 
-    // ── Formula label ────────────────────────────────────────────
+    // ── Formula label ──────────────────────────────────────────────
     formulaLabel = new QLabel(leftPanel);
     formulaLabel->setWordWrap(true);
     formulaLabel->setTextFormat(Qt::RichText);
@@ -76,13 +76,13 @@ void GraphWidget::setupLeftPanel()
     updateFormulaLabel();
     vbox->addWidget(formulaLabel);
 
-    // ── Separator ────────────────────────────────────────────
+    // ── Separator ──────────────────────────────────────────────
     QFrame *sep1 = new QFrame(leftPanel);
     sep1->setFrameShape(QFrame::HLine);
     sep1->setFrameShadow(QFrame::Sunken);
     vbox->addWidget(sep1);
 
-    // ── Slider rows: a, b, c ─────────────────────────────────────
+    // ── Slider rows: a, b, c ───────────────────────────────────
     auto makeSliderRow = [&](const QString &name, QLabel *&lbl,
                               QSlider *&slider, QDoubleSpinBox *&spin) {
         QHBoxLayout *row = new QHBoxLayout();
@@ -125,14 +125,14 @@ void GraphWidget::setupLeftPanel()
     connect(spinC, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
             this, &GraphWidget::onSpinCChanged);
 
-    // ── Separator ────────────────────────────────────────────
+    // ── Separator ──────────────────────────────────────────────
     QFrame *sep2 = new QFrame(leftPanel);
     sep2->setFrameShape(QFrame::HLine);
     sep2->setFrameShadow(QFrame::Sunken);
     vbox->addWidget(sep2);
 
-    // ── Table (-10 to 19, step 1, 30 rows, no fixed height) ───────────
-    table = new QTableWidget(30, 2, leftPanel);
+    // ── Table (x from -10 to 10, step 1, 21 rows, no fixed height) ───────
+    table = new QTableWidget(21, 2, leftPanel);
     table->setHorizontalHeaderLabels({"x", "F(x)"});
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     table->verticalHeader()->setVisible(false);
@@ -149,7 +149,7 @@ void GraphWidget::setupLeftPanel()
     vbox->addWidget(userLabel);
 
     // ── Logout button ─────────────────────────────────────────
-    logoutBtn = new QPushButton("Выйти из аккаунта", leftPanel);
+    logoutBtn = new QPushButton("\u0412\u044b\u0439\u0442\u0438 \u0438\u0437 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430", leftPanel);
     logoutBtn->setStyleSheet(
         "QPushButton { background-color: #e74c3c; color: white; "
         "border-radius: 4px; padding: 6px; font-weight: bold; }"
@@ -174,7 +174,7 @@ void GraphWidget::updateFormulaLabel()
     formulaLabel->setText(html);
 }
 
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────
 void GraphWidget::onSliderAChanged(int value)
 {
     if (blockSliderA) return;
@@ -235,7 +235,7 @@ void GraphWidget::onLogoutClicked()
     emit logout();
 }
 
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────
 double GraphWidget::calculate(double x, double a, double b, double c) const
 {
     if (x < -2.0)
@@ -313,10 +313,10 @@ void GraphWidget::updateGraph()
 
 void GraphWidget::fillTable(double a, double b, double c)
 {
-    // x from -10 to 19 inclusive, step 1 => 30 rows
-    table->setRowCount(30);
+    // x от -10 до 10 включительно, шаг 1 => 21 строка
+    table->setRowCount(21);
     int row = 0;
-    for (int xi = -10; xi <= 19 && row < 30; ++xi, ++row) {
+    for (int xi = -10; xi <= 10 && row < 21; ++xi, ++row) {
         double x = static_cast<double>(xi);
         double y = calculate(x, a, b, c);
         QTableWidgetItem *itemX = new QTableWidgetItem(QString::number(x, 'f', 0));
@@ -332,11 +332,11 @@ void GraphWidget::setUserLogin(const QString &login)
 {
     userLogin = login;
     if (userLabel) {
-        userLabel->setText("Пользователь: " + login);
+        userLabel->setText("\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c: " + login);
     }
 }
 
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────
 void GraphWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -500,7 +500,7 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     drawBranchLines(pointsBranch2, QColor(Qt::darkGreen));
     drawBranchLines(pointsBranch3, QColor(Qt::blue));
 
-    // ── Legend (all proper Unicode symbols) ───────────────────────
+    // ── Legend (all proper Unicode symbols) ───────────────────────────
     {
         int lx = drawX + 10;
         int ly = drawY + 10;
@@ -513,7 +513,6 @@ void GraphWidget::paintEvent(QPaintEvent *event)
 
         painter.setFont(QFont("Arial", 9));
 
-        // Use only proper Unicode — no Latin-1 byte escapes
         struct { QColor color; QString text; } legends[] = {
             { Qt::red,       "|x\u00B7a| \u2212 2,  x < \u22122" },
             { Qt::darkGreen, "b\u00B7(x\u00B2) + x + 1,  \u22122 \u2264 x < 2" },
