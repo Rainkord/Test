@@ -409,6 +409,15 @@ void RegWidget::onConfirmEmailClicked()
     ClientSingleton::instance().sendRequestAsync(request);
 }
 
+static QString friendlyRegError(const QString &raw)
+{
+    if (raw.contains("email_exists"))  return "На эту почту уже создан аккаунт";
+    if (raw.contains("user_exists"))   return "Пользователь с таким логином уже существует";
+    if (raw.contains("wrong_code"))    return "Неверный код подтверждения";
+    if (raw.contains("db_error"))      return "Ошибка на сервере, попробуйте позже";
+    return "Ошибка регистрации. Попробуйте снова";
+}
+
 void RegWidget::onRegistrationResponseReceived(const QString &response)
 {
     QString r = response.trimmed();
@@ -467,7 +476,7 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         confirmEmailBtn->setText("Код отправлен");
     } else if (r.startsWith("reg-")) {
         codeStatusLabel->hide();
-        codeErrorLabel->setText("Ошибка регистрации: " + r);
+        codeErrorLabel->setText(friendlyRegError(r));
         codeErrorLabel->show();
         confirmEmailBtn->setEnabled(true);
         confirmEmailBtn->setText("Подтвердить почту");
