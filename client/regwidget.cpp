@@ -10,7 +10,29 @@
 #include <QCryptographicHash>
 #include <QRegularExpression>
 #include <QFont>
+#include <QFrame>
 #include <QString>
+
+// ── GitHub dark palette ────────────────────────────────────────────────────
+#define GH_BG         "#0d1117"
+#define GH_CARD       "#161b22"
+#define GH_BORDER     "#30363d"
+#define GH_TEXT       "#e6edf3"
+#define GH_MUTED      "#8b949e"
+#define GH_GREEN      "#238636"
+#define GH_GREEN_H    "#2ea043"
+#define GH_BLUE       "#388bfd"
+#define GH_BLUE_H     "#58a6ff"
+#define GH_RED        "#f85149"
+#define GH_INPUT_BG   "#0d1117"
+#define GH_BTN_GHOST  "#21262d"
+#define GH_BTN_GHOST_H "#30363d"
+
+#define FONT_FAMILY   "Segoe UI"
+#define FONT_SIZE_TITLE 16
+#define FONT_SIZE_BTN   11
+#define FONT_SIZE_INPUT 11
+#define FONT_SIZE_SMALL 9
 
 RegWidget::RegWidget(QWidget *parent)
     : QWidget(parent),
@@ -27,212 +49,313 @@ RegWidget::RegWidget(QWidget *parent)
     connect(&ClientSingleton::instance(), &ClientSingleton::responseReceived,
             this, &RegWidget::onRegistrationResponseReceived);
 
+    setStyleSheet(QString("QWidget { background-color: %1; color: %2; font-family: '%3'; font-size: %4pt; }")
+                  .arg(GH_BG).arg(GH_TEXT).arg(FONT_FAMILY).arg(FONT_SIZE_INPUT));
+
     setupUI();
 }
 
-RegWidget::~RegWidget()
+RegWidget::~RegWidget() {}
+
+// ── Style helpers (same as authwidget) ───────────────────────────────────
+static QString inputStyle()
 {
+    return QString(
+        "QLineEdit {"
+        "  background-color: %1;"
+        "  color: %2;"
+        "  border: 1px solid %3;"
+        "  border-radius: 6px;"
+        "  padding: 6px 10px;"
+        "  font-family: '%4';"
+        "  font-size: %5pt;"
+        "}"
+        "QLineEdit:focus { border-color: %6; }"
+        "QLineEdit:read-only { color: %7; }"
+    ).arg(GH_INPUT_BG).arg(GH_TEXT).arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_INPUT).arg(GH_BLUE).arg(GH_MUTED);
+}
+
+static QString primaryBtnStyle()
+{
+    return QString(
+        "QPushButton {"
+        "  background-color: %1;"
+        "  color: #ffffff;"
+        "  border: 1px solid rgba(240,246,252,0.1);"
+        "  border-radius: 6px;"
+        "  padding: 6px 16px;"
+        "  font-family: '%3';"
+        "  font-size: %4pt;"
+        "  font-weight: bold;"
+        "}"
+        "QPushButton:hover { background-color: %2; }"
+        "QPushButton:disabled { background-color: rgba(35,134,54,0.4); color: rgba(255,255,255,0.4); }"
+    ).arg(GH_GREEN).arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
+}
+
+static QString secondaryBtnStyle()
+{
+    return QString(
+        "QPushButton {"
+        "  background-color: %1;"
+        "  color: %3;"
+        "  border: 1px solid %4;"
+        "  border-radius: 6px;"
+        "  padding: 6px 16px;"
+        "  font-family: '%5';"
+        "  font-size: %6pt;"
+        "  font-weight: bold;"
+        "}"
+        "QPushButton:hover { background-color: %2; }"
+        "QPushButton:disabled { background-color: rgba(33,38,45,0.5); color: rgba(139,148,158,0.5); }"
+    ).arg(GH_BTN_GHOST).arg(GH_BTN_GHOST_H).arg(GH_TEXT).arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
+}
+
+static QString ghostBtnStyle()
+{
+    return QString(
+        "QPushButton {"
+        "  background-color: %1;"
+        "  color: %3;"
+        "  border: 1px solid %4;"
+        "  border-radius: 6px;"
+        "  padding: 5px 14px;"
+        "  font-family: '%5';"
+        "  font-size: %6pt;"
+        "}"
+        "QPushButton:hover { background-color: %2; }"
+    ).arg(GH_BTN_GHOST).arg(GH_BTN_GHOST_H).arg(GH_TEXT).arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
+}
+
+static QString linkBtnStyle()
+{
+    return QString(
+        "QPushButton {"
+        "  color: %1;"
+        "  border: none;"
+        "  background: transparent;"
+        "  font-family: '%2';"
+        "  font-size: %3pt;"
+        "}"
+        "QPushButton:hover { color: %4; text-decoration: underline; }"
+    ).arg(GH_BLUE).arg(FONT_FAMILY).arg(FONT_SIZE_BTN).arg(GH_BLUE_H);
+}
+
+static QString errorLabelStyle()
+{
+    return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
+           .arg(GH_RED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
+}
+
+static QString infoLabelStyle()
+{
+    return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
+           .arg(GH_MUTED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
+}
+
+static QString successLabelStyle()
+{
+    return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
+           .arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
 void RegWidget::setupUI()
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(40, 20, 40, 20);
-    mainLayout->setSpacing(0);
+    // Внешний layout — центрирует карточку
+    QVBoxLayout *outerV = new QVBoxLayout(this);
+    outerV->setContentsMargins(0, 0, 0, 0);
+    outerV->addStretch(1);
 
-    QLabel *titleLabel = new QLabel("Регистрация", this);
-    QFont titleFont = titleLabel->font();
-    titleFont.setBold(true);
-    titleFont.setPointSize(18);
+    QHBoxLayout *outerH = new QHBoxLayout();
+    outerH->addStretch(1);
+
+    // Карточка
+    QWidget *card = new QWidget(this);
+    card->setFixedWidth(360);
+    card->setStyleSheet(QString(
+        "QWidget {"
+        "  background-color: %1;"
+        "  border: 1px solid %2;"
+        "  border-radius: 10px;"
+        "}"
+    ).arg(GH_CARD).arg(GH_BORDER));
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(card);
+    mainLayout->setContentsMargins(28, 28, 28, 28);
+    mainLayout->setSpacing(8);
+
+    // Заголовок
+    QLabel *titleLabel = new QLabel("Регистрация", card);
+    QFont titleFont(FONT_FAMILY, FONT_SIZE_TITLE, QFont::Bold);
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
+    titleLabel->setStyleSheet(QString("QLabel { color: %1; border: none; }").arg(GH_TEXT));
     mainLayout->addWidget(titleLabel);
-    mainLayout->addSpacing(14);
+    mainLayout->addSpacing(6);
 
-    // =====================
-    // STEP 1 WIDGET
-    // =====================
-    step1Widget = new QWidget(this);
+    // ── STEP 1 ────────────────────────────────────────────────────────────
+    step1Widget = new QWidget(card);
+    step1Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *step1Layout = new QVBoxLayout(step1Widget);
     step1Layout->setContentsMargins(0, 0, 0, 0);
-    step1Layout->setSpacing(4);
+    step1Layout->setSpacing(6);
 
     loginEdit = new QLineEdit(step1Widget);
-    loginEdit->setPlaceholderText("Логин");
-    loginEdit->setMinimumHeight(36);
-    loginEdit->setStyleSheet("QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; }");
+    loginEdit->setPlaceholderText("Логин (мин. 4 символа)");
+    loginEdit->setMinimumHeight(38);
+    loginEdit->setStyleSheet(inputStyle());
     step1Layout->addWidget(loginEdit);
     connect(loginEdit, &QLineEdit::textChanged, this, &RegWidget::onLoginTextChanged);
 
     loginErrorLabel = new QLabel(step1Widget);
-    loginErrorLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    loginErrorLabel->setStyleSheet(errorLabelStyle());
     loginErrorLabel->hide();
     step1Layout->addWidget(loginErrorLabel);
-    step1Layout->addSpacing(6);
 
-    QHBoxLayout *pass1Layout = new QHBoxLayout();
-    pass1Layout->setSpacing(6);
+    // Пароль 1
+    QHBoxLayout *pass1Row = new QHBoxLayout();
+    pass1Row->setSpacing(6);
     passwordEdit = new QLineEdit(step1Widget);
-    passwordEdit->setPlaceholderText("Пароль");
+    passwordEdit->setPlaceholderText("Пароль (мин. 8 символов)");
     passwordEdit->setEchoMode(QLineEdit::Password);
-    passwordEdit->setMinimumHeight(36);
-    passwordEdit->setStyleSheet("QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; }");
-    pass1Layout->addWidget(passwordEdit);
+    passwordEdit->setMinimumHeight(38);
+    passwordEdit->setStyleSheet(inputStyle());
+    pass1Row->addWidget(passwordEdit);
     connect(passwordEdit, &QLineEdit::textChanged, this, &RegWidget::onPasswordTextChanged);
 
     togglePassBtn1 = new QPushButton("👁", step1Widget);
-    togglePassBtn1->setFixedWidth(35);
-    togglePassBtn1->setFixedHeight(36);
-    togglePassBtn1->setToolTip("Показать/скрыть пароль");
-    togglePassBtn1->setStyleSheet(
-        "QPushButton { border: 1px solid #cccccc; border-radius: 4px; background: #f5f5f5; }"
-        "QPushButton:hover { background: #e0e0e0; }"
-    );
+    togglePassBtn1->setFixedSize(38, 38);
+    togglePassBtn1->setStyleSheet(ghostBtnStyle());
     connect(togglePassBtn1, &QPushButton::clicked, this, &RegWidget::onTogglePassword1);
-    pass1Layout->addWidget(togglePassBtn1);
-    step1Layout->addLayout(pass1Layout);
+    pass1Row->addWidget(togglePassBtn1);
+    step1Layout->addLayout(pass1Row);
 
     passwordErrorLabel = new QLabel(step1Widget);
-    passwordErrorLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    passwordErrorLabel->setStyleSheet(errorLabelStyle());
     passwordErrorLabel->hide();
     step1Layout->addWidget(passwordErrorLabel);
-    step1Layout->addSpacing(6);
 
-    QHBoxLayout *pass2Layout = new QHBoxLayout();
-    pass2Layout->setSpacing(6);
+    // Пароль 2
+    QHBoxLayout *pass2Row = new QHBoxLayout();
+    pass2Row->setSpacing(6);
     confirmPasswordEdit = new QLineEdit(step1Widget);
     confirmPasswordEdit->setPlaceholderText("Подтвердите пароль");
     confirmPasswordEdit->setEchoMode(QLineEdit::Password);
-    confirmPasswordEdit->setMinimumHeight(36);
-    confirmPasswordEdit->setStyleSheet("QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; }");
-    pass2Layout->addWidget(confirmPasswordEdit);
+    confirmPasswordEdit->setMinimumHeight(38);
+    confirmPasswordEdit->setStyleSheet(inputStyle());
+    pass2Row->addWidget(confirmPasswordEdit);
     connect(confirmPasswordEdit, &QLineEdit::textChanged, this, &RegWidget::onConfirmPasswordTextChanged);
 
     togglePassBtn2 = new QPushButton("👁", step1Widget);
-    togglePassBtn2->setFixedWidth(35);
-    togglePassBtn2->setFixedHeight(36);
-    togglePassBtn2->setToolTip("Показать/скрыть пароль");
-    togglePassBtn2->setStyleSheet(
-        "QPushButton { border: 1px solid #cccccc; border-radius: 4px; background: #f5f5f5; }"
-        "QPushButton:hover { background: #e0e0e0; }"
-    );
+    togglePassBtn2->setFixedSize(38, 38);
+    togglePassBtn2->setStyleSheet(ghostBtnStyle());
     connect(togglePassBtn2, &QPushButton::clicked, this, &RegWidget::onTogglePassword2);
-    pass2Layout->addWidget(togglePassBtn2);
-    step1Layout->addLayout(pass2Layout);
+    pass2Row->addWidget(togglePassBtn2);
+    step1Layout->addLayout(pass2Row);
 
     confirmErrorLabel = new QLabel(step1Widget);
-    confirmErrorLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    confirmErrorLabel->setStyleSheet(errorLabelStyle());
     confirmErrorLabel->hide();
     step1Layout->addWidget(confirmErrorLabel);
-    step1Layout->addSpacing(10);
+    step1Layout->addSpacing(4);
 
     continueBtn = new QPushButton("Продолжить", step1Widget);
     continueBtn->setMinimumHeight(38);
     continueBtn->setEnabled(false);
-    continueBtn->setStyleSheet(
-        "QPushButton { background-color: #cccccc; color: #666666; border: none; border-radius: 4px; font-size: 13pt; }"
-    );
+    continueBtn->setStyleSheet(primaryBtnStyle());
     connect(continueBtn, &QPushButton::clicked, this, &RegWidget::onContinueClicked);
     step1Layout->addWidget(continueBtn);
 
     mainLayout->addWidget(step1Widget);
 
-    // =====================
-    // STEP 2 WIDGET
-    // =====================
-    step2Widget = new QWidget(this);
+    // ── STEP 2 ────────────────────────────────────────────────────────────
+    step2Widget = new QWidget(card);
+    step2Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *step2Layout = new QVBoxLayout(step2Widget);
     step2Layout->setContentsMargins(0, 0, 0, 0);
-    step2Layout->setSpacing(4);
+    step2Layout->setSpacing(6);
 
     emailEdit = new QLineEdit(step2Widget);
     emailEdit->setPlaceholderText("Email");
-    emailEdit->setMinimumHeight(36);
-    emailEdit->setStyleSheet("QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; }");
+    emailEdit->setMinimumHeight(38);
+    emailEdit->setStyleSheet(inputStyle());
     step2Layout->addWidget(emailEdit);
     connect(emailEdit, &QLineEdit::textChanged, this, &RegWidget::onEmailTextChanged);
 
     emailErrorLabel = new QLabel(step2Widget);
-    emailErrorLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    emailErrorLabel->setStyleSheet(errorLabelStyle());
     emailErrorLabel->hide();
     step2Layout->addWidget(emailErrorLabel);
-    step2Layout->addSpacing(16);
+    step2Layout->addSpacing(4);
 
-    backBtn = new QPushButton("Назад", step2Widget);
-    backBtn->setMinimumHeight(36);
-    backBtn->setStyleSheet(
-        "QPushButton { background-color: #9E9E9E; color: white; border: none; border-radius: 4px; font-size: 12pt; }"
-        "QPushButton:hover { background-color: #757575; }"
-    );
+    backBtn = new QPushButton("← Назад", step2Widget);
+    backBtn->setMinimumHeight(38);
+    backBtn->setStyleSheet(secondaryBtnStyle());
     connect(backBtn, &QPushButton::clicked, this, &RegWidget::onBackClicked);
     step2Layout->addWidget(backBtn);
-    step2Layout->addSpacing(20);
 
     mainLayout->addWidget(step2Widget);
 
-    // =====================
-    // STEP 3 WIDGET
-    // =====================
-    step3Widget = new QWidget(this);
+    // ── STEP 3 ────────────────────────────────────────────────────────────
+    step3Widget = new QWidget(card);
+    step3Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *step3Layout = new QVBoxLayout(step3Widget);
     step3Layout->setContentsMargins(0, 0, 0, 0);
     step3Layout->setSpacing(6);
 
-    confirmEmailBtn = new QPushButton("Подтвердить почту", step3Widget);
+    confirmEmailBtn = new QPushButton("Отправить код на почту", step3Widget);
     confirmEmailBtn->setMinimumHeight(38);
-    confirmEmailBtn->setStyleSheet(
-        "QPushButton { background-color: #2196F3; color: white; border: none; border-radius: 4px; font-size: 12pt; }"
-        "QPushButton:hover { background-color: #1976D2; }"
-        "QPushButton:disabled { background-color: #cccccc; color: #666666; }"
-    );
+    confirmEmailBtn->setStyleSheet(primaryBtnStyle());
     connect(confirmEmailBtn, &QPushButton::clicked, this, &RegWidget::onConfirmEmailClicked);
     step3Layout->addWidget(confirmEmailBtn);
 
     codeStatusLabel = new QLabel(step3Widget);
-    codeStatusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
+    codeStatusLabel->setStyleSheet(successLabelStyle());
     codeStatusLabel->setAlignment(Qt::AlignCenter);
     codeStatusLabel->hide();
     step3Layout->addWidget(codeStatusLabel);
 
     codeEdit = new QLineEdit(step3Widget);
-    codeEdit->setPlaceholderText("Введите код из письма");
+    codeEdit->setPlaceholderText("Код из письма (6 цифр)");
     codeEdit->setMaxLength(6);
-    codeEdit->setMinimumHeight(36);
-    codeEdit->setStyleSheet("QLineEdit { padding: 4px 8px; border: 1px solid #cccccc; border-radius: 4px; }");
+    codeEdit->setMinimumHeight(38);
+    codeEdit->setStyleSheet(inputStyle());
     codeEdit->hide();
     step3Layout->addWidget(codeEdit);
     connect(codeEdit, &QLineEdit::textChanged, this, &RegWidget::onCodeTextChanged);
 
     codeErrorLabel = new QLabel(step3Widget);
-    codeErrorLabel->setStyleSheet("QLabel { color: red; font-size: 10pt; }");
+    codeErrorLabel->setStyleSheet(errorLabelStyle());
     codeErrorLabel->hide();
     step3Layout->addWidget(codeErrorLabel);
 
     verifyCodeBtn = new QPushButton("Подтвердить код", step3Widget);
     verifyCodeBtn->setMinimumHeight(38);
-    verifyCodeBtn->setStyleSheet(
-        "QPushButton { background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 12pt; }"
-        "QPushButton:hover { background-color: #388E3C; }"
-        "QPushButton:disabled { background-color: #cccccc; color: #666666; }"
-    );
+    verifyCodeBtn->setStyleSheet(primaryBtnStyle());
     verifyCodeBtn->hide();
     connect(verifyCodeBtn, &QPushButton::clicked, this, &RegWidget::onVerifyCodeClicked);
     step3Layout->addWidget(verifyCodeBtn);
 
     mainLayout->addWidget(step3Widget);
-    mainLayout->addSpacing(12);
 
-    showAuthBtn = new QPushButton("Уже есть аккаунт? Войти", this);
+    // Разделитель + ссылка
+    QFrame *line = new QFrame(card);
+    line->setFrameShape(QFrame::HLine);
+    line->setStyleSheet(QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
+    mainLayout->addWidget(line);
+
+    showAuthBtn = new QPushButton("Уже есть аккаунт? Войти", card);
     showAuthBtn->setFlat(true);
-    showAuthBtn->setStyleSheet(
-        "QPushButton { color: #2196F3; border: none; text-decoration: underline; font-size: 11pt; }"
-        "QPushButton:hover { color: #1565C0; }"
-    );
+    showAuthBtn->setStyleSheet(linkBtnStyle());
     connect(showAuthBtn, &QPushButton::clicked, this, &RegWidget::onShowAuthClicked);
     mainLayout->addWidget(showAuthBtn, 0, Qt::AlignCenter);
 
-    mainLayout->addStretch();
+    outerH->addWidget(card);
+    outerH->addStretch(1);
+    outerV->addLayout(outerH);
+    outerV->addStretch(1);
 
+    setLayout(outerV);
     showStep(1);
 }
 
@@ -251,28 +374,17 @@ bool RegWidget::isEmailValid(const QString &email) const
 
 void RegWidget::validateStep1()
 {
-    bool loginOk    = (loginEdit->text().length() >= 4);
-    bool passwordOk = (passwordEdit->text().length() >= 8);
-    bool confirmOk  = (!confirmPasswordEdit->text().isEmpty()
-                       && confirmPasswordEdit->text() == passwordEdit->text());
+    bool loginOk   = (loginEdit->text().length() >= 4);
+    bool passOk    = (passwordEdit->text().length() >= 8);
+    bool confirmOk = (!confirmPasswordEdit->text().isEmpty()
+                      && confirmPasswordEdit->text() == passwordEdit->text());
 
-    if (loginOk && passwordOk && confirmOk) {
-        continueBtn->setEnabled(true);
-        continueBtn->setStyleSheet(
-            "QPushButton { background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 13pt; }"
-            "QPushButton:hover { background-color: #388E3C; }"
-        );
-    } else {
-        continueBtn->setEnabled(false);
-        continueBtn->setStyleSheet(
-            "QPushButton { background-color: #cccccc; color: #666666; border: none; border-radius: 4px; font-size: 13pt; }"
-        );
-    }
+    continueBtn->setEnabled(loginOk && passOk && confirmOk);
 }
 
 void RegWidget::onLoginTextChanged(const QString &text)
 {
-    if (text.isEmpty() || text.length() < 4) {
+    if (!text.isEmpty() && text.length() < 4) {
         loginErrorLabel->setText("Минимум 4 символа");
         loginErrorLabel->show();
     } else {
@@ -283,7 +395,7 @@ void RegWidget::onLoginTextChanged(const QString &text)
 
 void RegWidget::onPasswordTextChanged(const QString &text)
 {
-    if (text.isEmpty() || text.length() < 8) {
+    if (!text.isEmpty() && text.length() < 8) {
         passwordErrorLabel->setText("Минимум 8 символов");
         passwordErrorLabel->show();
     } else {
@@ -303,7 +415,7 @@ void RegWidget::onPasswordTextChanged(const QString &text)
 
 void RegWidget::onConfirmPasswordTextChanged(const QString &text)
 {
-    if (text.isEmpty() || text != passwordEdit->text()) {
+    if (!text.isEmpty() && text != passwordEdit->text()) {
         confirmErrorLabel->setText("Пароли не совпадают");
         confirmErrorLabel->show();
     } else {
@@ -328,14 +440,12 @@ void RegWidget::onTogglePassword2()
 
 void RegWidget::onContinueClicked()
 {
-    // Сначала проверяем логин на сервере, переход на шаг 2 — только после ответа
     continueBtn->setEnabled(false);
     continueBtn->setText("Проверяем...");
     loginErrorLabel->hide();
-
     m_checkingLogin = true;
-    QString login = loginEdit->text().trimmed();
-    ClientSingleton::instance().sendRequestAsync(QString("check_login||%1").arg(login));
+    ClientSingleton::instance().sendRequestAsync(
+        QString("check_login||%1").arg(loginEdit->text().trimmed()));
 }
 
 void RegWidget::onEmailTextChanged(const QString &text)
@@ -368,12 +478,8 @@ void RegWidget::onBackClicked()
     validateStep1();
 
     confirmEmailBtn->setEnabled(true);
-    confirmEmailBtn->setText("Подтвердить почту");
-    confirmEmailBtn->setStyleSheet(
-        "QPushButton { background-color: #2196F3; color: white; border: none; border-radius: 4px; font-size: 12pt; }"
-        "QPushButton:hover { background-color: #1976D2; }"
-        "QPushButton:disabled { background-color: #cccccc; color: #666666; }"
-    );
+    confirmEmailBtn->setText("Отправить код на почту");
+    confirmEmailBtn->setStyleSheet(primaryBtnStyle());
 
     codeFailedAttempts = 0;
     codeLockLevel = 0;
@@ -390,10 +496,9 @@ void RegWidget::onConfirmEmailClicked()
     confirmEmailBtn->setEnabled(false);
     confirmEmailBtn->setText("Отправляем...");
     codeStatusLabel->setText("Ожидаем ответа сервера...");
-    codeStatusLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
+    codeStatusLabel->setStyleSheet(infoLabelStyle());
     codeStatusLabel->show();
     codeErrorLabel->hide();
-
     m_verifyingCode = false;
 
     QString login    = loginEdit->text().trimmed();
@@ -402,9 +507,8 @@ void RegWidget::onConfirmEmailClicked()
 
     QByteArray hashBytes = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
     QString passwordHash = QString::fromLatin1(hashBytes.toHex());
-    QString request      = QString("registration||%1||%2||%3").arg(login, passwordHash, email);
-
-    ClientSingleton::instance().sendRequestAsync(request);
+    ClientSingleton::instance().sendRequestAsync(
+        QString("registration||%1||%2||%3").arg(login, passwordHash, email));
 }
 
 static QString friendlyRegError(const QString &raw)
@@ -421,18 +525,14 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
     QString r = response.trimmed();
     if (r.isEmpty()) return;
 
-    // ── Ответ на check_login ──────────────────────────────────────────────────
     if (m_checkingLogin) {
         m_checkingLogin = false;
         continueBtn->setText("Продолжить");
-
         if (r == "login_free") {
-            // Логин свободен — переходим на шаг 2
             loginEdit->setReadOnly(true);
             passwordEdit->setReadOnly(true);
             confirmPasswordEdit->setReadOnly(true);
             currentLogin = loginEdit->text().trimmed();
-
             showStep(2);
             emailEdit->clear();
             emailErrorLabel->hide();
@@ -442,7 +542,7 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             codeErrorLabel->hide();
             verifyCodeBtn->hide();
         } else if (r == "login_taken") {
-            loginErrorLabel->setText("Пользователь с таким логином уже существует");
+            loginErrorLabel->setText("Логин уже занят");
             loginErrorLabel->show();
             validateStep1();
         } else {
@@ -453,50 +553,41 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         return;
     }
 
-    // ── Ответ на verify_reg ───────────────────────────────────────────────────
     if (m_verifyingCode) {
         m_verifyingCode = false;
         verifyCodeBtn->setEnabled(true);
-
         if (r.startsWith("reg+")) {
             codeStatusLabel->setText("Регистрация успешна! Выполняется вход...");
-            codeStatusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
+            codeStatusLabel->setStyleSheet(successLabelStyle());
             codeStatusLabel->show();
             codeErrorLabel->hide();
             verifyCodeBtn->setEnabled(false);
-            QTimer::singleShot(2000, this, [this]() {
-                emit registrationSuccess();
-            });
+            QTimer::singleShot(2000, this, [this]() { emit registrationSuccess(); });
             return;
         }
-
         if (r.startsWith("reg-")) {
             codeFailedAttempts++;
             codeStatusLabel->hide();
             if (codeFailedAttempts < 4) {
-                codeErrorLabel->setText(
-                    QString("Неверный код. Осталось попыток: %1").arg(4 - codeFailedAttempts)
-                );
+                codeErrorLabel->setText(QString("Неверный код. Осталось попыток: %1").arg(4 - codeFailedAttempts));
                 codeErrorLabel->show();
                 return;
             }
-            if (codeFailedAttempts == 4) { applyCodeLock(0,    "Слишком много попыток. Заблокировано на 30 секунд"); return; }
-            if (codeFailedAttempts == 5) { applyCodeLock(5,    "Слишком много попыток. Заблокировано на 5 минут");   return; }
-            if (codeFailedAttempts == 6) { applyCodeLock(10,   "Слишком много попыток. Заблокировано на 10 минут");  return; }
-            applyCodeLock(9999, "Слишком много попыток. Аккаунт заблокирован на длительное время");
+            if (codeFailedAttempts == 4) { applyCodeLock(0,    "Слишком много попыток. Блокировка 30 сек");  return; }
+            if (codeFailedAttempts == 5) { applyCodeLock(5,    "Слишком много попыток. Блокировка 5 мин");   return; }
+            if (codeFailedAttempts == 6) { applyCodeLock(10,   "Слишком много попыток. Блокировка 10 мин");  return; }
+            applyCodeLock(9999, "Аккаунт заблокирован на длительное время");
             return;
         }
-
         codeErrorLabel->setText("Ошибка соединения с сервером.");
         codeErrorLabel->show();
         codeStatusLabel->hide();
         return;
     }
 
-    // ── Ответ на registration ─────────────────────────────────────────────────
     if (r == "reg_code_sent") {
-        codeStatusLabel->setText("Код отправлен на почту");
-        codeStatusLabel->setStyleSheet("QLabel { color: #388E3C; font-size: 10pt; }");
+        codeStatusLabel->setText("Код отправлен на почту ✓");
+        codeStatusLabel->setStyleSheet(successLabelStyle());
         codeStatusLabel->show();
         codeEdit->show();
         verifyCodeBtn->show();
@@ -509,14 +600,11 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         codeErrorLabel->setText(friendlyRegError(r));
         codeErrorLabel->show();
         confirmEmailBtn->setEnabled(true);
-        confirmEmailBtn->setText("Подтвердить почту");
+        confirmEmailBtn->setText("Отправить код на почту");
     }
 }
 
-void RegWidget::onCodeTextChanged(const QString &text)
-{
-    Q_UNUSED(text)
-}
+void RegWidget::onCodeTextChanged(const QString &text) { Q_UNUSED(text) }
 
 void RegWidget::applyCodeLock(int minutes, const QString &message)
 {
@@ -540,34 +628,26 @@ void RegWidget::onVerifyCodeClicked()
         int remainingSec    = codeLockTimer->remainingTime() / 1000;
         int remainingMin    = remainingSec / 60;
         int remainingSecMod = remainingSec % 60;
-        QString timeStr = remainingMin > 0
-            ? QString("Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod)
-            : QString("Осталось %1 сек").arg(remainingSec);
-        codeErrorLabel->setText("Аккаунт заблокирован. " + timeStr);
+        codeErrorLabel->setText(remainingMin > 0
+            ? QString("Заблокировано. Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod)
+            : QString("Заблокировано. Осталось %1 сек").arg(remainingSec));
         codeErrorLabel->show();
         return;
     }
-
     QString code = codeEdit->text().trimmed();
     if (code.isEmpty()) {
         codeErrorLabel->setText("Введите код из письма.");
         codeErrorLabel->show();
         return;
     }
-
     m_verifyingCode = true;
     verifyCodeBtn->setEnabled(false);
     codeErrorLabel->hide();
     codeStatusLabel->setText("Проверяем код...");
-    codeStatusLabel->setStyleSheet("QLabel { color: #888888; font-size: 10pt; }");
+    codeStatusLabel->setStyleSheet(infoLabelStyle());
     codeStatusLabel->show();
-
-    QString login   = loginEdit->text().trimmed();
-    QString request = QString("verify_reg||%1||%2").arg(login, code);
-    ClientSingleton::instance().sendRequestAsync(request);
+    ClientSingleton::instance().sendRequestAsync(
+        QString("verify_reg||%1||%2").arg(loginEdit->text().trimmed(), code));
 }
 
-void RegWidget::onShowAuthClicked()
-{
-    emit showAuth();
-}
+void RegWidget::onShowAuthClicked() { emit showAuth(); }
