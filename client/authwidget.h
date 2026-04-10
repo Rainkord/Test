@@ -19,12 +19,14 @@ signals:
     void loginSuccess(QString login);
     void showRegister();
     void showVerifyAuth(QString login);
+    void showReset();                      // NEW
 
 private slots:
     void onLoginClicked();
     void onTogglePassword();
     void onLockTimerFired();
     void onRegisterClicked();
+    void onForgotClicked();                // NEW
     void onAuthResponseReceived(const QString &response);
 
 private:
@@ -32,6 +34,7 @@ private:
     QLineEdit   *passwordEdit;
     QPushButton *loginBtn;
     QPushButton *registerBtn;
+    QPushButton *forgotBtn;                // NEW
     QPushButton *togglePasswordBtn;
     QLabel      *statusLabel;
     QLabel      *attemptsLabel;

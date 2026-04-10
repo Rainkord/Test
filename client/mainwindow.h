@@ -11,6 +11,7 @@
 #include "authwidget.h"
 #include "regwidget.h"
 #include "verifywidget.h"
+#include "resetwidget.h"
 #include "graphwidget.h"
 
 class MainWindow : public QMainWindow
@@ -22,7 +23,6 @@ public:
     ~MainWindow();
 
 private slots:
-    // Routing slots
     void onShowRegister();
     void onShowAuth();
     void onShowVerifyAuth(const QString &login);
@@ -30,40 +30,37 @@ private slots:
     void onBackToAuth();
     void onRegistrationSuccess();
     void onLogout();
+    void onShowReset();           // NEW
+    void onResetSuccess();        // NEW
 
-    // Toolbar button slots
     void onTaskBtnClicked();
     void onSchemaBtnClicked();
 
 private:
-    // ── Central widget & layouts ─────────────────
     QWidget         *centralWidget;
     QVBoxLayout     *mainVLayout;
     QHBoxLayout     *topBarLayout;
 
-    // ── Persistent top-bar buttons ────────────────
     QPushButton     *taskBtn;
     QPushButton     *schemaBtn;
     QLabel          *appTitleLabel;
 
-    // ── Stacked widget holding all screens ────────
     QStackedWidget  *stackedWidget;
 
-    // ── Screen widgets ────────────────────────────
     AuthWidget      *authWidget;
     RegWidget       *regWidget;
     VerifyWidget    *verifyWidget;
+    ResetWidget     *resetWidget;     // NEW
     GraphWidget     *graphWidget;
 
-    // ── Setup ─────────────────────────────────────
     void setupUI();
     void connectSignals();
 
-    // Index constants (order of addWidget)
     static const int IDX_AUTH   = 0;
     static const int IDX_REG    = 1;
     static const int IDX_VERIFY = 2;
     static const int IDX_GRAPH  = 3;
+    static const int IDX_RESET  = 4;  // NEW
 };
 
 #endif // MAINWINDOW_H

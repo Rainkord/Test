@@ -27,9 +27,7 @@ AuthWidget::AuthWidget(QWidget *parent)
     setupUI();
 }
 
-AuthWidget::~AuthWidget()
-{
-}
+AuthWidget::~AuthWidget() {}
 
 void AuthWidget::setupUI()
 {
@@ -109,6 +107,15 @@ void AuthWidget::setupUI()
     );
     connect(registerBtn, &QPushButton::clicked, this, &AuthWidget::onRegisterClicked);
     mainLayout->addWidget(registerBtn, 0, Qt::AlignCenter);
+
+    forgotBtn = new QPushButton("Забыли пароль? Восстановить", this);
+    forgotBtn->setFlat(true);
+    forgotBtn->setStyleSheet(
+        "QPushButton { color: #2196F3; border: none; text-decoration: underline; font-size: 11pt; }"
+        "QPushButton:hover { color: #1565C0; }"
+    );
+    connect(forgotBtn, &QPushButton::clicked, this, &AuthWidget::onForgotClicked);
+    mainLayout->addWidget(forgotBtn, 0, Qt::AlignCenter);
 
     mainLayout->addStretch();
 }
@@ -213,11 +220,8 @@ void AuthWidget::onAuthResponseReceived(const QString &response)
         return;
     }
 
-    // Неизвестный ответ — возможно, ответ от другого виджета, игнорируем
     m_waitingForAuth = false;
 }
 
-void AuthWidget::onRegisterClicked()
-{
-    emit showRegister();
-}
+void AuthWidget::onRegisterClicked() { emit showRegister(); }
+void AuthWidget::onForgotClicked()   { emit showReset(); }
