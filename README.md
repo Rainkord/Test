@@ -142,21 +142,49 @@ chmod +x docker/fix-dns.sh
 
 ## Модульные тесты
 
-Тесты находятся в папке `tests/` и написаны с использованием **Qt Test**.
-Проверяют класс `Calculator` — вычисление ветвящейся функции и генерацию данных графика.
+Тесты находятся в папке `tests/` и проверяют класс `Calculator` — вычисление ветвящейся функции 	9 и генерацию данных для графика.
 
-### Запуск
+В `tests/` есть два файла:
+- `tst_calculator.cpp` — тесты на фреймворке **Qt Test** (11 тест-кейсов)
+- `test_calculator.cpp` — автономные тесты на чистом C++11, без зависимости от Qt
+
+### Способ 1: Qt Test (основной)
 
 ```bash
 cd tests
 qmake tests.pro
 make
 ./tests
+```
 
-cd tests                          
+Ожидаемый вывод:
+```
+********* Start testing of TstCalculator *********
+PASS   : TstCalculator::testBranch1_negative()
+PASS   : TstCalculator::testBranch2_atZero()
+PASS   : TstCalculator::testBranch3_atBoundary()
+...
+Totals: 11 passed, 0 failed, 0 skipped
+********* Finished testing of TstCalculator *********
+```
+
+### Способ 2: чистый C++ (без Qt)
+
+```bash
+cd tests
 g++ -o test_calculator test_calculator.cpp -std=c++11
 ./test_calculator
 ```
+
+Ожидаемый вывод:
+```
+[OK] f(-5) = 3 (ожидалось 3)
+[OK] f(0)  = 1 (ожидалось 1)
+...
+=== Все тесты пройдены! ===
+```
+
+> ℹ️ Способ 1 — основной, т.к. проект на Qt. Способ 2 — альтернативный, запускается на любой машине без установленного Qt.
 
 ---
 
