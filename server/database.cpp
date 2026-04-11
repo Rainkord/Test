@@ -10,22 +10,18 @@ Database &Database::instance()
     return inst;
 }
 
-bool Database::connect(const QString &dbName)
+Database::Database()
 {
     m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName(dbName);
+    m_db.setDatabaseName("users.db");
 
     if (!m_db.open()) {
         qDebug() << "[DB] Failed to open database:" << m_db.lastError().text();
-        return false;
+        return;
     }
 
-    qDebug() << "[DB] Database opened:" << dbName;
-    return createTable();
-}
+    qDebug() << "[DB] Database opened: users.db";
 
-bool Database::createTable()
-{
     QSqlQuery query(m_db);
     bool ok = query.exec(
         "CREATE TABLE IF NOT EXISTS users ("
@@ -38,11 +34,15 @@ bool Database::createTable()
 
     if (!ok) {
         qDebug() << "[DB] Failed to create table:" << query.lastError().text();
-        return false;
+    } else {
+        qDebug() << "[DB] Table 'users' ready";
     }
+}
 
-    qDebug() << "[DB] Table 'users' ready";
-    return true;
+Database::~Database()
+{
+    if (m_db.isOpen())
+        m_db.close();
 }
 
 bool Database::addUser(const QString &name, const QString &passwordHash, const QString &email)
@@ -102,9 +102,8 @@ QString Database::getUserEmail(const QString &name)
         return QString();
     }
 
-    if (query.next()) {
+    if (query.next())
         return query.value(0).toString();
-    }
 
     return QString();
 }
@@ -120,9 +119,8 @@ QString Database::getLoginByEmail(const QString &email)
         return QString();
     }
 
-    if (query.next()) {
+    if (query.next())
         return query.value(0).toString();
-    }
 
     return QString();
 }
