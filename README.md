@@ -118,9 +118,6 @@ chmod +x docker/fix-dns.sh
 
 ### Публикация образа на Docker Hub
 
-Docker Hub позволяет хранить готовый образ в облаке — любой участник команды
-сможет скачать его без локальной сборки.
-
 1. Зарегистрируйтесь на [hub.docker.com](https://hub.docker.com) (если нет аккаунта)
 2. Войдите в Docker из терминала:
    ```bash
@@ -157,22 +154,6 @@ make
 ./tests
 ```
 
-### Ожидаемый вывод
-
-```
-********* Start testing of TstCalculator *********
-PASS   : TstCalculator::testBranch1_negative()
-PASS   : TstCalculator::testBranch1_negativeA()
-PASS   : TstCalculator::testBranch2_atZero()
-PASS   : TstCalculator::testBranch2_leftBoundary()
-PASS   : TstCalculator::testBranch3_atBoundary()
-PASS   : TstCalculator::testBranch3_positive()
-PASS   : TstCalculator::testGenerateGraphData_prefix()
-PASS   : TstCalculator::testGenerateGraphData_pointCount()
-PASS   : TstCalculator::testGenerateGraphData_invalidStep()
-********* Finished testing of TstCalculator *********
-```
-
 ---
 
 ## Документация (Doxygen)
@@ -180,17 +161,11 @@ PASS   : TstCalculator::testGenerateGraphData_invalidStep()
 Весь серверный код задокументирован в формате **Doxygen** — комментарии `/** */`
 с тегами `@brief`, `@param`, `@return`, `///`.
 
-### Установка Doxygen
 
 ```bash
-# Arch / CachyOS
+### Установка Doxygen
 sudo pacman -S doxygen graphviz
-
-# Ubuntu / Debian
-sudo apt install doxygen graphviz
 ```
-
-### Генерация документации
 
 ```bash
 # Из корня репозитория
@@ -201,27 +176,6 @@ doxygen docs/Doxyfile
 
 ```bash
 xdg-open docs/html/index.html
-```
-
-### Настройка Doxyfile
-
-Если файл `docs/Doxyfile` ещё не создан:
-
-```bash
-cd docs
-doxygen -g Doxyfile
-```
-
-Затем откройте `Doxyfile` и исправьте ключевые параметры:
-
-```
-PROJECT_NAME     = "TIMP Server"
-INPUT            = ../server
-RECURSIVE        = YES
-OUTPUT_DIRECTORY = ./
-EXTRACT_ALL      = YES
-GENERATE_HTML    = YES
-GENERATE_LATEX   = NO
 ```
 
 ---
