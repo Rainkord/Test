@@ -3,16 +3,38 @@
 
 #include <QString>
 
+/**
+ * @file smtpclient.h
+ * @brief Утилитный класс для отправки email через SMTP (Gmail).
+ */
+
+/**
+ * @class SmtpClient
+ * @brief Отправляет письма с кодами подтверждения через SMTP-сервер Gmail.
+ *
+ * Учётные данные (логин и пароль приложения) считываются из файла
+ * @c email.txt в рабочей директории сервера.
+ * Все методы статические — создание объекта не требуется.
+ */
 class SmtpClient
 {
 public:
+    /**
+     * @brief Отправляет письмо с кодом подтверждения регистрации.
+     * @param toEmail Email получателя.
+     * @param code    Шестизначный код подтверждения.
+     * @return @c true если письмо отправлено успешно, иначе @c false.
+     */
     static bool sendVerificationCode(const QString &toEmail, const QString &code);
-    static bool sendPasswordResetCode(const QString &toEmail, const QString &login, const QString &code);
 
-    static const QString smtpHost;
-    static const int smtpPort;
-    static const QString senderEmail;
-    static const QString senderPassword;
+    /**
+     * @brief Отправляет письмо с кодом сброса пароля.
+     * @param toEmail Email получателя.
+     * @param login   Логин пользователя (для указания в теле письма).
+     * @param code    Шестизначный код подтверждения.
+     * @return @c true если письмо отправлено успешно, иначе @c false.
+     */
+    static bool sendPasswordResetCode(const QString &toEmail, const QString &login, const QString &code);
 };
 
 #endif // SMTPCLIENT_H

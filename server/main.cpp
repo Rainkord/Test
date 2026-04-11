@@ -1,23 +1,23 @@
 #include <QCoreApplication>
-#include <QDebug>
-
-#include "database.h"
 #include "mytcpserver.h"
 
+/**
+ * @file main.cpp
+ * @brief Точка входа консольного эхо-сервера.
+ *
+ * Создаёт экземпляр QCoreApplication и запускает MyTcpServer.
+ * Сервер работает в режиме ожидания событий до принудительного завершения.
+ */
+
+/**
+ * @brief Точка входа приложения.
+ * @param argc Количество аргументов командной строки.
+ * @param argv Массив аргументов командной строки.
+ * @return Код завершения приложения (0 при нормальном завершении).
+ */
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
-
-    // Connect to SQLite database (file persists between restarts)
-    if (!Database::instance().connect("users.db")) {
-        qDebug() << "[Main] Could not open database. Exiting.";
-        return 1;
-    }
-
-    // Start TCP server on port 33333
+    QCoreApplication a(argc, argv);
     MyTcpServer server;
-
-    qDebug() << "[Main] Server started. Waiting for connections...";
-
-    return app.exec();
+    return a.exec();
 }
