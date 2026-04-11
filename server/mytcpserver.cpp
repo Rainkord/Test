@@ -3,64 +3,60 @@
 
 #include <QDebug>
 
+#define SERVER_PORT 33333
+
 MyTcpServer::MyTcpServer(QObject *parent)
     : QObject(parent)
-    , m_server(new QTcpServer(this))
+    , m_pServer(new QTcpServer(this))
+    , m_serverStatus(false)
 {
-    connect(m_server, &QTcpServer::newConnection, this, &MyTcpServer::onNewConnection);
+    connect(m_pServer, &QTcpServer::newConnection,
+            this, &MyTcpServer::slotNewConnection);
 
-    if (!m_server->listen(QHostAddress::Any, SERVER_PORT)) {
-        qDebug() << "[Server] Failed to start:" << m_server->errorString();
+    if (!m_pServer->listen(QHostAddress::Any, SERVER_PORT)) {
+        qDebug() << "[Server] Failed to start:" << m_pServer->errorString();
     } else {
+        m_serverStatus = true;
         qDebug() << "[Server] Listening on port" << SERVER_PORT;
     }
 }
 
 MyTcpServer::~MyTcpServer()
 {
-    m_server->close();
+    for (QTcpSocket *socket : m_clients) {
+        socket->close();
+        socket->deleteLater();
+    }
+    m_clients.clear();
+    m_pServer->close();
 }
 
-void MyTcpServer::onNewConnection()
+void MyTcpServer::slotNewConnection()
 {
-    while (m_server->hasPendingConnections()) {
-        QTcpSocket *socket = m_server->nextPendingConnection();
+    while (m_pServer->hasPendingConnections()) {
+        QTcpSocket *socket = m_pServer->nextPendingConnection();
 
         connect(socket, &QTcpSocket::readyRead,
-                this, &MyTcpServer::onReadyRead);
+                this, &MyTcpServer::slotServerRead);
         connect(socket, &QTcpSocket::disconnected,
-                this, &MyTcpServer::onClientDisconnected);
+                this, &MyTcpServer::slotClientDisconnected);
 
-        m_buffers[socket] = QString();
+        m_clients[socket->socketDescriptor()] = socket;
 
         qDebug() << "[Server] New connection from"
                  << socket->peerAddress().toString()
-                 << "port" << socket->peerPort();
+                 << "port" << socket->peerPort()
+                 << "descriptor" << socket->socketDescriptor();
     }
 }
 
-void MyTcpServer::onReadyRead()
+void MyTcpServer::slotServerRead()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
     if (!socket) return;
 
-    // Append incoming data to the buffer for this socket
-    QByteArray data = socket->readAll();
-    m_buffers[socket] += QString::fromUtf8(data);
-
-    processBuffer(socket);
-}
-
-void MyTcpServer::processBuffer(QTcpSocket *socket)
-{
-    // Messages are delimited by '\n'. Process all complete messages.
-    QString &buf = m_buffers[socket];
-
-    while (buf.contains('\n')) {
-        int idx = buf.indexOf('\n');
-        QString message = buf.left(idx).trimmed();
-        buf = buf.mid(idx + 1);
-
+    while (socket->canReadLine()) {
+        QString message = QString::fromUtf8(socket->readLine()).trimmed();
         if (message.isEmpty()) continue;
 
         qDebug() << "[Server] Received from"
@@ -68,23 +64,15 @@ void MyTcpServer::processBuffer(QTcpSocket *socket)
                  << ":" << message;
 
         QString response = FunctionsForServer::processMessage(message);
-
         qDebug() << "[Server] Sending response:" << response;
-        sendResponse(socket, response);
+
+        QByteArray data = (response + "\n").toUtf8();
+        socket->write(data);
+        socket->flush();
     }
 }
 
-void MyTcpServer::sendResponse(QTcpSocket *socket, const QString &response)
-{
-    if (!socket || !socket->isOpen()) return;
-
-    // Append newline as message terminator
-    QByteArray data = (response + "\n").toUtf8();
-    socket->write(data);
-    socket->flush();
-}
-
-void MyTcpServer::onClientDisconnected()
+void MyTcpServer::slotClientDisconnected()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
     if (!socket) return;
@@ -92,6 +80,6 @@ void MyTcpServer::onClientDisconnected()
     qDebug() << "[Server] Client disconnected:"
              << socket->peerAddress().toString();
 
-    m_buffers.remove(socket);
+    m_clients.remove(socket->socketDescriptor());
     socket->deleteLater();
 }
