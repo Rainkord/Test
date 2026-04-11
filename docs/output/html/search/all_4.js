@@ -1,0 +1,8 @@
+var searchData=
+[
+  ['data_0',['data',['../structqt__meta__stringdata__AuthWidget__t.html#a59dc35993afaf37a656fd510fb96a373',1,'qt_meta_stringdata_AuthWidget_t::data'],['../structqt__meta__stringdata__ClientSingleton__t.html#a9edfdddcee3a6f2eb6d462911fe87336',1,'qt_meta_stringdata_ClientSingleton_t::data'],['../structqt__meta__stringdata__GraphWidget__t.html#ac7f94f2afbe2382c1542d98a4052dc51',1,'qt_meta_stringdata_GraphWidget_t::data'],['../structqt__meta__stringdata__MainWindow__t.html#ad57cc890dc3b8cf35a39343e14e30337',1,'qt_meta_stringdata_MainWindow_t::data'],['../structqt__meta__stringdata__RegWidget__t.html#a58dab5b9123430ffc5bb4e3e1cdc6585',1,'qt_meta_stringdata_RegWidget_t::data'],['../structqt__meta__stringdata__ResetWidget__t.html#a9f971a7cc2d9aaba30b1b3dfd36ea8fc',1,'qt_meta_stringdata_ResetWidget_t::data'],['../structqt__meta__stringdata__FlowchartWidget__t.html#a75266c665f1b7a6e5643a0954c346aca',1,'qt_meta_stringdata_FlowchartWidget_t::data'],['../structqt__meta__stringdata__SchemaDialog__t.html#aa75f9f8d53aedbd2d6913589cac7fcf1',1,'qt_meta_stringdata_SchemaDialog_t::data'],['../structqt__meta__stringdata__TaskDialog__t.html#a7bbb487700e179ab20a461bb4ef30877',1,'qt_meta_stringdata_TaskDialog_t::data'],['../structqt__meta__stringdata__VerifyWidget__t.html#ad9b2e2ce7b029e8d8682d69e36c82e2a',1,'qt_meta_stringdata_VerifyWidget_t::data']]],
+  ['database_1',['Database',['../classDatabase.html',1,'']]],
+  ['database_2ecpp_2',['database.cpp',['../database_8cpp.html',1,'']]],
+  ['database_2eh_3',['database.h',['../database_8h.html',1,'']]],
+  ['disconnectfromserver_4',['disconnectFromServer',['../classClientSingleton.html#a79e501736a61dff6d2fba78fb7673adb',1,'ClientSingleton']]]
+];
