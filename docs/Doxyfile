@@ -1,7 +1,9 @@
 PROJECT_NAME           = "ТМП Подгруппа 5 — Функция 9"
 PROJECT_BRIEF          = "Клиент-серверное приложение для графического отображения ветвящейся функции"
-OUTPUT_DIRECTORY       = ./output
-INPUT                  = ../server ../client
+
+# Запускать из корня репозитория: doxygen docs/Doxyfile
+OUTPUT_DIRECTORY       = docs/output
+INPUT                  = server client
 RECURSIVE              = YES
 FILE_PATTERNS          = *.cpp *.h
 GENERATE_HTML          = YES
