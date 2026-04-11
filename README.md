@@ -162,24 +162,13 @@ g++ -o test_calculator test_calculator.cpp -std=c++11
 
 ## Документация (Doxygen)
 
-Весь серверный код задокументирован в формате **Doxygen** — комментарии `/** */`
-с тегами `@brief`, `@param`, `@return`, `///`.
-
-
 ```bash
 ### Установка Doxygen
 sudo pacman -S doxygen graphviz
 ```
 
 ```bash
-# Из корня репозитория
-doxygen docs/Doxyfile
-```
-
-Готовая HTML-документация откроется по пути `docs/output/html/index.html`:
-
-```bash
-xdg-open docs/output/html/index.html
+doxygen docs/Doxyfile && xdg-open docs/output/html/index.html
 ```
 
 ---
