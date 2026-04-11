@@ -62,7 +62,7 @@ key=abcd efgh ijkl mnop
 ## Сборка сервера
 
 ```bash
-cd ./server
+cd server
 qmake echoServer.pro
 make -j$(nproc)
 ./echoServer
@@ -73,7 +73,7 @@ make -j$(nproc)
 ## Сборка клиента
 
 ```bash
-cd ./client
+cd client
 qmake client.pro
 make -j$(nproc)
 ../build/client
