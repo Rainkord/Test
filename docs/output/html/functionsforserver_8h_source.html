@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.16.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ТМП Подгруппа 5 — Функция 9: Исходный файл server/functionsforserver.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">ТМП Подгруппа 5 — Функция 9
+   </div>
+   <div id="projectbrief">Клиент-серверное приложение для графического отображения ветвящейся функции</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.16.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('functionsforserver_8h_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Загрузка...</div>
+<div class="SRStatus" id="Searching">Поиск...</div>
+<div class="SRStatus" id="NoMatches">Не найдено</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">functionsforserver.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="functionsforserver_8h.html">См. документацию.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef FUNCTIONSFORSERVER_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define FUNCTIONSFORSERVER_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;QMap&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span></div>
+<div class="foldopen" id="foldopen00016" data-start="{" data-end="};">
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="structTempRegData.html">   16</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structTempRegData.html">TempRegData</a> {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structTempRegData.html#a638b9f7ca796070604cd9b20dc87f00b">   17</a></span>    QString <a class="code hl_variable" href="structTempRegData.html#a638b9f7ca796070604cd9b20dc87f00b">name</a>;         </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structTempRegData.html#afc43df43f4f556790be26245f8824233">   18</a></span>    QString <a class="code hl_variable" href="structTempRegData.html#afc43df43f4f556790be26245f8824233">passwordHash</a>; </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="structTempRegData.html#ada35d6d2d47c5e89728b2bb3c57df5c7">   19</a></span>    QString <a class="code hl_variable" href="structTempRegData.html#ada35d6d2d47c5e89728b2bb3c57df5c7">email</a>;        </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structTempRegData.html#a0192dca2d719a102e2ddb35688d541d9">   20</a></span>    QString <a class="code hl_variable" href="structTempRegData.html#a0192dca2d719a102e2ddb35688d541d9">code</a>;         </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>};</div>
+</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span></div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structTempResetData.html">   27</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structTempResetData.html">TempResetData</a> {</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structTempResetData.html#aaba997e3e840bff2198743ef25e4f8fe">   28</a></span>    QString <a class="code hl_variable" href="structTempResetData.html#aaba997e3e840bff2198743ef25e4f8fe">email</a>; </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structTempResetData.html#ac68e15634a451740f7652ced90119847">   29</a></span>    QString <a class="code hl_variable" href="structTempResetData.html#ac68e15634a451740f7652ced90119847">code</a>;  </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>};</div>
+</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span></div>
+<div class="foldopen" id="foldopen00054" data-start="{" data-end="};">
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classFunctionsForServer.html">   54</a></span><span class="keyword">class </span><a class="code hl_class" href="classFunctionsForServer.html">FunctionsForServer</a></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>{</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keyword">static</span> QString <a class="code hl_function" href="classFunctionsForServer.html#aad6526bc31602d25c9e928af84c4effd">processMessage</a>(<span class="keyword">const</span> QString &amp;message);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keyword">static</span> QMap&lt;QString, QString&gt; pendingCodes;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keyword">static</span> QMap&lt;QString, TempRegData&gt; pendingRegistrations;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keyword">static</span> QMap&lt;QString, TempResetData&gt; pendingResets;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keyword">static</span> QString generateCode();</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keyword">static</span> QString handleCheckLogin(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keyword">static</span> QString handleRegistration(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keyword">static</span> QString handleVerifyReg(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keyword">static</span> QString handleAuth(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <span class="keyword">static</span> QString handleVerifyAuth(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keyword">static</span> QString handleGetGraph(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span></div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keyword">static</span> QString handleGetTask();</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keyword">static</span> QString handleResetPassword(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keyword">static</span> QString handleVerifyReset(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span></div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <span class="keyword">static</span> QString handleSetNewPassword(<span class="keyword">const</span> QStringList &amp;parts);</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>};</div>
+</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="preprocessor">#endif </span><span class="comment">// FUNCTIONSFORSERVER_H</span></div>
+<div class="ttc" id="aclassFunctionsForServer_html"><div class="ttname"><a href="classFunctionsForServer.html">FunctionsForServer</a></div><div class="ttdoc">Статический класс-диспетчер: разбирает входящее сообщение от клиента и маршрутизирует его к соответст...</div><div class="ttdef"><b>Определения</b> <a href="#l00054">functionsforserver.h:55</a></div></div>
+<div class="ttc" id="aclassFunctionsForServer_html_aad6526bc31602d25c9e928af84c4effd"><div class="ttname"><a href="classFunctionsForServer.html#aad6526bc31602d25c9e928af84c4effd">FunctionsForServer::processMessage</a></div><div class="ttdeci">static QString processMessage(const QString &amp;message)</div><div class="ttdoc">Разбирает входящее сообщение и возвращает строку-ответ клиенту.</div><div class="ttdef"><b>Определения</b> <a href="functionsforserver_8cpp_source.html#l00024">functionsforserver.cpp:24</a></div></div>
+<div class="ttc" id="astructTempRegData_html"><div class="ttname"><a href="structTempRegData.html">TempRegData</a></div><div class="ttdoc">Временные данные регистрации, ожидающие подтверждения по email.</div><div class="ttdef"><b>Определения</b> <a href="#l00016">functionsforserver.h:16</a></div></div>
+<div class="ttc" id="astructTempRegData_html_a0192dca2d719a102e2ddb35688d541d9"><div class="ttname"><a href="structTempRegData.html#a0192dca2d719a102e2ddb35688d541d9">TempRegData::code</a></div><div class="ttdeci">QString code</div><div class="ttdoc">Шестизначный код подтверждения.</div><div class="ttdef"><b>Определения</b> <a href="#l00020">functionsforserver.h:20</a></div></div>
+<div class="ttc" id="astructTempRegData_html_a638b9f7ca796070604cd9b20dc87f00b"><div class="ttname"><a href="structTempRegData.html#a638b9f7ca796070604cd9b20dc87f00b">TempRegData::name</a></div><div class="ttdeci">QString name</div><div class="ttdoc">Логин пользователя.</div><div class="ttdef"><b>Определения</b> <a href="#l00017">functionsforserver.h:17</a></div></div>
+<div class="ttc" id="astructTempRegData_html_ada35d6d2d47c5e89728b2bb3c57df5c7"><div class="ttname"><a href="structTempRegData.html#ada35d6d2d47c5e89728b2bb3c57df5c7">TempRegData::email</a></div><div class="ttdeci">QString email</div><div class="ttdoc">Email-адрес пользователя.</div><div class="ttdef"><b>Определения</b> <a href="#l00019">functionsforserver.h:19</a></div></div>
+<div class="ttc" id="astructTempRegData_html_afc43df43f4f556790be26245f8824233"><div class="ttname"><a href="structTempRegData.html#afc43df43f4f556790be26245f8824233">TempRegData::passwordHash</a></div><div class="ttdeci">QString passwordHash</div><div class="ttdoc">Хэш пароля (SHA-256).</div><div class="ttdef"><b>Определения</b> <a href="#l00018">functionsforserver.h:18</a></div></div>
+<div class="ttc" id="astructTempResetData_html"><div class="ttname"><a href="structTempResetData.html">TempResetData</a></div><div class="ttdoc">Временные данные сброса пароля, ожидающие подтверждения по email.</div><div class="ttdef"><b>Определения</b> <a href="#l00027">functionsforserver.h:27</a></div></div>
+<div class="ttc" id="astructTempResetData_html_aaba997e3e840bff2198743ef25e4f8fe"><div class="ttname"><a href="structTempResetData.html#aaba997e3e840bff2198743ef25e4f8fe">TempResetData::email</a></div><div class="ttdeci">QString email</div><div class="ttdoc">Email-адрес пользователя.</div><div class="ttdef"><b>Определения</b> <a href="#l00028">functionsforserver.h:28</a></div></div>
+<div class="ttc" id="astructTempResetData_html_ac68e15634a451740f7652ced90119847"><div class="ttname"><a href="structTempResetData.html#ac68e15634a451740f7652ced90119847">TempResetData::code</a></div><div class="ttdeci">QString code</div><div class="ttdoc">Шестизначный код подтверждения.</div><div class="ttdef"><b>Определения</b> <a href="#l00029">functionsforserver.h:29</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="dir_41e1742e44e2de38b3bc91f993fed282.html">server</a></li><li class="navelem"><a href="functionsforserver_8h.html">functionsforserver.h</a></li>
+    <li class="footer">Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.16.1 </li>
+  </ul>
+</div>
+</body>
+</html>

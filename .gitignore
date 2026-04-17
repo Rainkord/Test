@@ -1,0 +1,47 @@
+# ── Compiled objects ──────────────────────────────────────────────────────────
+*.o
+*.obj
+
+# Qt generated sources
+moc_*
+ui_*
+qrc_*
+
+# Build system
+Makefile
+
+# ── Qt build artifacts ────────────────────────────────────────────────────────
+*.pro.user
+*.pro.user.*
+*.qmake.stash
+.qmake.stash
+
+# ── Build output directories ──────────────────────────────────────────────────
+build/
+debug/
+release/
+
+# ── Compiled binaries (server / client / tests) ───────────────────────────────
+echoServer
+client
+tests
+
+# ── Database ──────────────────────────────────────────────────────────────────
+*.db
+
+# ── Doxygen ───────────────────────────────────────────────────────────────────
+# Keep only the generated HTML docs; ignore everything else Doxygen produces
+docs/output/latex/
+docs/output/xml/
+docs/output/rtf/
+docs/output/man/
+docs/output/*.tmp
+
+# ── Credentials ───────────────────────────────────────────────────────────────
+# Never commit filled email.txt (contains Gmail app password)
+server/email.txt
+
+# ── OS artifacts ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*~

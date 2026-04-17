@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.16.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ТМП Подгруппа 5 — Функция 9: Файл client/verifywidget.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">ТМП Подгруппа 5 — Функция 9
+   </div>
+   <div id="projectbrief">Клиент-серверное приложение для графического отображения ветвящейся функции</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.16.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('verifywidget_8cpp.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Загрузка...</div>
+<div class="SRStatus" id="Searching">Поиск...</div>
+<div class="SRStatus" id="NoMatches">Не найдено</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">Файл verifywidget.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="verifywidget_8h_source.html">verifywidget.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="clientsingleton_8h_source.html">clientsingleton.h</a>&quot;</code><br />
+<code>#include &lt;QVBoxLayout&gt;</code><br />
+<code>#include &lt;QHBoxLayout&gt;</code><br />
+<code>#include &lt;QLabel&gt;</code><br />
+<code>#include &lt;QLineEdit&gt;</code><br />
+<code>#include &lt;QPushButton&gt;</code><br />
+<code>#include &lt;QTimer&gt;</code><br />
+<code>#include &lt;QFont&gt;</code><br />
+</div>
+<p><a href="verifywidget_8cpp_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+Макросы</h2></td></tr>
+<tr class="memitem:a9a85fef90bad6eab392e2471a65f8d4f" id="r_a9a85fef90bad6eab392e2471a65f8d4f"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a9a85fef90bad6eab392e2471a65f8d4f">GH_BG</a>&#160;&#160;&#160;&quot;#0d1117&quot;</td></tr>
+<tr class="memitem:afca1d0e2b834be063994059dc1b061e5" id="r_afca1d0e2b834be063994059dc1b061e5"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#afca1d0e2b834be063994059dc1b061e5">GH_CARD</a>&#160;&#160;&#160;&quot;#161b22&quot;</td></tr>
+<tr class="memitem:a38738d697be4294cef70da505776fd3a" id="r_a38738d697be4294cef70da505776fd3a"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a38738d697be4294cef70da505776fd3a">GH_BORDER</a>&#160;&#160;&#160;&quot;#30363d&quot;</td></tr>
+<tr class="memitem:a76923ca4d575de2db881bfd1e2ed8fc6" id="r_a76923ca4d575de2db881bfd1e2ed8fc6"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a76923ca4d575de2db881bfd1e2ed8fc6">GH_TEXT</a>&#160;&#160;&#160;&quot;#e6edf3&quot;</td></tr>
+<tr class="memitem:ae8746773945bc183eb687ba96b77b05c" id="r_ae8746773945bc183eb687ba96b77b05c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ae8746773945bc183eb687ba96b77b05c">GH_MUTED</a>&#160;&#160;&#160;&quot;#8b949e&quot;</td></tr>
+<tr class="memitem:a3f734cf434f583d8a713631c43619f90" id="r_a3f734cf434f583d8a713631c43619f90"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a3f734cf434f583d8a713631c43619f90">GH_GREEN</a>&#160;&#160;&#160;&quot;#238636&quot;</td></tr>
+<tr class="memitem:a68e2e9b14ef1d97a4810924fe86a4046" id="r_a68e2e9b14ef1d97a4810924fe86a4046"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a68e2e9b14ef1d97a4810924fe86a4046">GH_GREEN_H</a>&#160;&#160;&#160;&quot;#2ea043&quot;</td></tr>
+<tr class="memitem:a9d20cf908492c430163af5d2a12856b7" id="r_a9d20cf908492c430163af5d2a12856b7"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a9d20cf908492c430163af5d2a12856b7">GH_BLUE</a>&#160;&#160;&#160;&quot;#388bfd&quot;</td></tr>
+<tr class="memitem:a42a7d8f7fd32b675ebe65742eddf8b30" id="r_a42a7d8f7fd32b675ebe65742eddf8b30"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a42a7d8f7fd32b675ebe65742eddf8b30">GH_BLUE_H</a>&#160;&#160;&#160;&quot;#58a6ff&quot;</td></tr>
+<tr class="memitem:a565a6e6f1b74fe6699845e97f803862a" id="r_a565a6e6f1b74fe6699845e97f803862a"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a565a6e6f1b74fe6699845e97f803862a">GH_RED</a>&#160;&#160;&#160;&quot;#f85149&quot;</td></tr>
+<tr class="memitem:a5626014872de4495ee148e630d071b49" id="r_a5626014872de4495ee148e630d071b49"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a5626014872de4495ee148e630d071b49">GH_INPUT_BG</a>&#160;&#160;&#160;&quot;#0d1117&quot;</td></tr>
+<tr class="memitem:a764be68141614f04e8dd8fd317d22a50" id="r_a764be68141614f04e8dd8fd317d22a50"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a764be68141614f04e8dd8fd317d22a50">GH_BTN_GHOST</a>&#160;&#160;&#160;&quot;#21262d&quot;</td></tr>
+<tr class="memitem:ac82523c67e2b8f2dc18c3176d28f5708" id="r_ac82523c67e2b8f2dc18c3176d28f5708"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ac82523c67e2b8f2dc18c3176d28f5708">GH_BTN_GHOST_H</a>&#160;&#160;&#160;&quot;#30363d&quot;</td></tr>
+<tr class="memitem:a1f86a89716ada4d7063c047811d1076b" id="r_a1f86a89716ada4d7063c047811d1076b"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a1f86a89716ada4d7063c047811d1076b">FONT_FAMILY</a>&#160;&#160;&#160;&quot;Segoe UI&quot;</td></tr>
+<tr class="memitem:aa56fde3a1ad53534c34093b86e10afe4" id="r_aa56fde3a1ad53534c34093b86e10afe4"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#aa56fde3a1ad53534c34093b86e10afe4">FONT_SIZE_TITLE</a>&#160;&#160;&#160;16</td></tr>
+<tr class="memitem:a04827d7a2d5f2dfa0236cefc3ddff298" id="r_a04827d7a2d5f2dfa0236cefc3ddff298"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a04827d7a2d5f2dfa0236cefc3ddff298">FONT_SIZE_BTN</a>&#160;&#160;&#160;11</td></tr>
+<tr class="memitem:a3dcd1a12d9c5585515d2476ea015682e" id="r_a3dcd1a12d9c5585515d2476ea015682e"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a3dcd1a12d9c5585515d2476ea015682e">FONT_SIZE_INPUT</a>&#160;&#160;&#160;11</td></tr>
+<tr class="memitem:aed5645d2c15efb00e43ba14e9669044d" id="r_aed5645d2c15efb00e43ba14e9669044d"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#aed5645d2c15efb00e43ba14e9669044d">FONT_SIZE_SMALL</a>&#160;&#160;&#160;9</td></tr>
+</table>
+<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Макросы</h2>
+<a id="a1f86a89716ada4d7063c047811d1076b" name="a1f86a89716ada4d7063c047811d1076b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f86a89716ada4d7063c047811d1076b">&#9670;&#160;</a></span>FONT_FAMILY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FONT_FAMILY&#160;&#160;&#160;&quot;Segoe UI&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00027">27</a></p>
+
+</div>
+</div>
+<a id="a04827d7a2d5f2dfa0236cefc3ddff298" name="a04827d7a2d5f2dfa0236cefc3ddff298"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04827d7a2d5f2dfa0236cefc3ddff298">&#9670;&#160;</a></span>FONT_SIZE_BTN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FONT_SIZE_BTN&#160;&#160;&#160;11</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00029">29</a></p>
+
+</div>
+</div>
+<a id="a3dcd1a12d9c5585515d2476ea015682e" name="a3dcd1a12d9c5585515d2476ea015682e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dcd1a12d9c5585515d2476ea015682e">&#9670;&#160;</a></span>FONT_SIZE_INPUT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FONT_SIZE_INPUT&#160;&#160;&#160;11</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00030">30</a></p>
+
+</div>
+</div>
+<a id="aed5645d2c15efb00e43ba14e9669044d" name="aed5645d2c15efb00e43ba14e9669044d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed5645d2c15efb00e43ba14e9669044d">&#9670;&#160;</a></span>FONT_SIZE_SMALL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FONT_SIZE_SMALL&#160;&#160;&#160;9</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00031">31</a></p>
+
+</div>
+</div>
+<a id="aa56fde3a1ad53534c34093b86e10afe4" name="aa56fde3a1ad53534c34093b86e10afe4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa56fde3a1ad53534c34093b86e10afe4">&#9670;&#160;</a></span>FONT_SIZE_TITLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FONT_SIZE_TITLE&#160;&#160;&#160;16</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00028">28</a></p>
+
+</div>
+</div>
+<a id="a9a85fef90bad6eab392e2471a65f8d4f" name="a9a85fef90bad6eab392e2471a65f8d4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a85fef90bad6eab392e2471a65f8d4f">&#9670;&#160;</a></span>GH_BG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_BG&#160;&#160;&#160;&quot;#0d1117&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00013">13</a></p>
+
+</div>
+</div>
+<a id="a9d20cf908492c430163af5d2a12856b7" name="a9d20cf908492c430163af5d2a12856b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d20cf908492c430163af5d2a12856b7">&#9670;&#160;</a></span>GH_BLUE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_BLUE&#160;&#160;&#160;&quot;#388bfd&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00020">20</a></p>
+
+</div>
+</div>
+<a id="a42a7d8f7fd32b675ebe65742eddf8b30" name="a42a7d8f7fd32b675ebe65742eddf8b30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42a7d8f7fd32b675ebe65742eddf8b30">&#9670;&#160;</a></span>GH_BLUE_H</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_BLUE_H&#160;&#160;&#160;&quot;#58a6ff&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00021">21</a></p>
+
+</div>
+</div>
+<a id="a38738d697be4294cef70da505776fd3a" name="a38738d697be4294cef70da505776fd3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38738d697be4294cef70da505776fd3a">&#9670;&#160;</a></span>GH_BORDER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_BORDER&#160;&#160;&#160;&quot;#30363d&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00015">15</a></p>
+
+</div>
+</div>
+<a id="a764be68141614f04e8dd8fd317d22a50" name="a764be68141614f04e8dd8fd317d22a50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a764be68141614f04e8dd8fd317d22a50">&#9670;&#160;</a></span>GH_BTN_GHOST</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_BTN_GHOST&#160;&#160;&#160;&quot;#21262d&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00024">24</a></p>
+
+</div>
+</div>
+<a id="ac82523c67e2b8f2dc18c3176d28f5708" name="ac82523c67e2b8f2dc18c3176d28f5708"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac82523c67e2b8f2dc18c3176d28f5708">&#9670;&#160;</a></span>GH_BTN_GHOST_H</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_BTN_GHOST_H&#160;&#160;&#160;&quot;#30363d&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00025">25</a></p>
+
+</div>
+</div>
+<a id="afca1d0e2b834be063994059dc1b061e5" name="afca1d0e2b834be063994059dc1b061e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afca1d0e2b834be063994059dc1b061e5">&#9670;&#160;</a></span>GH_CARD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_CARD&#160;&#160;&#160;&quot;#161b22&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00014">14</a></p>
+
+</div>
+</div>
+<a id="a3f734cf434f583d8a713631c43619f90" name="a3f734cf434f583d8a713631c43619f90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f734cf434f583d8a713631c43619f90">&#9670;&#160;</a></span>GH_GREEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_GREEN&#160;&#160;&#160;&quot;#238636&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00018">18</a></p>
+
+</div>
+</div>
+<a id="a68e2e9b14ef1d97a4810924fe86a4046" name="a68e2e9b14ef1d97a4810924fe86a4046"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68e2e9b14ef1d97a4810924fe86a4046">&#9670;&#160;</a></span>GH_GREEN_H</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_GREEN_H&#160;&#160;&#160;&quot;#2ea043&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00019">19</a></p>
+
+</div>
+</div>
+<a id="a5626014872de4495ee148e630d071b49" name="a5626014872de4495ee148e630d071b49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5626014872de4495ee148e630d071b49">&#9670;&#160;</a></span>GH_INPUT_BG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_INPUT_BG&#160;&#160;&#160;&quot;#0d1117&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00023">23</a></p>
+
+</div>
+</div>
+<a id="ae8746773945bc183eb687ba96b77b05c" name="ae8746773945bc183eb687ba96b77b05c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8746773945bc183eb687ba96b77b05c">&#9670;&#160;</a></span>GH_MUTED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_MUTED&#160;&#160;&#160;&quot;#8b949e&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00017">17</a></p>
+
+</div>
+</div>
+<a id="a565a6e6f1b74fe6699845e97f803862a" name="a565a6e6f1b74fe6699845e97f803862a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a565a6e6f1b74fe6699845e97f803862a">&#9670;&#160;</a></span>GH_RED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_RED&#160;&#160;&#160;&quot;#f85149&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00022">22</a></p>
+
+</div>
+</div>
+<a id="a76923ca4d575de2db881bfd1e2ed8fc6" name="a76923ca4d575de2db881bfd1e2ed8fc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76923ca4d575de2db881bfd1e2ed8fc6">&#9670;&#160;</a></span>GH_TEXT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GH_TEXT&#160;&#160;&#160;&quot;#e6edf3&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00016">16</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="dir_db3a54907829b36871118d03417739cd.html">client</a></li><li class="navelem"><a href="verifywidget_8cpp.html">verifywidget.cpp</a></li>
+    <li class="footer">Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.16.1 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.16.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ТМП Подгруппа 5 — Функция 9: Файл client/schemadialog.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">ТМП Подгруппа 5 — Функция 9
+   </div>
+   <div id="projectbrief">Клиент-серверное приложение для графического отображения ветвящейся функции</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.16.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('schemadialog_8cpp.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Загрузка...</div>
+<div class="SRStatus" id="Searching">Поиск...</div>
+<div class="SRStatus" id="NoMatches">Не найдено</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">Файл schemadialog.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="schemadialog_8h_source.html">schemadialog.h</a>&quot;</code><br />
+<code>#include &lt;QVBoxLayout&gt;</code><br />
+<code>#include &lt;QHBoxLayout&gt;</code><br />
+<code>#include &lt;QPainter&gt;</code><br />
+<code>#include &lt;QPainterPath&gt;</code><br />
+<code>#include &lt;QPen&gt;</code><br />
+<code>#include &lt;QFont&gt;</code><br />
+<code>#include &lt;QPolygon&gt;</code><br />
+</div>
+<p><a href="schemadialog_8cpp_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+Макросы</h2></td></tr>
+<tr class="memitem:a66c8a970207e9cc0ec07a3343c3812a0" id="r_a66c8a970207e9cc0ec07a3343c3812a0"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a66c8a970207e9cc0ec07a3343c3812a0">FC_BG</a>&#160;&#160;&#160;QColor(0x0d, 0x11, 0x17)</td></tr>
+<tr class="memitem:a74dea05f281648e81e57baec493547a0" id="r_a74dea05f281648e81e57baec493547a0"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a74dea05f281648e81e57baec493547a0">FC_BORDER</a>&#160;&#160;&#160;QColor(0x30, 0x36, 0x3d)</td></tr>
+<tr class="memitem:ac92ae50bc8e596177fd389d04cde4938" id="r_ac92ae50bc8e596177fd389d04cde4938"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ac92ae50bc8e596177fd389d04cde4938">FC_TEXT</a>&#160;&#160;&#160;QColor(0xe6, 0xed, 0xf3)</td></tr>
+<tr class="memitem:a3b320026c77799cd5049b7fdbddd73d9" id="r_a3b320026c77799cd5049b7fdbddd73d9"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a3b320026c77799cd5049b7fdbddd73d9">FC_ARROW</a>&#160;&#160;&#160;QColor(0x8b, 0x94, 0x9e)</td></tr>
+<tr class="memitem:ac71712f256420c526d5febd11576d278" id="r_ac71712f256420c526d5febd11576d278"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ac71712f256420c526d5febd11576d278">FC_LABEL</a>&#160;&#160;&#160;QColor(0xd2, 0x99, 0x22)</td></tr>
+<tr class="memitem:a679cc8633856dcba38b21f3ef2a063c8" id="r_a679cc8633856dcba38b21f3ef2a063c8"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a679cc8633856dcba38b21f3ef2a063c8">FC_START_FILL</a>&#160;&#160;&#160;QColor(0x0f, 0x51, 0x32)</td></tr>
+<tr class="memitem:a7afe58e629476e699bd08f0facc64edc" id="r_a7afe58e629476e699bd08f0facc64edc"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a7afe58e629476e699bd08f0facc64edc">FC_INPUT_FILL</a>&#160;&#160;&#160;QColor(0x0d, 0x41, 0x9d)</td></tr>
+<tr class="memitem:a77e045488dc3a12fe16f16500007db56" id="r_a77e045488dc3a12fe16f16500007db56"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a77e045488dc3a12fe16f16500007db56">FC_COND_FILL</a>&#160;&#160;&#160;QColor(0x5d, 0x43, 0x00)</td></tr>
+<tr class="memitem:a76ee26ae182123427aaf3dcf92a2b8fb" id="r_a76ee26ae182123427aaf3dcf92a2b8fb"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a76ee26ae182123427aaf3dcf92a2b8fb">FC_BR1_FILL</a>&#160;&#160;&#160;QColor(0x6e, 0x1a, 0x1a)</td></tr>
+<tr class="memitem:a31881107fce199547840a87a0147a922" id="r_a31881107fce199547840a87a0147a922"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a31881107fce199547840a87a0147a922">FC_BR2_FILL</a>&#160;&#160;&#160;QColor(0x0e, 0x4d, 0x55)</td></tr>
+<tr class="memitem:a503c6e9e422f21c3c7e70cc19597881b" id="r_a503c6e9e422f21c3c7e70cc19597881b"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a503c6e9e422f21c3c7e70cc19597881b">FC_BR3_FILL</a>&#160;&#160;&#160;QColor(0x3d, 0x1f, 0x6e)</td></tr>
+<tr class="memitem:a48fd72f3cef4117cce66c930181550df" id="r_a48fd72f3cef4117cce66c930181550df"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a48fd72f3cef4117cce66c930181550df">FC_OUT_FILL</a>&#160;&#160;&#160;QColor(0x0d, 0x38, 0x75)</td></tr>
+<tr class="memitem:ad67e2a119264c3ac8aa7023fba3f30d1" id="r_ad67e2a119264c3ac8aa7023fba3f30d1"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ad67e2a119264c3ac8aa7023fba3f30d1">FC_START_BDR</a>&#160;&#160;&#160;QColor(0x23, 0x86, 0x36)</td></tr>
+<tr class="memitem:a8050e4d4ffa3d212c475afa4548bc643" id="r_a8050e4d4ffa3d212c475afa4548bc643"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a8050e4d4ffa3d212c475afa4548bc643">FC_INPUT_BDR</a>&#160;&#160;&#160;QColor(0x38, 0x8b, 0xfd)</td></tr>
+<tr class="memitem:aaee6164fa4c164ac1bd7f6ca3d526748" id="r_aaee6164fa4c164ac1bd7f6ca3d526748"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#aaee6164fa4c164ac1bd7f6ca3d526748">FC_COND_BDR</a>&#160;&#160;&#160;QColor(0xd2, 0x99, 0x22)</td></tr>
+<tr class="memitem:a4e7df4aead6e69d90e2528287d781c9f" id="r_a4e7df4aead6e69d90e2528287d781c9f"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a4e7df4aead6e69d90e2528287d781c9f">FC_BR1_BDR</a>&#160;&#160;&#160;QColor(0xf8, 0x51, 0x49)</td></tr>
+<tr class="memitem:a8d6f67ec0e17f20fe965ef3dc4386ca0" id="r_a8d6f67ec0e17f20fe965ef3dc4386ca0"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a8d6f67ec0e17f20fe965ef3dc4386ca0">FC_BR2_BDR</a>&#160;&#160;&#160;QColor(0x39, 0xc5, 0xcf)</td></tr>
+<tr class="memitem:a06e65a8fa43e53ff067bb519e4f15a87" id="r_a06e65a8fa43e53ff067bb519e4f15a87"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a06e65a8fa43e53ff067bb519e4f15a87">FC_BR3_BDR</a>&#160;&#160;&#160;QColor(0xa3, 0x71, 0xf7)</td></tr>
+<tr class="memitem:a43e7c6435577575b0494eb726174c8a1" id="r_a43e7c6435577575b0494eb726174c8a1"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a43e7c6435577575b0494eb726174c8a1">FC_OUT_BDR</a>&#160;&#160;&#160;QColor(0x58, 0xa6, 0xff)</td></tr>
+<tr class="memitem:a1f86a89716ada4d7063c047811d1076b" id="r_a1f86a89716ada4d7063c047811d1076b"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a1f86a89716ada4d7063c047811d1076b">FONT_FAMILY</a>&#160;&#160;&#160;&quot;Segoe UI&quot;</td></tr>
+</table>
+<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Макросы</h2>
+<a id="a3b320026c77799cd5049b7fdbddd73d9" name="a3b320026c77799cd5049b7fdbddd73d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b320026c77799cd5049b7fdbddd73d9">&#9670;&#160;</a></span>FC_ARROW</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_ARROW&#160;&#160;&#160;QColor(0x8b, 0x94, 0x9e)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00014">14</a></p>
+
+</div>
+</div>
+<a id="a66c8a970207e9cc0ec07a3343c3812a0" name="a66c8a970207e9cc0ec07a3343c3812a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66c8a970207e9cc0ec07a3343c3812a0">&#9670;&#160;</a></span>FC_BG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BG&#160;&#160;&#160;QColor(0x0d, 0x11, 0x17)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00011">11</a></p>
+
+</div>
+</div>
+<a id="a74dea05f281648e81e57baec493547a0" name="a74dea05f281648e81e57baec493547a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74dea05f281648e81e57baec493547a0">&#9670;&#160;</a></span>FC_BORDER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BORDER&#160;&#160;&#160;QColor(0x30, 0x36, 0x3d)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00012">12</a></p>
+
+</div>
+</div>
+<a id="a4e7df4aead6e69d90e2528287d781c9f" name="a4e7df4aead6e69d90e2528287d781c9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e7df4aead6e69d90e2528287d781c9f">&#9670;&#160;</a></span>FC_BR1_BDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BR1_BDR&#160;&#160;&#160;QColor(0xf8, 0x51, 0x49)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00028">28</a></p>
+
+</div>
+</div>
+<a id="a76ee26ae182123427aaf3dcf92a2b8fb" name="a76ee26ae182123427aaf3dcf92a2b8fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76ee26ae182123427aaf3dcf92a2b8fb">&#9670;&#160;</a></span>FC_BR1_FILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BR1_FILL&#160;&#160;&#160;QColor(0x6e, 0x1a, 0x1a)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00020">20</a></p>
+
+</div>
+</div>
+<a id="a8d6f67ec0e17f20fe965ef3dc4386ca0" name="a8d6f67ec0e17f20fe965ef3dc4386ca0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d6f67ec0e17f20fe965ef3dc4386ca0">&#9670;&#160;</a></span>FC_BR2_BDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BR2_BDR&#160;&#160;&#160;QColor(0x39, 0xc5, 0xcf)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00029">29</a></p>
+
+</div>
+</div>
+<a id="a31881107fce199547840a87a0147a922" name="a31881107fce199547840a87a0147a922"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31881107fce199547840a87a0147a922">&#9670;&#160;</a></span>FC_BR2_FILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BR2_FILL&#160;&#160;&#160;QColor(0x0e, 0x4d, 0x55)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00021">21</a></p>
+
+</div>
+</div>
+<a id="a06e65a8fa43e53ff067bb519e4f15a87" name="a06e65a8fa43e53ff067bb519e4f15a87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06e65a8fa43e53ff067bb519e4f15a87">&#9670;&#160;</a></span>FC_BR3_BDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BR3_BDR&#160;&#160;&#160;QColor(0xa3, 0x71, 0xf7)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00030">30</a></p>
+
+</div>
+</div>
+<a id="a503c6e9e422f21c3c7e70cc19597881b" name="a503c6e9e422f21c3c7e70cc19597881b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a503c6e9e422f21c3c7e70cc19597881b">&#9670;&#160;</a></span>FC_BR3_FILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_BR3_FILL&#160;&#160;&#160;QColor(0x3d, 0x1f, 0x6e)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00022">22</a></p>
+
+</div>
+</div>
+<a id="aaee6164fa4c164ac1bd7f6ca3d526748" name="aaee6164fa4c164ac1bd7f6ca3d526748"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaee6164fa4c164ac1bd7f6ca3d526748">&#9670;&#160;</a></span>FC_COND_BDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_COND_BDR&#160;&#160;&#160;QColor(0xd2, 0x99, 0x22)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00027">27</a></p>
+
+</div>
+</div>
+<a id="a77e045488dc3a12fe16f16500007db56" name="a77e045488dc3a12fe16f16500007db56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77e045488dc3a12fe16f16500007db56">&#9670;&#160;</a></span>FC_COND_FILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_COND_FILL&#160;&#160;&#160;QColor(0x5d, 0x43, 0x00)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00019">19</a></p>
+
+</div>
+</div>
+<a id="a8050e4d4ffa3d212c475afa4548bc643" name="a8050e4d4ffa3d212c475afa4548bc643"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8050e4d4ffa3d212c475afa4548bc643">&#9670;&#160;</a></span>FC_INPUT_BDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_INPUT_BDR&#160;&#160;&#160;QColor(0x38, 0x8b, 0xfd)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00026">26</a></p>
+
+</div>
+</div>
+<a id="a7afe58e629476e699bd08f0facc64edc" name="a7afe58e629476e699bd08f0facc64edc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7afe58e629476e699bd08f0facc64edc">&#9670;&#160;</a></span>FC_INPUT_FILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_INPUT_FILL&#160;&#160;&#160;QColor(0x0d, 0x41, 0x9d)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00018">18</a></p>
+
+</div>
+</div>
+<a id="ac71712f256420c526d5febd11576d278" name="ac71712f256420c526d5febd11576d278"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac71712f256420c526d5febd11576d278">&#9670;&#160;</a></span>FC_LABEL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_LABEL&#160;&#160;&#160;QColor(0xd2, 0x99, 0x22)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00015">15</a></p>
+
+</div>
+</div>
+<a id="a43e7c6435577575b0494eb726174c8a1" name="a43e7c6435577575b0494eb726174c8a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43e7c6435577575b0494eb726174c8a1">&#9670;&#160;</a></span>FC_OUT_BDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_OUT_BDR&#160;&#160;&#160;QColor(0x58, 0xa6, 0xff)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00031">31</a></p>
+
+</div>
+</div>
+<a id="a48fd72f3cef4117cce66c930181550df" name="a48fd72f3cef4117cce66c930181550df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48fd72f3cef4117cce66c930181550df">&#9670;&#160;</a></span>FC_OUT_FILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_OUT_FILL&#160;&#160;&#160;QColor(0x0d, 0x38, 0x75)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00023">23</a></p>
+
+</div>
+</div>
+<a id="ad67e2a119264c3ac8aa7023fba3f30d1" name="ad67e2a119264c3ac8aa7023fba3f30d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad67e2a119264c3ac8aa7023fba3f30d1">&#9670;&#160;</a></span>FC_START_BDR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_START_BDR&#160;&#160;&#160;QColor(0x23, 0x86, 0x36)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00025">25</a></p>
+
+</div>
+</div>
+<a id="a679cc8633856dcba38b21f3ef2a063c8" name="a679cc8633856dcba38b21f3ef2a063c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a679cc8633856dcba38b21f3ef2a063c8">&#9670;&#160;</a></span>FC_START_FILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_START_FILL&#160;&#160;&#160;QColor(0x0f, 0x51, 0x32)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00017">17</a></p>
+
+</div>
+</div>
+<a id="ac92ae50bc8e596177fd389d04cde4938" name="ac92ae50bc8e596177fd389d04cde4938"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac92ae50bc8e596177fd389d04cde4938">&#9670;&#160;</a></span>FC_TEXT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FC_TEXT&#160;&#160;&#160;QColor(0xe6, 0xed, 0xf3)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00013">13</a></p>
+
+</div>
+</div>
+<a id="a1f86a89716ada4d7063c047811d1076b" name="a1f86a89716ada4d7063c047811d1076b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f86a89716ada4d7063c047811d1076b">&#9670;&#160;</a></span>FONT_FAMILY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FONT_FAMILY&#160;&#160;&#160;&quot;Segoe UI&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00033">33</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="dir_db3a54907829b36871118d03417739cd.html">client</a></li><li class="navelem"><a href="schemadialog_8cpp.html">schemadialog.cpp</a></li>
+    <li class="footer">Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.16.1 </li>
+  </ul>
+</div>
+</body>
+</html>

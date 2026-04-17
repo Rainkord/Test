@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.16.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ТМП Подгруппа 5 — Функция 9: Исходный файл client/mainwindow.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">ТМП Подгруппа 5 — Функция 9
+   </div>
+   <div id="projectbrief">Клиент-серверное приложение для графического отображения ветвящейся функции</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.16.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('mainwindow_8cpp_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Загрузка...</div>
+<div class="SRStatus" id="Searching">Поиск...</div>
+<div class="SRStatus" id="NoMatches">Не найдено</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">mainwindow.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="mainwindow_8cpp.html">См. документацию.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;<a class="code" href="mainwindow_8h.html">mainwindow.h</a>&quot;</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="taskdialog_8h.html">taskdialog.h</a>&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="schemadialog_8h.html">schemadialog.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;QStyle&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;QApplication&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;QSpacerItem&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;QFrame&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;QPainter&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;QPixmap&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;QIcon&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">// ── GitHub Dark palette ──────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#a9a85fef90bad6eab392e2471a65f8d4f">   14</a></span><span class="preprocessor">#define GH_BG          &quot;#0d1117&quot;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#a7b73fc747570e4a7bf3b830eff678446">   15</a></span><span class="preprocessor">#define GH_TOPBAR      &quot;#161b22&quot;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#a38738d697be4294cef70da505776fd3a">   16</a></span><span class="preprocessor">#define GH_BORDER      &quot;#30363d&quot;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#a76923ca4d575de2db881bfd1e2ed8fc6">   17</a></span><span class="preprocessor">#define GH_TEXT        &quot;#e6edf3&quot;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#ae8746773945bc183eb687ba96b77b05c">   18</a></span><span class="preprocessor">#define GH_MUTED       &quot;#8b949e&quot;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#a764be68141614f04e8dd8fd317d22a50">   19</a></span><span class="preprocessor">#define GH_BTN_GHOST   &quot;#21262d&quot;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#ac82523c67e2b8f2dc18c3176d28f5708">   20</a></span><span class="preprocessor">#define GH_BTN_GHOST_H &quot;#30363d&quot;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#a9d20cf908492c430163af5d2a12856b7">   21</a></span><span class="preprocessor">#define GH_BLUE        &quot;#388bfd&quot;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="mainwindow_8cpp.html#a1f86a89716ada4d7063c047811d1076b">   22</a></span><span class="preprocessor">#define FONT_FAMILY    &quot;Segoe UI&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">static</span> QIcon tintIcon(<span class="keyword">const</span> QIcon &amp;src, <span class="keyword">const</span> QColor &amp;color, <span class="keywordtype">int</span> sz = 18)</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    QPixmap pm = src.pixmap(sz, sz);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    QPainter painter(&amp;pm);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    painter.setCompositionMode(QPainter::CompositionMode_SourceIn);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    painter.fillRect(pm.rect(), color);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    painter.end();</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordflow">return</span> QIcon(pm);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>}</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="foldopen" id="foldopen00034" data-start="{" data-end="}">
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classMainWindow.html#a996c5a2b6f77944776856f08ec30858d">   34</a></span><a class="code hl_function" href="classMainWindow.html#a996c5a2b6f77944776856f08ec30858d">MainWindow::MainWindow</a>(QWidget *parent)</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    : QMainWindow(parent)</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>{</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    setStyleSheet(QString(</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <span class="stringliteral">&quot;QMainWindow { background-color: %1; }&quot;</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        <span class="stringliteral">&quot;QWidget      { background-color: %1; color: %2; font-family: &#39;%3&#39;; }&quot;</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    ).arg(<a class="code hl_define" href="authwidget_8cpp.html#a9a85fef90bad6eab392e2471a65f8d4f">GH_BG</a>).arg(<a class="code hl_define" href="authwidget_8cpp.html#a76923ca4d575de2db881bfd1e2ed8fc6">GH_TEXT</a>).arg(<a class="code hl_define" href="authwidget_8cpp.html#a1f86a89716ada4d7063c047811d1076b">FONT_FAMILY</a>));</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    setupUI();</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    connectSignals();</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    stackedWidget-&gt;setCurrentIndex(IDX_AUTH);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>}</div>
+</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classMainWindow.html#ae98d00a93bc118200eeef9f9bba1dba7">   47</a></span><a class="code hl_function" href="classMainWindow.html#ae98d00a93bc118200eeef9f9bba1dba7">MainWindow::~MainWindow</a>() {}</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="keywordtype">void</span> MainWindow::setupUI()</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>{</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    setWindowTitle(<span class="stringliteral">&quot;ТМП — Подгруппа 5&quot;</span>);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    setMinimumSize(1000, 700);</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    centralWidget = <span class="keyword">new</span> QWidget(<span class="keyword">this</span>);</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    setCentralWidget(centralWidget);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    mainVLayout = <span class="keyword">new</span> QVBoxLayout(centralWidget);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    mainVLayout-&gt;setContentsMargins(0, 0, 0, 0);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    mainVLayout-&gt;setSpacing(0);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="comment">// ── Top bar ────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    QWidget *topBar = <span class="keyword">new</span> QWidget(centralWidget);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    topBar-&gt;setFixedHeight(44);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    topBar-&gt;setStyleSheet(QString(</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="stringliteral">&quot;QWidget { background-color: %1; border-bottom: 1px solid %2; }&quot;</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="stringliteral">&quot;QPushButton {&quot;</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        <span class="stringliteral">&quot;  background-color: %3; color: %4;&quot;</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="stringliteral">&quot;  border: 1px solid %2; border-radius: 6px;&quot;</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        <span class="stringliteral">&quot;  padding: 4px 12px; font-size: 11px; font-family: &#39;%5&#39;;&quot;</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        <span class="stringliteral">&quot;}&quot;</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="stringliteral">&quot;QPushButton:hover   { background-color: %6; }&quot;</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        <span class="stringliteral">&quot;QPushButton:pressed { background-color: %2; }&quot;</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    ).arg(<a class="code hl_define" href="mainwindow_8cpp.html#a7b73fc747570e4a7bf3b830eff678446">GH_TOPBAR</a>).arg(<a class="code hl_define" href="authwidget_8cpp.html#a38738d697be4294cef70da505776fd3a">GH_BORDER</a>).arg(<a class="code hl_define" href="authwidget_8cpp.html#a764be68141614f04e8dd8fd317d22a50">GH_BTN_GHOST</a>)</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>     .arg(<a class="code hl_define" href="authwidget_8cpp.html#a76923ca4d575de2db881bfd1e2ed8fc6">GH_TEXT</a>).arg(<a class="code hl_define" href="authwidget_8cpp.html#a1f86a89716ada4d7063c047811d1076b">FONT_FAMILY</a>).arg(<a class="code hl_define" href="authwidget_8cpp.html#ac82523c67e2b8f2dc18c3176d28f5708">GH_BTN_GHOST_H</a>));</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    topBarLayout = <span class="keyword">new</span> QHBoxLayout(topBar);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    topBarLayout-&gt;setContentsMargins(12, 0, 12, 0);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    topBarLayout-&gt;setSpacing(6);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keyword">const</span> QColor iconColor(0xe6, 0xed, 0xf3);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    taskBtn = <span class="keyword">new</span> QPushButton(topBar);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    taskBtn-&gt;setIcon(tintIcon(style()-&gt;standardIcon(QStyle::SP_FileDialogInfoView), iconColor));</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    taskBtn-&gt;setIconSize(QSize(16, 16));</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    taskBtn-&gt;setText(<span class="stringliteral">&quot;  Задание&quot;</span>);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    taskBtn-&gt;setToolTip(<span class="stringliteral">&quot;Показать задание&quot;</span>);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    taskBtn-&gt;setMinimumWidth(100);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    taskBtn-&gt;setMinimumHeight(30);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    schemaBtn = <span class="keyword">new</span> QPushButton(topBar);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    schemaBtn-&gt;setIcon(tintIcon(style()-&gt;standardIcon(QStyle::SP_FileDialogContentsView), iconColor));</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    schemaBtn-&gt;setIconSize(QSize(16, 16));</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    schemaBtn-&gt;setText(<span class="stringliteral">&quot;  Блок-схема&quot;</span>);</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    schemaBtn-&gt;setToolTip(<span class="stringliteral">&quot;Показать блок-схему&quot;</span>);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    schemaBtn-&gt;setMinimumWidth(110);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    schemaBtn-&gt;setMinimumHeight(30);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    appTitleLabel = <span class="keyword">new</span> QLabel(<span class="stringliteral">&quot;ТМП — Подгруппа 5&quot;</span>, topBar);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    appTitleLabel-&gt;setStyleSheet(QString(</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="stringliteral">&quot;QLabel { color: %1; font-size: 12px; font-weight: bold; background: transparent; border: none; }&quot;</span></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    ).arg(<a class="code hl_define" href="authwidget_8cpp.html#a76923ca4d575de2db881bfd1e2ed8fc6">GH_TEXT</a>));</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    appTitleLabel-&gt;setAlignment(Qt::AlignCenter);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    topBarLayout-&gt;addWidget(taskBtn);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    topBarLayout-&gt;addWidget(schemaBtn);</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    topBarLayout-&gt;addStretch(1);</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    topBarLayout-&gt;addWidget(appTitleLabel);</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    topBarLayout-&gt;addStretch(1);</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    <span class="comment">// ── StackedWidget ─────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    stackedWidget = <span class="keyword">new</span> QStackedWidget(centralWidget);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    stackedWidget-&gt;setStyleSheet(QString(</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="stringliteral">&quot;QStackedWidget { background-color: %1; }&quot;</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    ).arg(<a class="code hl_define" href="authwidget_8cpp.html#a9a85fef90bad6eab392e2471a65f8d4f">GH_BG</a>));</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    authWidget   = <span class="keyword">new</span> <a class="code hl_class" href="classAuthWidget.html">AuthWidget</a>(stackedWidget);</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    regWidget    = <span class="keyword">new</span> <a class="code hl_class" href="classRegWidget.html">RegWidget</a>(stackedWidget);</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    verifyWidget = <span class="keyword">new</span> <a class="code hl_class" href="classVerifyWidget.html">VerifyWidget</a>(stackedWidget);</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    graphWidget  = <span class="keyword">new</span> <a class="code hl_class" href="classGraphWidget.html">GraphWidget</a>(stackedWidget);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    resetWidget  = <span class="keyword">new</span> <a class="code hl_class" href="classResetWidget.html">ResetWidget</a>(stackedWidget);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    stackedWidget-&gt;addWidget(authWidget);    <span class="comment">// 0</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    stackedWidget-&gt;addWidget(regWidget);     <span class="comment">// 1</span></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    stackedWidget-&gt;addWidget(verifyWidget);  <span class="comment">// 2</span></div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    stackedWidget-&gt;addWidget(graphWidget);   <span class="comment">// 3</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    stackedWidget-&gt;addWidget(resetWidget);   <span class="comment">// 4</span></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    mainVLayout-&gt;addWidget(topBar);</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    mainVLayout-&gt;addWidget(stackedWidget, 1);</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    centralWidget-&gt;setLayout(mainVLayout);</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>}</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="keywordtype">void</span> MainWindow::connectSignals()</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>{</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    connect(taskBtn,   &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::onTaskBtnClicked);</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    connect(schemaBtn, &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::onSchemaBtnClicked);</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    connect(authWidget, &amp;<a class="code hl_signal" href="classAuthWidget.html#a6e5e6749cb5e18d828e04c3d7ab5c6b0">AuthWidget::showVerifyAuth</a>,  <span class="keyword">this</span>, &amp;MainWindow::onShowVerifyAuth);</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    connect(authWidget, &amp;<a class="code hl_signal" href="classAuthWidget.html#a1e5e908862a827d2ef3ae7123f194635">AuthWidget::showRegister</a>,    <span class="keyword">this</span>, &amp;MainWindow::onShowRegister);</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    connect(authWidget, &amp;<a class="code hl_signal" href="classAuthWidget.html#a9a21ea2bba138e77cc49d2efe8baed75">AuthWidget::showReset</a>,       <span class="keyword">this</span>, &amp;MainWindow::onShowReset);</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    connect(authWidget, &amp;<a class="code hl_signal" href="classAuthWidget.html#a3a5c8198a19c4f9e7fd90915986350a1">AuthWidget::loginSuccess</a>,</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>            <span class="keyword">this</span>, [<span class="keyword">this</span>](<span class="keyword">const</span> QString &amp;login) {</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>                graphWidget-&gt;setUserLogin(login);</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>                graphWidget-&gt;updateGraph();</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>                stackedWidget-&gt;setCurrentIndex(IDX_GRAPH);</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>            });</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    connect(regWidget, &amp;<a class="code hl_signal" href="classRegWidget.html#a79e2d43c1747d252254fc8f0016d320e">RegWidget::registrationSuccess</a>, <span class="keyword">this</span>, &amp;MainWindow::onRegistrationSuccess);</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    connect(regWidget, &amp;<a class="code hl_signal" href="classRegWidget.html#ac173990dc8de328d78e4e6f4708c2628">RegWidget::showAuth</a>,            <span class="keyword">this</span>, &amp;MainWindow::onShowAuth);</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    connect(verifyWidget, &amp;<a class="code hl_signal" href="classVerifyWidget.html#a3385b37432077b02c6af753c7b2e0d4d">VerifyWidget::verificationSuccess</a>, <span class="keyword">this</span>, &amp;MainWindow::onVerificationSuccess);</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    connect(verifyWidget, &amp;<a class="code hl_signal" href="classVerifyWidget.html#a809975925f75296a1437c82f08d42efa">VerifyWidget::backToAuth</a>,          <span class="keyword">this</span>, &amp;MainWindow::onBackToAuth);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    connect(resetWidget, &amp;<a class="code hl_signal" href="classResetWidget.html#ab91dbf8ffee8a31a2a45d32733512ee6">ResetWidget::backToAuth</a>,   <span class="keyword">this</span>, &amp;MainWindow::onShowAuth);</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    connect(resetWidget, &amp;<a class="code hl_signal" href="classResetWidget.html#a28bb99c9e95e550f9d9e56a2e2e1310e">ResetWidget::resetSuccess</a>, <span class="keyword">this</span>, &amp;MainWindow::onResetSuccess);</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    connect(graphWidget, &amp;<a class="code hl_signal" href="classGraphWidget.html#aafaa8f64b822bdb49df25793f2bf4a2c">GraphWidget::logout</a>, <span class="keyword">this</span>, &amp;MainWindow::onLogout);</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>}</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="keywordtype">void</span> MainWindow::onShowRegister()  { stackedWidget-&gt;setCurrentIndex(IDX_REG);   }</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="keywordtype">void</span> MainWindow::onShowAuth()      { stackedWidget-&gt;setCurrentIndex(IDX_AUTH);  }</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="keywordtype">void</span> MainWindow::onShowReset()     { stackedWidget-&gt;setCurrentIndex(IDX_RESET); }</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="keywordtype">void</span> MainWindow::onShowVerifyAuth(<span class="keyword">const</span> QString &amp;login)</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>{</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    verifyWidget-&gt;setLogin(login);</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    stackedWidget-&gt;setCurrentIndex(IDX_VERIFY);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>}</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="keywordtype">void</span> MainWindow::onVerificationSuccess(<span class="keyword">const</span> QString &amp;login)</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>{</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    graphWidget-&gt;setUserLogin(login);</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    graphWidget-&gt;updateGraph();</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    stackedWidget-&gt;setCurrentIndex(IDX_GRAPH);</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>}</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="keywordtype">void</span> MainWindow::onBackToAuth()    { stackedWidget-&gt;setCurrentIndex(IDX_AUTH); }</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span> </div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="keywordtype">void</span> MainWindow::onRegistrationSuccess(<span class="keyword">const</span> QString &amp;login)</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>{</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    graphWidget-&gt;setUserLogin(login);</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    graphWidget-&gt;updateGraph();</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    stackedWidget-&gt;setCurrentIndex(IDX_GRAPH);</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>}</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="keywordtype">void</span> MainWindow::onLogout()        { stackedWidget-&gt;setCurrentIndex(IDX_AUTH); }</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="keywordtype">void</span> MainWindow::onResetSuccess()  { stackedWidget-&gt;setCurrentIndex(IDX_AUTH); }</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="keywordtype">void</span> MainWindow::onTaskBtnClicked()  { TaskDialog   dlg(<span class="keyword">this</span>); dlg.exec(); }</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="keywordtype">void</span> MainWindow::onSchemaBtnClicked(){ SchemaDialog dlg(<span class="keyword">this</span>); dlg.exec(); }</div>
+<div class="ttc" id="aauthwidget_8cpp_html_a1f86a89716ada4d7063c047811d1076b"><div class="ttname"><a href="authwidget_8cpp.html#a1f86a89716ada4d7063c047811d1076b">FONT_FAMILY</a></div><div class="ttdeci">#define FONT_FAMILY</div><div class="ttdef"><b>Определения</b> <a href="authwidget_8cpp_source.html#l00028">authwidget.cpp:28</a></div></div>
+<div class="ttc" id="aauthwidget_8cpp_html_a38738d697be4294cef70da505776fd3a"><div class="ttname"><a href="authwidget_8cpp.html#a38738d697be4294cef70da505776fd3a">GH_BORDER</a></div><div class="ttdeci">#define GH_BORDER</div><div class="ttdef"><b>Определения</b> <a href="authwidget_8cpp_source.html#l00016">authwidget.cpp:16</a></div></div>
+<div class="ttc" id="aauthwidget_8cpp_html_a764be68141614f04e8dd8fd317d22a50"><div class="ttname"><a href="authwidget_8cpp.html#a764be68141614f04e8dd8fd317d22a50">GH_BTN_GHOST</a></div><div class="ttdeci">#define GH_BTN_GHOST</div><div class="ttdef"><b>Определения</b> <a href="authwidget_8cpp_source.html#l00025">authwidget.cpp:25</a></div></div>
+<div class="ttc" id="aauthwidget_8cpp_html_a76923ca4d575de2db881bfd1e2ed8fc6"><div class="ttname"><a href="authwidget_8cpp.html#a76923ca4d575de2db881bfd1e2ed8fc6">GH_TEXT</a></div><div class="ttdeci">#define GH_TEXT</div><div class="ttdef"><b>Определения</b> <a href="authwidget_8cpp_source.html#l00017">authwidget.cpp:17</a></div></div>
+<div class="ttc" id="aauthwidget_8cpp_html_a9a85fef90bad6eab392e2471a65f8d4f"><div class="ttname"><a href="authwidget_8cpp.html#a9a85fef90bad6eab392e2471a65f8d4f">GH_BG</a></div><div class="ttdeci">#define GH_BG</div><div class="ttdef"><b>Определения</b> <a href="authwidget_8cpp_source.html#l00014">authwidget.cpp:14</a></div></div>
+<div class="ttc" id="aauthwidget_8cpp_html_ac82523c67e2b8f2dc18c3176d28f5708"><div class="ttname"><a href="authwidget_8cpp.html#ac82523c67e2b8f2dc18c3176d28f5708">GH_BTN_GHOST_H</a></div><div class="ttdeci">#define GH_BTN_GHOST_H</div><div class="ttdef"><b>Определения</b> <a href="authwidget_8cpp_source.html#l00026">authwidget.cpp:26</a></div></div>
+<div class="ttc" id="aclassAuthWidget_html"><div class="ttname"><a href="classAuthWidget.html">AuthWidget</a></div><div class="ttdef"><b>Определения</b> <a href="authwidget_8h_source.html#l00010">authwidget.h:11</a></div></div>
+<div class="ttc" id="aclassAuthWidget_html_a1e5e908862a827d2ef3ae7123f194635"><div class="ttname"><a href="classAuthWidget.html#a1e5e908862a827d2ef3ae7123f194635">AuthWidget::showRegister</a></div><div class="ttdeci">void showRegister()</div><div class="ttdef"><b>Определения</b> <a href="moc__authwidget_8cpp_source.html#l00203">moc_authwidget.cpp:203</a></div></div>
+<div class="ttc" id="aclassAuthWidget_html_a3a5c8198a19c4f9e7fd90915986350a1"><div class="ttname"><a href="classAuthWidget.html#a3a5c8198a19c4f9e7fd90915986350a1">AuthWidget::loginSuccess</a></div><div class="ttdeci">void loginSuccess(QString login)</div><div class="ttdef"><b>Определения</b> <a href="moc__authwidget_8cpp_source.html#l00196">moc_authwidget.cpp:196</a></div></div>
+<div class="ttc" id="aclassAuthWidget_html_a6e5e6749cb5e18d828e04c3d7ab5c6b0"><div class="ttname"><a href="classAuthWidget.html#a6e5e6749cb5e18d828e04c3d7ab5c6b0">AuthWidget::showVerifyAuth</a></div><div class="ttdeci">void showVerifyAuth(QString login)</div><div class="ttdef"><b>Определения</b> <a href="moc__authwidget_8cpp_source.html#l00209">moc_authwidget.cpp:209</a></div></div>
+<div class="ttc" id="aclassAuthWidget_html_a9a21ea2bba138e77cc49d2efe8baed75"><div class="ttname"><a href="classAuthWidget.html#a9a21ea2bba138e77cc49d2efe8baed75">AuthWidget::showReset</a></div><div class="ttdeci">void showReset()</div><div class="ttdef"><b>Определения</b> <a href="moc__authwidget_8cpp_source.html#l00216">moc_authwidget.cpp:216</a></div></div>
+<div class="ttc" id="aclassGraphWidget_html"><div class="ttname"><a href="classGraphWidget.html">GraphWidget</a></div><div class="ttdef"><b>Определения</b> <a href="graphwidget_8h_source.html#l00016">graphwidget.h:17</a></div></div>
+<div class="ttc" id="aclassGraphWidget_html_aafaa8f64b822bdb49df25793f2bf4a2c"><div class="ttname"><a href="classGraphWidget.html#aafaa8f64b822bdb49df25793f2bf4a2c">GraphWidget::logout</a></div><div class="ttdeci">void logout()</div><div class="ttdef"><b>Определения</b> <a href="moc__graphwidget_8cpp_source.html#l00164">moc_graphwidget.cpp:164</a></div></div>
+<div class="ttc" id="aclassMainWindow_html_a996c5a2b6f77944776856f08ec30858d"><div class="ttname"><a href="classMainWindow.html#a996c5a2b6f77944776856f08ec30858d">MainWindow::MainWindow</a></div><div class="ttdeci">MainWindow(QWidget *parent=nullptr)</div><div class="ttdef"><b>Определения</b> <a href="#l00034">mainwindow.cpp:34</a></div></div>
+<div class="ttc" id="aclassMainWindow_html_ae98d00a93bc118200eeef9f9bba1dba7"><div class="ttname"><a href="classMainWindow.html#ae98d00a93bc118200eeef9f9bba1dba7">MainWindow::~MainWindow</a></div><div class="ttdeci">~MainWindow()</div><div class="ttdef"><b>Определения</b> <a href="#l00047">mainwindow.cpp:47</a></div></div>
+<div class="ttc" id="aclassRegWidget_html"><div class="ttname"><a href="classRegWidget.html">RegWidget</a></div><div class="ttdef"><b>Определения</b> <a href="regwidget_8h_source.html#l00010">regwidget.h:11</a></div></div>
+<div class="ttc" id="aclassRegWidget_html_a79e2d43c1747d252254fc8f0016d320e"><div class="ttname"><a href="classRegWidget.html#a79e2d43c1747d252254fc8f0016d320e">RegWidget::registrationSuccess</a></div><div class="ttdeci">void registrationSuccess(const QString &amp;login)</div><div class="ttdef"><b>Определения</b> <a href="moc__regwidget_8cpp_source.html#l00211">moc_regwidget.cpp:211</a></div></div>
+<div class="ttc" id="aclassRegWidget_html_ac173990dc8de328d78e4e6f4708c2628"><div class="ttname"><a href="classRegWidget.html#ac173990dc8de328d78e4e6f4708c2628">RegWidget::showAuth</a></div><div class="ttdeci">void showAuth()</div><div class="ttdef"><b>Определения</b> <a href="moc__regwidget_8cpp_source.html#l00218">moc_regwidget.cpp:218</a></div></div>
+<div class="ttc" id="aclassResetWidget_html"><div class="ttname"><a href="classResetWidget.html">ResetWidget</a></div><div class="ttdef"><b>Определения</b> <a href="resetwidget_8h_source.html#l00010">resetwidget.h:11</a></div></div>
+<div class="ttc" id="aclassResetWidget_html_a28bb99c9e95e550f9d9e56a2e2e1310e"><div class="ttname"><a href="classResetWidget.html#a28bb99c9e95e550f9d9e56a2e2e1310e">ResetWidget::resetSuccess</a></div><div class="ttdeci">void resetSuccess()</div><div class="ttdef"><b>Определения</b> <a href="moc__resetwidget_8cpp_source.html#l00207">moc_resetwidget.cpp:207</a></div></div>
+<div class="ttc" id="aclassResetWidget_html_ab91dbf8ffee8a31a2a45d32733512ee6"><div class="ttname"><a href="classResetWidget.html#ab91dbf8ffee8a31a2a45d32733512ee6">ResetWidget::backToAuth</a></div><div class="ttdeci">void backToAuth()</div><div class="ttdef"><b>Определения</b> <a href="moc__resetwidget_8cpp_source.html#l00201">moc_resetwidget.cpp:201</a></div></div>
+<div class="ttc" id="aclassVerifyWidget_html"><div class="ttname"><a href="classVerifyWidget.html">VerifyWidget</a></div><div class="ttdef"><b>Определения</b> <a href="verifywidget_8h_source.html#l00010">verifywidget.h:11</a></div></div>
+<div class="ttc" id="aclassVerifyWidget_html_a3385b37432077b02c6af753c7b2e0d4d"><div class="ttname"><a href="classVerifyWidget.html#a3385b37432077b02c6af753c7b2e0d4d">VerifyWidget::verificationSuccess</a></div><div class="ttdeci">void verificationSuccess(QString login)</div><div class="ttdef"><b>Определения</b> <a href="moc__verifywidget_8cpp_source.html#l00164">moc_verifywidget.cpp:164</a></div></div>
+<div class="ttc" id="aclassVerifyWidget_html_a809975925f75296a1437c82f08d42efa"><div class="ttname"><a href="classVerifyWidget.html#a809975925f75296a1437c82f08d42efa">VerifyWidget::backToAuth</a></div><div class="ttdeci">void backToAuth()</div><div class="ttdef"><b>Определения</b> <a href="moc__verifywidget_8cpp_source.html#l00171">moc_verifywidget.cpp:171</a></div></div>
+<div class="ttc" id="amainwindow_8cpp_html_a7b73fc747570e4a7bf3b830eff678446"><div class="ttname"><a href="mainwindow_8cpp.html#a7b73fc747570e4a7bf3b830eff678446">GH_TOPBAR</a></div><div class="ttdeci">#define GH_TOPBAR</div><div class="ttdef"><b>Определения</b> <a href="#l00015">mainwindow.cpp:15</a></div></div>
+<div class="ttc" id="amainwindow_8h_html"><div class="ttname"><a href="mainwindow_8h.html">mainwindow.h</a></div></div>
+<div class="ttc" id="aschemadialog_8h_html"><div class="ttname"><a href="schemadialog_8h.html">schemadialog.h</a></div></div>
+<div class="ttc" id="ataskdialog_8h_html"><div class="ttname"><a href="taskdialog_8h.html">taskdialog.h</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="dir_db3a54907829b36871118d03417739cd.html">client</a></li><li class="navelem"><a href="mainwindow_8cpp.html">mainwindow.cpp</a></li>
+    <li class="footer">Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.16.1 </li>
+  </ul>
+</div>
+</body>
+</html>
