@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТИМП — Подгруппа 5 | Wiki</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root,[data-theme="light"]{
+  --color-bg:#f7f6f2;
+  --color-surface:#f9f8f5;
+  --color-surface-2:#fbfbf9;
+  --color-surface-offset:#f0ede8;
+  --color-divider:#dcd9d5;
+  --color-border:#d4d1ca;
+  --color-text:#28251d;
+  --color-text-muted:#7a7974;
+  --color-text-faint:#b5b3ae;
+  --color-primary:#01696f;
+  --color-primary-hover:#0c4e54;
+  --color-primary-hl:#d4e8e6;
+  --color-code-bg:#edeae5;
+  --color-warn:#964219;
+  --color-warn-bg:#fdf0e6;
+  --color-success:#437a22;
+  --color-success-bg:#eef5e8;
+  --shadow-sm:0 1px 3px oklch(0.2 0.01 80/0.08);
+  --shadow-md:0 4px 16px oklch(0.2 0.01 80/0.10);
+  --radius-sm:0.375rem;
+  --radius-md:0.5rem;
+  --radius-lg:0.75rem;
+  --font-body:'Inter','Helvetica Neue',sans-serif;
+  --font-mono:'JetBrains Mono','Fira Code',monospace;
+  --sidebar-w:260px;
+}
+[data-theme="dark"]{
+  --color-bg:#0f0e0d;
+  --color-surface:#161514;
+  --color-surface-2:#1c1b19;
+  --color-surface-offset:#222120;
+  --color-divider:#2a2927;
+  --color-border:#333230;
+  --color-text:#d8d6d2;
+  --color-text-muted:#7a7876;
+  --color-text-faint:#4e4d4b;
+  --color-primary:#4f98a3;
+  --color-primary-hover:#62aeb9;
+  --color-primary-hl:#1e3336;
+  --color-code-bg:#1e1d1b;
+  --color-warn:#e08a50;
+  --color-warn-bg:#2a1e12;
+  --color-success:#6daa45;
+  --color-success-bg:#172310;
+  --shadow-sm:0 1px 3px oklch(0 0 0/0.3);
+  --shadow-md:0 4px 20px oklch(0 0 0/0.4);
+}
+
+html{scroll-behavior:smooth;scroll-padding-top:5rem;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);font-size:1rem;line-height:1.65;color:var(--color-text);background:var(--color-bg);min-height:100dvh;display:flex;flex-direction:column}
+a{color:var(--color-primary);text-decoration:none}
+a:hover{color:var(--color-primary-hover);text-decoration:underline}
+code{font-family:var(--font-mono);font-size:0.85em;background:var(--color-code-bg);padding:0.15em 0.4em;border-radius:var(--radius-sm);color:var(--color-text)}
+pre{background:var(--color-code-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;overflow-x:auto;font-family:var(--font-mono);font-size:0.82rem;line-height:1.7;color:var(--color-text)}
+pre code{background:none;padding:0;font-size:inherit}
+h1,h2,h3,h4{text-wrap:balance;line-height:1.2;color:var(--color-text)}
+p,li{text-wrap:pretty;max-width:72ch}
+table{border-collapse:collapse;width:100%;font-size:0.9rem}
+th{background:var(--color-surface-offset);color:var(--color-text);font-weight:600;text-align:left;padding:0.6rem 1rem;border-bottom:2px solid var(--color-border)}
+td{padding:0.6rem 1rem;border-bottom:1px solid var(--color-divider);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-surface-offset)}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+::selection{background:oklch(from var(--color-primary) l c h/0.25)}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;height:3.5rem;background:var(--color-surface);border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:1rem;padding:0 1.5rem;box-shadow:var(--shadow-sm)}
+.header-logo{display:flex;align-items:center;gap:0.75rem;font-weight:700;font-size:1rem;letter-spacing:-0.01em;color:var(--color-text);white-space:nowrap}
+.header-logo svg{flex-shrink:0}
+.header-sep{flex:1}
+.header-links{display:flex;align-items:center;gap:0.25rem}
+.header-links a{font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:var(--radius-md);color:var(--color-text-muted);transition:background 180ms,color 180ms}
+.header-links a:hover{background:var(--color-surface-offset);color:var(--color-text);text-decoration:none}
+.theme-btn{width:2.25rem;height:2.25rem;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);transition:background 180ms,color 180ms}
+.theme-btn:hover{background:var(--color-surface-offset);color:var(--color-text)}
+.burger{display:none;width:2.25rem;height:2.25rem;border-radius:var(--radius-md);align-items:center;justify-content:center;color:var(--color-text-muted)}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;max-width:1280px;margin:0 auto;width:100%}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;padding:1.5rem 0 2rem;position:sticky;top:3.5rem;height:calc(100dvh - 3.5rem);overflow-y:auto;border-right:1px solid var(--color-border)}
+.sidebar-section{margin-bottom:1.75rem;padding:0 1rem}
+.sidebar-label{font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-faint);margin-bottom:0.5rem;padding:0 0.5rem}
+.sidebar nav a{display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;padding:0.35rem 0.5rem;border-radius:var(--radius-sm);color:var(--color-text-muted);transition:background 150ms,color 150ms;line-height:1.4}
+.sidebar nav a:hover{background:var(--color-surface-offset);color:var(--color-text);text-decoration:none}
+.sidebar nav a.active{background:var(--color-primary-hl);color:var(--color-primary);font-weight:500}
+.sidebar nav a svg{flex-shrink:0;opacity:0.6}
+
+/* MAIN */
+.main{flex:1;min-width:0;padding:2.5rem 3rem 4rem}
+
+/* SECTIONS */
+.section{display:none}
+.section.active{display:block}
+
+/* HERO */
+.hero{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:2.5rem 2.5rem 2rem;margin-bottom:2.5rem;box-shadow:var(--shadow-sm)}
+.hero-badge{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--color-primary);background:var(--color-primary-hl);padding:0.25rem 0.7rem;border-radius:9999px;margin-bottom:1rem}
+.hero h1{font-size:clamp(1.5rem,2.5vw,2.25rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:0.75rem}
+.hero p{font-size:1rem;color:var(--color-text-muted);max-width:60ch;line-height:1.7}
+.hero-meta{display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--color-divider)}
+.meta-item{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--color-text-muted)}
+.meta-item strong{color:var(--color-text)}
+
+/* SECTION HEADER */
+.section-header{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--color-divider)}
+.section-header h2{font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.35rem}
+.section-header p{color:var(--color-text-muted);font-size:0.95rem}
+
+/* CARDS */
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow-sm);transition:box-shadow 180ms}
+.card:hover{box-shadow:var(--shadow-md)}
+.card h3{font-size:0.95rem;font-weight:600;margin-bottom:0.4rem}
+.card p{font-size:0.875rem;color:var(--color-text-muted);line-height:1.6}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:1rem;margin-bottom:2rem}
+
+/* SUBSECTION */
+.subsection{margin-bottom:2.5rem}
+.subsection h3{font-size:1.1rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.subsection h3::after{content:'';flex:1;height:1px;background:var(--color-divider)}
+
+/* CALLOUT */
+.callout{border-radius:var(--radius-md);padding:1rem 1.25rem;font-size:0.9rem;margin:1rem 0;display:flex;gap:0.75rem;align-items:flex-start;border:1px solid transparent}
+.callout-warn{background:var(--color-warn-bg);border-color:oklch(from var(--color-warn) l c h/0.3);color:var(--color-warn)}
+.callout-ok{background:var(--color-success-bg);border-color:oklch(from var(--color-success) l c h/0.3);color:var(--color-success)}
+.callout p{color:var(--color-text);max-width:none}
+.callout svg{flex-shrink:0;margin-top:2px}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;padding:0.2em 0.6em;border-radius:9999px;text-transform:uppercase}
+.badge-teal{background:var(--color-primary-hl);color:var(--color-primary)}
+.badge-gray{background:var(--color-surface-offset);color:var(--color-text-muted)}
+.badge-green{background:var(--color-success-bg);color:var(--color-success)}
+
+/* FILE TREE */
+.filetree{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;font-family:var(--font-mono);font-size:0.82rem;line-height:2}
+.filetree .dir{color:var(--color-primary);font-weight:500}
+.filetree .file{color:var(--color-text-muted)}
+.filetree .comment{color:var(--color-text-faint)}
+
+/* TABLE WRAPPER */
+.table-wrap{border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;box-shadow:var(--shadow-sm)}
+
+/* FLOW */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:1.5rem 0}
+.flow-step{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:0.6rem 1rem;font-size:0.85rem;font-weight:500;white-space:nowrap;box-shadow:var(--shadow-sm)}
+.flow-arrow{padding:0 0.4rem;color:var(--color-text-faint);font-size:1.1rem}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .main{padding:1.5rem 1.25rem 3rem}
+  .sidebar{display:none;position:fixed;left:0;top:3.5rem;width:var(--sidebar-w);height:calc(100dvh - 3.5rem);z-index:90;background:var(--color-surface);border-right:1px solid var(--color-border)}
+  .sidebar.open{display:block}
+  .burger{display:flex}
+  .header-links{display:none}
+}
+@media(max-width:600px){
+  .hero{padding:1.5rem}
+  .hero h1{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="burger" id="burgerBtn" aria-label="Открыть меню">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="header-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="ТИМП логотип">
+      <rect width="28" height="28" rx="7" fill="var(--color-primary)" opacity="0.15"/>
+      <path d="M7 9h14M7 14h10M7 19h12" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="21" cy="19" r="3" fill="var(--color-primary)"/>
+    </svg>
+    ТИМП — Подгруппа 5
+  </div>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://github.com/Rainkord/TIMP-251-372-group-5" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline;margin-right:4px;vertical-align:-2px"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.461-1.11-1.461-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      GitHub
+    </a>
+  </nav>
+  <button class="theme-btn" id="themeBtn" data-theme-toggle aria-label="Переключить тему">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Обзор</div>
+      <nav>
+        <a href="#" class="active" data-section="s-overview">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Главная
+        </a>
+        <a href="#" data-section="s-structure">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Структура проекта
+        </a>
+      </nav>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Сборка</div>
+      <nav>
+        <a href="#" data-section="s-server">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Сервер
+        </a>
+        <a href="#" data-section="s-client">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Клиент
+        </a>
+        <a href="#" data-section="s-email">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email-конфиг
+        </a>
+        <a href="#" data-section="s-docker">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12.5c0 .5-.1.9-.2 1.3-1.2.5-2.5.7-3.8.7-3 0-5-1.5-5-1.5s-2 1.5-5 1.5c-1.3 0-2.6-.2-3.8-.7C4.1 13.4 4 13 4 12.5c0-1.5 1-2.8 2.5-3.4V7h3v1.5h2V7h3v1.5h2V7h3v2.1C21 9.7 22 11 22 12.5z"/></svg>
+          Docker
+        </a>
+        <a href="#" data-section="s-tests">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Тесты
+        </a>
+        <a href="#" data-section="s-docs">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Документация
+        </a>
+      </nav>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Архитектура</div>
+      <nav>
+        <a href="#" data-section="s-proto">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          JSON-протокол
+        </a>
+        <a href="#" data-section="s-db">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          База данных
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- OVERVIEW -->
+    <section class="section active" id="s-overview">
+      <div class="hero">
+        <div class="hero-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          ТИМП 2025–2026
+        </div>
+        <h1>ТИМП — Подгруппа 5</h1>
+        <p>Qt-приложение с клиент-серверной архитектурой. Авторизация, менеджер задач, графики функций — всё через TCP + JSON-протокол поверх SQLite.</p>
+        <div class="hero-meta">
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            <strong>Стек:</strong> C++ / Qt5 / SQLite
+          </div>
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/></svg>
+            <strong>Порт:</strong> 33333
+          </div>
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12.5c0 .5-.1.9-.2 1.3-1.2.5-2.5.7-3.8.7-3 0-5-1.5-5-1.5s-2 1.5-5 1.5c-1.3 0-2.6-.2-3.8-.7C4.1 13.4 4 13 4 12.5c0-1.5 1-2.8 2.5-3.4V7h3v1.5h2V7h3v1.5h2V7h3v2.1C21 9.7 22 11 22 12.5z"/></svg>
+            <strong>Docker:</strong> rainkord/timp-server
+          </div>
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+            <strong>Тесты:</strong> Qt Test
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3>🖥 Клиент</h3>
+          <p>Qt Widgets-приложение. Авторизация, регистрация с email-верификацией, менеджер задач, редактор и отрисовка графов.</p>
+        </div>
+        <div class="card">
+          <h3>⚙️ Сервер</h3>
+          <p>TCP-сервер на Qt. Маршрутизирует JSON-запросы, работает с SQLite через Database singleton, отправляет письма через Gmail SMTP.</p>
+        </div>
+        <div class="card">
+          <h3>📦 Docker</h3>
+          <p>Образ Ubuntu 22.04. Сам собирает проект и запускает <code>echoServer</code>. Готовый образ: <code>rainkord/timp-server:latest</code>.</p>
+        </div>
+        <div class="card">
+          <h3>🧪 Тесты</h3>
+          <p>Qt Test для модуля <code>calculator</code> — вычисление f(x) и генерация точек графика.</p>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Быстрый старт</h3>
+        <pre># Запустить сервер через Docker (самый простой способ)
+docker pull rainkord/timp-server:latest
+docker run -d --name timp-server -p 33333:33333 rainkord/timp-server:latest
+
+# Собрать и запустить клиент локально
+cd client
+qmake client.pro
+make -j$(nproc)
+../build/client</pre>
+      </div>
+    </section>
+
+    <!-- СТРУКТУРА -->
+    <section class="section" id="s-structure">
+      <div class="section-header">
+        <h2>Структура проекта</h2>
+        <p>Монорепо — клиент, сервер, тесты и Docker в одном репозитории</p>
+      </div>
+      <div class="filetree">
+        <div><span class="dir">TIMP-251-372-group-5/</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">client/</span> <span class="comment"># Qt Widgets приложение</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">authwidget.cpp/h</span> <span class="comment"># Экран входа</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">regwidget.cpp/h</span> <span class="comment"># Регистрация</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">verifywidget.cpp/h</span> <span class="comment"># Email-верификация</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">resetwidget.cpp/h</span> <span class="comment"># Сброс пароля</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">clientsingleton.cpp/h</span> <span class="comment"># TCP Singleton</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">mainwindow.cpp/h</span> <span class="comment"># Главное окно</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">graphwidget.cpp/h</span> <span class="comment"># Отрисовка графов</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">schemadialog.cpp/h</span> <span class="comment"># Диалог схем</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">taskdialog.cpp/h</span> <span class="comment"># Диалог задач</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">server/</span> <span class="comment"># Qt TCP-сервер</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">mytcpserver.cpp/h</span> <span class="comment"># Приём соединений, маршрутизация</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">database.cpp/h</span> <span class="comment"># SQLite CRUD singleton</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">smtpclient.cpp/h</span> <span class="comment"># Gmail SMTP (SSL, порт 465)</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">calculator.cpp/h</span> <span class="comment"># f(x), генерация точек</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">main.cpp</span> <span class="comment"># Точка входа</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">email.txt</span> <span class="comment"># НЕ коммитить! В .gitignore</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">docker/</span> <span class="comment"># Dockerfile и вспомогательные скрипты</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">Dockerfile</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">fix-dns.sh</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">tests/</span> <span class="comment"># Qt Test</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">docs/</span> <span class="comment"># Doxygen + эта вики</span></div>
+        <div>&nbsp;&nbsp;<span class="file">README.md</span></div>
+        <div>&nbsp;&nbsp;<span class="file">.gitignore</span></div>
+      </div>
+    </section>
+
+    <!-- СЕРВЕР -->
+    <section class="section" id="s-server">
+      <div class="section-header">
+        <h2>Сервер</h2>
+        <p>Qt TCP-сервер — <code>server/</code></p>
+      </div>
+
+      <div class="subsection">
+        <h3>Сборка и запуск</h3>
+        <pre>cd server
+qmake echoServer.pro
+make -j$(nproc)
+./echoServer</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Файлы сервера</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Файл</th><th>Назначение</th><th>Ключевые методы</th><th>Инструменты</th></tr></thead>
+            <tbody>
+              <tr><td><code>mytcpserver</code></td><td>TCP-сервер, маршрутизация</td><td><code>slotNewConnection()</code>, <code>slotServerRead()</code>, <code>processBuffer()</code>, <code>sendResponse()</code></td><td><code>QTcpServer</code>, <code>QTcpSocket</code>, <code>QJsonDocument</code></td></tr>
+              <tr><td><code>database</code></td><td>SQLite CRUD singleton</td><td><code>instance()</code>, <code>addUser()</code>, <code>getUser()</code>, <code>addTask()</code>, <code>getTasks()</code>, <code>updateTask()</code>, <code>deleteTask()</code></td><td><code>QSqlDatabase</code>, <code>QSqlQuery</code> (QSQLITE)</td></tr>
+              <tr><td><code>smtpclient</code></td><td>Gmail SMTP (SSL, порт 465)</td><td><code>sendVerificationCode()</code>, <code>sendPasswordResetCode()</code></td><td><code>QSslSocket</code>, <code>QByteArray::toBase64()</code></td></tr>
+              <tr><td><code>calculator</code></td><td>Вычисление f(x), генерация графика</td><td><code>calculate()</code>, <code>generateGraphData()</code></td><td>Чистый C++, <code>&lt;cmath&gt;</code></td></tr>
+              <tr><td><code>main.cpp</code></td><td>Точка входа</td><td>—</td><td><code>QCoreApplication</code>, <code>MyTcpServer</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMAIL -->
+    <section class="section" id="s-email">
+      <div class="section-header">
+        <h2>Email-конфигурация</h2>
+        <p>Настройка <code>server/email.txt</code> для отправки писем с кодами подтверждения</p>
+      </div>
+
+      <div class="callout callout-warn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p>Файл <code>email.txt</code> добавлен в <code>.gitignore</code> — никогда не коммитьте его в репозиторий!</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Формат файла</h3>
+        <pre># Ключ можно получить: https://myaccount.google.com/apppasswords
+email=your_address@gmail.com
+key=xxxx xxxx xxxx xxxx</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Как получить пароль приложения Google</h3>
+        <ol style="padding-left:1.25rem;display:flex;flex-direction:column;gap:0.6rem;font-size:0.9rem;color:var(--color-text-muted)">
+          <li>Перейдите на <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a></li>
+          <li>Войдите в аккаунт Google, от которого будет работать рассылка</li>
+          <li>В поле «Название приложения» введите любое имя (например, <code>TIMP Server</code>)</li>
+          <li>Нажмите <strong style="color:var(--color-text)">Создать</strong> — Google выдаст 16-символьный пароль вида <code>xxxx xxxx xxxx xxxx</code></li>
+          <li>Скопируйте его в поле <code>key=</code> файла <code>email.txt</code></li>
+        </ol>
+      </div>
+
+      <div class="subsection">
+        <h3>Готовый пример</h3>
+        <pre># Ключ можно получить: https://myaccount.google.com/apppasswords
+email=example@gmail.com
+key=abcd efgh ijkl mnop</pre>
+      </div>
+    </section>
+
+    <!-- КЛИЕНТ -->
+    <section class="section" id="s-client">
+      <div class="section-header">
+        <h2>Клиент</h2>
+        <p>Qt-приложение с виджетами — <code>client/</code></p>
+      </div>
+
+      <div class="subsection">
+        <h3>Сборка и запуск</h3>
+        <pre>cd client
+qmake client.pro
+make -j$(nproc)
+../build/client</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Навигация между экранами</h3>
+        <div class="flow">
+          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→</div>
+          <div class="flow-step">MainWindow</div><div class="flow-arrow">↔</div>
+          <div class="flow-step">GraphWidget</div>
+        </div>
+        <div class="flow" style="margin-top:0.5rem">
+          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→</div>
+          <div class="flow-step">RegWidget</div><div class="flow-arrow">→</div>
+          <div class="flow-step">VerifyWidget</div>
+        </div>
+        <div class="flow" style="margin-top:0.5rem">
+          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→</div>
+          <div class="flow-step">ResetWidget</div><div class="flow-arrow">(3 шага)</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Файлы клиента</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Файл</th><th>Назначение</th><th>Ключевые слоты</th><th>Qt-инструменты</th></tr></thead>
+            <tbody>
+              <tr><td><code>authwidget</code></td><td>Экран авторизации</td><td><code>onLoginClicked()</code>, <code>onForgotClicked()</code></td><td><code>QWidget</code>, <code>QLineEdit</code>, <code>QPushButton</code></td></tr>
+              <tr><td><code>regwidget</code></td><td>Регистрация (3 шага)</td><td><code>onNextClicked()</code>, <code>onRegisterClicked()</code>, <code>onBackClicked()</code></td><td><code>QStackedWidget</code>, <code>QRegularExpressionValidator</code></td></tr>
+              <tr><td><code>verifywidget</code></td><td>Ввод кода из email</td><td><code>onConfirmClicked()</code>, <code>onResendClicked()</code></td><td><code>QLineEdit</code>, <code>QTimer</code></td></tr>
+              <tr><td><code>resetwidget</code></td><td>Сброс пароля (3 шага)</td><td><code>onSendCodeClicked()</code>, <code>onVerifyClicked()</code>, <code>onResetClicked()</code></td><td><code>QStackedWidget</code>, <code>QTimer</code></td></tr>
+              <tr><td><code>clientsingleton</code></td><td>TCP-соединение (Singleton)</td><td><code>instance()</code>, <code>sendRequest()</code>, <code>readResponse()</code></td><td><code>QTcpSocket</code>, <code>QJsonDocument</code></td></tr>
+              <tr><td><code>mainwindow</code></td><td>Главное окно</td><td><code>showAuth()</code>, <code>showMain()</code>, <code>showGraph()</code></td><td><code>QMainWindow</code>, <code>QStackedWidget</code></td></tr>
+              <tr><td><code>graphwidget</code></td><td>Отрисовка графа/схемы</td><td><code>paintEvent()</code>, <code>addNode()</code>, <code>addEdge()</code>, <code>exportToPng()</code></td><td><code>QPainter</code>, <code>QGraphicsScene</code></td></tr>
+              <tr><td><code>schemadialog</code></td><td>Выбор/редактирование схемы</td><td><code>loadSchemas()</code>, <code>onAccepted()</code></td><td><code>QDialog</code>, <code>QListWidget</code></td></tr>
+              <tr><td><code>taskdialog</code></td><td>Создание/редактирование задачи</td><td><code>onSaveClicked()</code>, <code>populate()</code></td><td><code>QDialog</code>, <code>QComboBox</code>, <code>QDateEdit</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>ClientSingleton — пример использования</h3>
+        <pre>// Получить экземпляр
+ClientSingleton &amp;cs = ClientSingleton::instance();
+
+// Отправить запрос и получить ответ
+QJsonObject req;
+req["type"] = "login";
+req["login"] = ui-&gt;loginEdit-&gt;text();
+req["password"] = ui-&gt;passEdit-&gt;text();
+
+QJsonObject response = cs.sendRequest(req);</pre>
+      </div>
+    </section>
+
+    <!-- JSON-ПРОТОКОЛ -->
+    <section class="section" id="s-proto">
+      <div class="section-header">
+        <h2>JSON-протокол</h2>
+        <p>Формат запросов и ответов между клиентом и сервером</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Структура запроса</h3>
+        <pre>{
+  "type": "&lt;действие&gt;",   // обязательно — тип команды
+  ...                      // дополнительные поля
+}</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Все типы команд</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>type</th><th>Направление</th><th>Поля запроса</th><th>Поля ответа</th></tr></thead>
+            <tbody>
+              <tr><td><code>login</code></td><td>C → S</td><td><code>login</code>, <code>password</code></td><td><code>status</code>, <code>user_id</code></td></tr>
+              <tr><td><code>register</code></td><td>C → S</td><td><code>login</code>, <code>password</code>, <code>email</code></td><td><code>status</code></td></tr>
+              <tr><td><code>verify_email</code></td><td>C → S</td><td><code>email</code>, <code>code</code></td><td><code>status</code></td></tr>
+              <tr><td><code>reset_password</code></td><td>C → S</td><td><code>email</code></td><td><code>status</code></td></tr>
+              <tr><td><code>verify_reset</code></td><td>C → S</td><td><code>email</code>, <code>code</code>, <code>new_password</code></td><td><code>status</code></td></tr>
+              <tr><td><code>get_tasks</code></td><td>C → S</td><td><code>user_id</code></td><td><code>status</code>, <code>tasks[]</code></td></tr>
+              <tr><td><code>add_task</code></td><td>C → S</td><td><code>user_id</code>, <code>title</code>, <code>description</code>, <code>status</code>, <code>deadline</code></td><td><code>status</code>, <code>id</code></td></tr>
+              <tr><td><code>update_task</code></td><td>C → S</td><td><code>id</code>, обновлённые поля</td><td><code>status</code></td></tr>
+              <tr><td><code>delete_task</code></td><td>C → S</td><td><code>id</code></td><td><code>status</code></td></tr>
+              <tr><td><code>get_schemas</code></td><td>C → S</td><td><code>user_id</code></td><td><code>status</code>, <code>schemas[]</code></td></tr>
+              <tr><td><code>save_schema</code></td><td>C → S</td><td><code>user_id</code>, <code>name</code>, <code>data</code></td><td><code>status</code></td></tr>
+              <tr><td><code>calculate</code></td><td>C → S</td><td><code>expression</code>, <code>x_from</code>, <code>x_to</code>, <code>step</code></td><td><code>status</code>, <code>points[]</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Примеры</h3>
+        <p style="margin-bottom:0.75rem;font-size:0.85rem;color:var(--color-text-muted)">Авторизация:</p>
+        <pre>// Запрос
+{ "type": "login", "login": "user123", "password": "secret" }
+
+// Ответ (успех)
+{ "status": "ok", "user_id": 42 }
+
+// Ответ (ошибка)
+{ "status": "error", "message": "Invalid credentials" }</pre>
+        <p style="margin:1rem 0 0.75rem;font-size:0.85rem;color:var(--color-text-muted)">Добавление задачи:</p>
+        <pre>{
+  "type": "add_task",
+  "user_id": 42,
+  "title": "Сдать лабу",
+  "description": "Qt TCP сервер",
+  "status": "in_progress",
+  "deadline": "2026-05-01"
+}
+// Ответ
+{ "status": "ok", "id": 7 }</pre>
+      </div>
+    </section>
+
+    <!-- DOCKER -->
+    <section class="section" id="s-docker">
+      <div class="section-header">
+        <h2>Docker</h2>
+        <p>Сервер упакован в образ Ubuntu 22.04. Клиент собирается локально.</p>
+      </div>
+
+      <div class="callout callout-warn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p>Перед сборкой образа обязательно заполните <code>server/email.txt</code>. Dockerfile копирует его внутрь образа.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Быстрый старт (готовый образ)</h3>
+        <pre># Скачать готовый образ с Docker Hub
+docker pull rainkord/timp-server:latest
+
+# Запустить контейнер
+docker run -d --name timp-server -p 33333:33333 rainkord/timp-server:latest
+
+# Проверить логи
+docker logs -f timp-server</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Сборка из исходников</h3>
+        <pre># Из корня репозитория
+docker build -f docker/Dockerfile -t timp-server .
+docker run -d --name timp-server -p 33333:33333 timp-server</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Управление контейнером</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Команда</th><th>Действие</th></tr></thead>
+            <tbody>
+              <tr><td><code>docker logs -f timp-server</code></td><td>Логи в реальном времени</td></tr>
+              <tr><td><code>docker stop timp-server</code></td><td>Остановить</td></tr>
+              <tr><td><code>docker start timp-server</code></td><td>Запустить снова</td></tr>
+              <tr><td><code>docker rm -f timp-server</code></td><td>Удалить контейнер</td></tr>
+              <tr><td><code>docker exec -it timp-server bash</code></td><td>Зайти внутрь</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Публикация на Docker Hub</h3>
+        <pre>docker login
+
+docker build -f docker/Dockerfile -t &lt;логин&gt;/timp-server:latest .
+docker push &lt;логин&gt;/timp-server:latest
+
+# Запуск на любой машине
+docker pull &lt;логин&gt;/timp-server:latest
+docker run -d --name timp-server -p 33333:33333 &lt;логин&gt;/timp-server:latest</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Проблема с DNS при сборке</h3>
+        <pre>chmod +x docker/fix-dns.sh
+./docker/fix-dns.sh</pre>
+      </div>
+    </section>
+
+    <!-- ТЕСТЫ -->
+    <section class="section" id="s-tests">
+      <div class="section-header">
+        <h2>Модульные тесты</h2>
+        <p>Qt Test — директория <code>tests/</code></p>
+      </div>
+
+      <div class="subsection">
+        <h3>Сборка и запуск</h3>
+        <pre>cd tests
+qmake tests.pro
+make -j$(nproc)
+./tests</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>Что тестируется</h3>
+        <p style="color:var(--color-text-muted);font-size:0.9rem">Модуль <code>calculator</code> — чистый C++ без Qt-зависимостей:</p>
+        <div class="card-grid" style="margin-top:1rem">
+          <div class="card">
+            <h3>calculate()</h3>
+            <p>Вычисляет значение математического выражения f(x) при заданном x.</p>
+          </div>
+          <div class="card">
+            <h3>generateGraphData()</h3>
+            <p>Генерирует массив точек {x, y} для построения графика в заданном диапазоне с шагом.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ДОКУМЕНТАЦИЯ -->
+    <section class="section" id="s-docs">
+      <div class="section-header">
+        <h2>Документация</h2>
+        <p>Doxygen — генерация HTML из комментариев в коде</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Установка и генерация</h3>
+        <pre># Установка (CachyOS / Arch)
+sudo pacman -S doxygen graphviz
+
+# Генерация и открытие в браузере
+doxygen docs/Doxyfile &amp;&amp; xdg-open docs/output/html/index.html</pre>
+      </div>
+
+      <div class="callout callout-ok">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <p>Сгенерированный HTML находится в <code>docs/output/html/</code> и закоммичен в репозиторий. LaTeX, XML и прочие форматы вывода игнорируются через <code>.gitignore</code>.</p>
+      </div>
+    </section>
+
+    <!-- БАЗА ДАННЫХ -->
+    <section class="section" id="s-db">
+      <div class="section-header">
+        <h2>База данных</h2>
+        <p>SQLite через <code>database.cpp/h</code> — Singleton-обёртка</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Основные операции</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Метод</th><th>Действие</th></tr></thead>
+            <tbody>
+              <tr><td><code>Database::instance()</code></td><td>Получить единственный экземпляр</td></tr>
+              <tr><td><code>addUser(login, password, email)</code></td><td>Зарегистрировать нового пользователя</td></tr>
+              <tr><td><code>getUser(login, password)</code></td><td>Авторизация — вернуть user_id</td></tr>
+              <tr><td><code>addTask(user_id, title, ...)</code></td><td>Создать задачу</td></tr>
+              <tr><td><code>getTasks(user_id)</code></td><td>Получить все задачи пользователя</td></tr>
+              <tr><td><code>updateTask(id, ...)</code></td><td>Обновить поля задачи</td></tr>
+              <tr><td><code>deleteTask(id)</code></td><td>Удалить задачу</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Используемые драйверы Qt</h3>
+        <pre>// Инициализация
+QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+db.setDatabaseName("timp.db");
+db.open();
+
+// Запрос
+QSqlQuery query;
+query.prepare("SELECT id FROM users WHERE login=? AND password=?");
+query.addBindValue(login);
+query.addBindValue(password);
+query.exec();</pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// Theme toggle
+(function(){
+  const btn = document.getElementById('themeBtn');
+  const root = document.documentElement;
+  let theme = root.getAttribute('data-theme') || 'dark';
+  const sunIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  const moonIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  btn.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+  btn.addEventListener('click', () => {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    btn.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+  });
+})();
+
+// Sidebar navigation
+(function(){
+  const links = document.querySelectorAll('[data-section]');
+  const sections = document.querySelectorAll('.section');
+  function show(id) {
+    sections.forEach(s => s.classList.toggle('active', s.id === id));
+    links.forEach(l => l.classList.toggle('active', l.dataset.section === id));
+    window.scrollTo({top:0, behavior:'instant'});
+  }
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      show(link.dataset.section);
+      if(window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+})();
+
+// Burger menu
+document.getElementById('burgerBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+</script>
+</body>
+</html>
