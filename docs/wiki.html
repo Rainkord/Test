@@ -42,10 +42,10 @@
   --color-surface:#161514;
   --color-surface-2:#1c1b19;
   --color-surface-offset:#222120;
-  --color-divider:#2a2927;
+  --color-divider:#262523;
   --color-border:#333230;
   --color-text:#d8d6d2;
-  --color-text-muted:#7a7876;
+  --color-text-muted:#797876;
   --color-text-faint:#4e4d4b;
   --color-primary:#4f98a3;
   --color-primary-hover:#62aeb9;
@@ -298,7 +298,7 @@ button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
       <div class="card-grid">
         <div class="card">
           <h3>🖥 Клиент</h3>
-          <p>Qt Widgets-приложение. Авторизация, регистрация с email-верификацией, менеджер задач, редактор и отрисовка графов.</p>
+          <p>Qt Widgets-приложение. Авторизация с email-верификацией, регистрация, менеджер задач, редактор и отрисовка графов.</p>
         </div>
         <div class="card">
           <h3>⚙️ Сервер</h3>
@@ -337,15 +337,17 @@ make -j$(nproc)
       <div class="filetree">
         <div><span class="dir">TIMP-251-372-group-5/</span></div>
         <div>&nbsp;&nbsp;<span class="dir">client/</span> <span class="comment"># Qt Widgets приложение</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">authwidget.cpp/h</span> <span class="comment"># Экран входа</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">regwidget.cpp/h</span> <span class="comment"># Регистрация</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">verifywidget.cpp/h</span> <span class="comment"># Email-верификация</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">resetwidget.cpp/h</span> <span class="comment"># Сброс пароля</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">authwidget.cpp/h</span> <span class="comment"># Экран авторизации</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">regwidget.cpp/h</span> <span class="comment"># Регистрация (3 шага)</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">verifywidget.cpp/h</span> <span class="comment"># Email-верификация после входа</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">resetwidget.cpp/h</span> <span class="comment"># Сброс пароля (3 шага)</span></div>
         <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">clientsingleton.cpp/h</span> <span class="comment"># TCP Singleton</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">mainwindow.cpp/h</span> <span class="comment"># Главное окно</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">mainwindow.cpp/h</span> <span class="comment"># Главное окно / навигация</span></div>
         <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">graphwidget.cpp/h</span> <span class="comment"># Отрисовка графов</span></div>
         <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">schemadialog.cpp/h</span> <span class="comment"># Диалог схем</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">taskdialog.cpp/h</span> <span class="comment"># Диалог задач</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">taskdialog.cpp/h</span> <span class="comment"># Диалог условия задания</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">formula_task.png</span> <span class="comment"># Формула задания (Qt-ресурс)</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">formula_graph.png</span> <span class="comment"># Формула для графика (Qt-ресурс)</span></div>
         <div>&nbsp;&nbsp;<span class="dir">server/</span> <span class="comment"># Qt TCP-сервер</span></div>
         <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">mytcpserver.cpp/h</span> <span class="comment"># Приём соединений, маршрутизация</span></div>
         <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">database.cpp/h</span> <span class="comment"># SQLite CRUD singleton</span></div>
@@ -450,19 +452,25 @@ make -j$(nproc)
 
       <div class="subsection">
         <h3>Навигация между экранами</h3>
+        <p style="font-size:0.85rem;color:var(--color-text-muted);margin-bottom:0.75rem">Все переходы управляются через <code>QStackedWidget</code> в <code>MainWindow</code>. Индексы: 0=Auth, 1=Reg, 2=Verify, 3=Graph, 4=Reset.</p>
         <div class="flow">
-          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→</div>
-          <div class="flow-step">MainWindow</div><div class="flow-arrow">↔</div>
+          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→ loginSuccess</div>
+          <div class="flow-step">VerifyWidget</div><div class="flow-arrow">→ verificationSuccess</div>
           <div class="flow-step">GraphWidget</div>
         </div>
         <div class="flow" style="margin-top:0.5rem">
-          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→</div>
-          <div class="flow-step">RegWidget</div><div class="flow-arrow">→</div>
-          <div class="flow-step">VerifyWidget</div>
+          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→ showRegister</div>
+          <div class="flow-step">RegWidget</div><div class="flow-arrow">→ registrationSuccess</div>
+          <div class="flow-step">GraphWidget</div>
         </div>
         <div class="flow" style="margin-top:0.5rem">
-          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→</div>
-          <div class="flow-step">ResetWidget</div><div class="flow-arrow">(3 шага)</div>
+          <div class="flow-step">AuthWidget</div><div class="flow-arrow">→ showReset</div>
+          <div class="flow-step">ResetWidget</div><div class="flow-arrow">→ resetSuccess</div>
+          <div class="flow-step">AuthWidget</div>
+        </div>
+        <div class="flow" style="margin-top:0.5rem">
+          <div class="flow-step">GraphWidget</div><div class="flow-arrow">→ logout</div>
+          <div class="flow-step">AuthWidget</div><div class="flow-arrow">(clearFields)</div>
         </div>
       </div>
 
@@ -470,17 +478,77 @@ make -j$(nproc)
         <h3>Файлы клиента</h3>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Файл</th><th>Назначение</th><th>Ключевые слоты</th><th>Qt-инструменты</th></tr></thead>
+            <thead><tr><th>Файл</th><th>Назначение</th><th>Ключевые слоты / методы</th><th>Qt-инструменты</th></tr></thead>
             <tbody>
-              <tr><td><code>authwidget</code></td><td>Экран авторизации</td><td><code>onLoginClicked()</code>, <code>onForgotClicked()</code></td><td><code>QWidget</code>, <code>QLineEdit</code>, <code>QPushButton</code></td></tr>
-              <tr><td><code>regwidget</code></td><td>Регистрация (3 шага)</td><td><code>onNextClicked()</code>, <code>onRegisterClicked()</code>, <code>onBackClicked()</code></td><td><code>QStackedWidget</code>, <code>QRegularExpressionValidator</code></td></tr>
-              <tr><td><code>verifywidget</code></td><td>Ввод кода из email</td><td><code>onConfirmClicked()</code>, <code>onResendClicked()</code></td><td><code>QLineEdit</code>, <code>QTimer</code></td></tr>
-              <tr><td><code>resetwidget</code></td><td>Сброс пароля (3 шага)</td><td><code>onSendCodeClicked()</code>, <code>onVerifyClicked()</code>, <code>onResetClicked()</code></td><td><code>QStackedWidget</code>, <code>QTimer</code></td></tr>
-              <tr><td><code>clientsingleton</code></td><td>TCP-соединение (Singleton)</td><td><code>instance()</code>, <code>sendRequest()</code>, <code>readResponse()</code></td><td><code>QTcpSocket</code>, <code>QJsonDocument</code></td></tr>
-              <tr><td><code>mainwindow</code></td><td>Главное окно</td><td><code>showAuth()</code>, <code>showMain()</code>, <code>showGraph()</code></td><td><code>QMainWindow</code>, <code>QStackedWidget</code></td></tr>
-              <tr><td><code>graphwidget</code></td><td>Отрисовка графа/схемы</td><td><code>paintEvent()</code>, <code>addNode()</code>, <code>addEdge()</code>, <code>exportToPng()</code></td><td><code>QPainter</code>, <code>QGraphicsScene</code></td></tr>
-              <tr><td><code>schemadialog</code></td><td>Выбор/редактирование схемы</td><td><code>loadSchemas()</code>, <code>onAccepted()</code></td><td><code>QDialog</code>, <code>QListWidget</code></td></tr>
-              <tr><td><code>taskdialog</code></td><td>Создание/редактирование задачи</td><td><code>onSaveClicked()</code>, <code>populate()</code></td><td><code>QDialog</code>, <code>QComboBox</code>, <code>QDateEdit</code></td></tr>
+              <tr>
+                <td><code>authwidget</code></td>
+                <td>Экран авторизации</td>
+                <td>
+                  <code>onLoginClicked()</code> — отправляет запрос и переходит на VerifyWidget<br>
+                  <code>onRegisterClicked()</code> — emit <code>showRegister</code><br>
+                  <code>onForgotClicked()</code> — emit <code>showReset</code><br>
+                  <code>onTogglePassword()</code> — показать/скрыть пароль<br>
+                  <code>clearFields()</code> — очистить поля и сбросить состояние блокировки
+                </td>
+                <td><code>QWidget</code>, <code>QLineEdit</code>, <code>QPushButton</code>, <code>QTimer</code></td>
+              </tr>
+              <tr>
+                <td><code>regwidget</code></td>
+                <td>Регистрация (3 шага)</td>
+                <td>
+                  <code>onNextClicked()</code>, <code>onBackClicked()</code> — шаги регистрации<br>
+                  <code>onRegisterClicked()</code> — финальный запрос<br>
+                  <code>clearFields()</code> — сброс всех полей и возврат к шагу 1
+                </td>
+                <td><code>QStackedWidget</code>, <code>QRegularExpressionValidator</code>, <code>QTimer</code></td>
+              </tr>
+              <tr>
+                <td><code>verifywidget</code></td>
+                <td>Ввод кода из email (после входа)</td>
+                <td><code>onConfirmClicked()</code>, <code>onResendClicked()</code>, <code>setLogin()</code></td>
+                <td><code>QLineEdit</code>, <code>QTimer</code></td>
+              </tr>
+              <tr>
+                <td><code>resetwidget</code></td>
+                <td>Сброс пароля (3 шага)</td>
+                <td><code>onSendCodeClicked()</code>, <code>onVerifyClicked()</code>, <code>onResetClicked()</code></td>
+                <td><code>QStackedWidget</code>, <code>QTimer</code></td>
+              </tr>
+              <tr>
+                <td><code>clientsingleton</code></td>
+                <td>TCP-соединение (Singleton)</td>
+                <td><code>instance()</code>, <code>sendRequestAsync()</code>, <code>responseReceived</code> (сигнал)</td>
+                <td><code>QTcpSocket</code>, <code>QJsonDocument</code></td>
+              </tr>
+              <tr>
+                <td><code>mainwindow</code></td>
+                <td>Главное окно, навигация</td>
+                <td>
+                  <code>onShowRegister()</code>, <code>onShowAuth()</code>, <code>onBackToAuth()</code><br>
+                  <code>onLogout()</code>, <code>onShowReset()</code>, <code>onShowVerifyAuth()</code><br>
+                  <code>onRegistrationSuccess()</code>, <code>onVerificationSuccess()</code>, <code>onResetSuccess()</code><br>
+                  <code>onTaskBtnClicked()</code>, <code>onSchemaBtnClicked()</code>
+                </td>
+                <td><code>QMainWindow</code>, <code>QStackedWidget</code></td>
+              </tr>
+              <tr>
+                <td><code>graphwidget</code></td>
+                <td>Отрисовка графа/схемы</td>
+                <td><code>paintEvent()</code>, <code>addNode()</code>, <code>addEdge()</code>, <code>exportToPng()</code>, <code>setUserLogin()</code>, <code>updateGraph()</code></td>
+                <td><code>QPainter</code>, <code>QGraphicsScene</code></td>
+              </tr>
+              <tr>
+                <td><code>schemadialog</code></td>
+                <td>Выбор/редактирование схемы</td>
+                <td><code>loadSchemas()</code>, <code>onAccepted()</code></td>
+                <td><code>QDialog</code>, <code>QListWidget</code></td>
+              </tr>
+              <tr>
+                <td><code>taskdialog</code></td>
+                <td>Диалог условия задания — показывает название работы, участников подгруппы и формулу варианта из Qt-ресурса (<code>formula_task.png</code>)</td>
+                <td><code>setupUI()</code> — строит интерфейс; кнопка «Закрыть» закрывает диалог</td>
+                <td><code>QDialog</code>, <code>QLabel</code>, <code>QPixmap</code></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -491,13 +559,32 @@ make -j$(nproc)
         <pre>// Получить экземпляр
 ClientSingleton &amp;cs = ClientSingleton::instance();
 
-// Отправить запрос и получить ответ
-QJsonObject req;
-req["type"] = "login";
-req["login"] = ui-&gt;loginEdit-&gt;text();
-req["password"] = ui-&gt;passEdit-&gt;text();
+// Подписаться на ответы сервера
+connect(&amp;cs, &amp;ClientSingleton::responseReceived,
+        this, &amp;MyWidget::onResponseReceived);
 
-QJsonObject response = cs.sendRequest(req);</pre>
+// Отправить запрос асинхронно
+cs.sendRequestAsync(QString("auth||%1||%2").arg(login, passwordHash));</pre>
+      </div>
+
+      <div class="subsection">
+        <h3>clearFields() — сброс состояния виджетов</h3>
+        <p style="font-size:0.9rem;color:var(--color-text-muted);margin-bottom:0.75rem">
+          Оба виджета авторизации и регистрации реализуют <code>clearFields()</code>.
+          <code>MainWindow</code> вызывает его при каждом переключении экрана, чтобы
+          старые данные не оставались при повторном входе или регистрации.
+        </p>
+        <pre>// MainWindow — переход на экран регистрации
+void MainWindow::onShowRegister() {
+    regWidget->clearFields();          // сбросить поля + вернуться на шаг 1
+    stackedWidget->setCurrentIndex(IDX_REG);
+}
+
+// MainWindow — выход из аккаунта
+void MainWindow::onLogout() {
+    authWidget->clearFields();         // сбросить поля + снять блокировку
+    stackedWidget->setCurrentIndex(IDX_AUTH);
+}</pre>
       </div>
     </section>
 
@@ -543,7 +630,7 @@ QJsonObject response = cs.sendRequest(req);</pre>
         <h3>Примеры</h3>
         <p style="margin-bottom:0.75rem;font-size:0.85rem;color:var(--color-text-muted)">Авторизация:</p>
         <pre>// Запрос
-{ "type": "login", "login": "user123", "password": "secret" }
+{ "type": "login", "login": "user123", "password": "sha256hash..." }
 
 // Ответ (успех)
 { "status": "ok", "user_id": 42 }
