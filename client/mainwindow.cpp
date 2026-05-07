@@ -68,11 +68,9 @@ void MainWindow::setupUI()
 
     taskBtn = new QPushButton(QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5"), topBar);
     taskBtn->setStyleSheet(btnStyle);
-    taskBtn->hide();
 
     schemaBtn = new QPushButton(QString::fromUtf8("\xd0\xa1\xd1\x85\xd0\xb5\xd0\xbc\xd0\xb0"), topBar);
     schemaBtn->setStyleSheet(btnStyle);
-    schemaBtn->hide();
 
     topBarLayout->addWidget(appTitleLabel);
     topBarLayout->addStretch();
@@ -106,7 +104,6 @@ void MainWindow::connectSignals()
     connect(authWidget, &AuthWidget::loginSuccess,   this, [this](const QString &login) {
         graphWidget->setUserLogin(login);
         graphWidget->updateGraph();
-        taskBtn->show(); schemaBtn->show();
         stackedWidget->setCurrentIndex(IDX_GRAPH);
     });
     connect(authWidget, &AuthWidget::showRegister,   this, &MainWindow::onShowRegister);
@@ -156,7 +153,6 @@ void MainWindow::onBackToAuth()
 void MainWindow::onLogout()
 {
     authWidget->clearFields();
-    taskBtn->hide(); schemaBtn->hide();
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
@@ -170,7 +166,6 @@ void MainWindow::onVerificationSuccess(const QString &login)
 {
     graphWidget->setUserLogin(login);
     graphWidget->updateGraph();
-    taskBtn->show(); schemaBtn->show();
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
@@ -178,7 +173,6 @@ void MainWindow::onRegistrationSuccess(const QString &login)
 {
     graphWidget->setUserLogin(login);
     graphWidget->updateGraph();
-    taskBtn->show(); schemaBtn->show();
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
