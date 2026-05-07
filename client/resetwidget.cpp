@@ -11,7 +11,7 @@
 #include <QCryptographicHash>
 #include <QRegularExpression>
 
-// ── GitHub dark palette ────────────────────────────────────────────────────
+// ── GitHub dark palette ─────────────────────────────────────────────────────────────
 #define GH_BG          "#0d1117"
 #define GH_CARD        "#161b22"
 #define GH_BORDER      "#30363d"
@@ -32,7 +32,7 @@
 #define FONT_SIZE_INPUT 11
 #define FONT_SIZE_SMALL 9
 
-// ── Shared style helpers ───────────────────────────────────────────────────
+// ── Shared style helpers ──────────────────────────────────────────────────────────
 static QString inputStyle()
 {
     return QString(
@@ -162,7 +162,7 @@ static QString successLabelStyle()
            .arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
-// ── Constructor ───────────────────────────────────────────────────────────
+// ── Constructor ─────────────────────────────────────────────────────────────────
 ResetWidget::ResetWidget(QWidget *parent)
     : QWidget(parent),
       failedAttempts(0),
@@ -186,7 +186,7 @@ ResetWidget::ResetWidget(QWidget *parent)
 
 ResetWidget::~ResetWidget() {}
 
-// ── setupUI ────────────────────────────────────────────────────────────────
+// ── setupUI ───────────────────────────────────────────────────────────────────
 void ResetWidget::setupUI()
 {
     QVBoxLayout *outerV = new QVBoxLayout(this);
@@ -210,7 +210,7 @@ void ResetWidget::setupUI()
     cardLayout->setContentsMargins(28, 24, 28, 24);
     cardLayout->setSpacing(8);
 
-    QLabel *titleLabel = new QLabel("\xd0\x92\xd0\xbe\xd1\x81\xd1\x81\xd1\x82\xd0\xb0\xd0\xbd\xd0\xbe\xd0\xb2\xd0\xbb\xd0\xb5\xd0\xbd\xd0\xb8\xd0\xb5 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8f", card);
+    QLabel *titleLabel = new QLabel("Восстановление пароля", card);
     QFont titleFont(FONT_FAMILY, FONT_SIZE_TITLE, QFont::Bold);
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
@@ -218,14 +218,14 @@ void ResetWidget::setupUI()
     cardLayout->addWidget(titleLabel);
     cardLayout->addSpacing(8);
 
-    // ── STEP 1 — Email ─────────────────────────────
+    // ── STEP 1 — Email ──────────────────────────────────
     step1Widget = new QWidget(card);
     step1Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s1 = new QVBoxLayout(step1Widget);
     s1->setContentsMargins(0, 0, 0, 0);
     s1->setSpacing(6);
 
-    QLabel *emailHint = new QLabel("\xd0\x92\xd0\xb2\xd0\xb5\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5 \xd0\xbf\xd0\xbe\xd1\x87\xd1\x82\xd1\x83, \xd0\xbf\xd1\x80\xd0\xb8\xd0\xb2\xd1\x8f\xd0\xb7\xd0\xb0\xd0\xbd\xd0\xbd\xd1\x83\xd1\x8e \xd0\xba \xd0\xb0\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82\xd1\x83:", step1Widget);
+    QLabel *emailHint = new QLabel("Введите почту, привязанную к аккаунту:", step1Widget);
     emailHint->setStyleSheet(hintLabelStyle());
     s1->addWidget(emailHint);
 
@@ -242,7 +242,7 @@ void ResetWidget::setupUI()
     s1->addWidget(emailErrorLabel);
 
     s1->addSpacing(4);
-    continueBtn = new QPushButton("\xd0\x9f\xd1\x80\xd0\xbe\xd0\xb4\xd0\xbe\xd0\xbb\xd0\xb6\xd0\xb8\xd1\x82\xd1\x8c", step1Widget);
+    continueBtn = new QPushButton("Продолжить", step1Widget);
     continueBtn->setMinimumHeight(38);
     continueBtn->setEnabled(false);
     continueBtn->setStyleSheet(primaryBtnStyle(false));
@@ -251,7 +251,7 @@ void ResetWidget::setupUI()
 
     cardLayout->addWidget(step1Widget);
 
-    // ── STEP 2 — Code ──────────────────────────────
+    // ── STEP 2 — Code ───────────────────────────────────
     step2Widget = new QWidget(card);
     step2Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s2 = new QVBoxLayout(step2Widget);
@@ -265,4 +265,406 @@ void ResetWidget::setupUI()
     s2->addWidget(codeStatusLabel);
 
     codeEdit = new QLineEdit(step2Widget);
-    codeEdit->setPlaceholderText("\
+    codeEdit->setPlaceholderText("Введите код из письма");
+    codeEdit->setMaxLength(6);
+    codeEdit->setMinimumHeight(38);
+    codeEdit->setAlignment(Qt::AlignCenter);
+    codeEdit->setStyleSheet(
+        inputStyle() +
+        "QLineEdit { font-size: 15pt; letter-spacing: 4px; }"
+    );
+    s2->addWidget(codeEdit);
+    connect(codeEdit, &QLineEdit::textChanged, this, &ResetWidget::onCodeTextChanged);
+
+    codeErrorLabel = new QLabel(step2Widget);
+    codeErrorLabel->setStyleSheet(errorLabelStyle());
+    codeErrorLabel->setAlignment(Qt::AlignCenter);
+    codeErrorLabel->hide();
+    s2->addWidget(codeErrorLabel);
+
+    s2->addSpacing(4);
+    verifyCodeBtn = new QPushButton("Подтвердить код", step2Widget);
+    verifyCodeBtn->setMinimumHeight(38);
+    verifyCodeBtn->setEnabled(false);
+    verifyCodeBtn->setStyleSheet(blueBtnStyle(false));
+    connect(verifyCodeBtn, &QPushButton::clicked, this, &ResetWidget::onVerifyCodeClicked);
+    s2->addWidget(verifyCodeBtn);
+
+    cardLayout->addWidget(step2Widget);
+
+    // ── STEP 3 — New password ───────────────────────────
+    step3Widget = new QWidget(card);
+    step3Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
+    QVBoxLayout *s3 = new QVBoxLayout(step3Widget);
+    s3->setContentsMargins(0, 0, 0, 0);
+    s3->setSpacing(6);
+
+    QLabel *passHint = new QLabel("Придумайте новый пароль:", step3Widget);
+    passHint->setStyleSheet(hintLabelStyle());
+    s3->addWidget(passHint);
+
+    QHBoxLayout *pass1Row = new QHBoxLayout();
+    pass1Row->setSpacing(6);
+    newPasswordEdit = new QLineEdit(step3Widget);
+    newPasswordEdit->setPlaceholderText("Новый пароль");
+    newPasswordEdit->setEchoMode(QLineEdit::Password);
+    newPasswordEdit->setMinimumHeight(38);
+    newPasswordEdit->setStyleSheet(inputStyle());
+    pass1Row->addWidget(newPasswordEdit);
+    connect(newPasswordEdit, &QLineEdit::textChanged, this, &ResetWidget::onNewPasswordTextChanged);
+
+    togglePassBtn1 = new QPushButton("\xF0\x9F\x91\x81", step3Widget);
+    togglePassBtn1->setFixedSize(38, 38);
+    togglePassBtn1->setToolTip("Показать/скрыть пароль");
+    togglePassBtn1->setStyleSheet(ghostBtnStyle());
+    connect(togglePassBtn1, &QPushButton::clicked, this, &ResetWidget::onTogglePassword1);
+    pass1Row->addWidget(togglePassBtn1);
+    s3->addLayout(pass1Row);
+
+    newPasswordErrorLabel = new QLabel(step3Widget);
+    newPasswordErrorLabel->setStyleSheet(errorLabelStyle());
+    newPasswordErrorLabel->hide();
+    s3->addWidget(newPasswordErrorLabel);
+
+    QHBoxLayout *pass2Row = new QHBoxLayout();
+    pass2Row->setSpacing(6);
+    confirmPasswordEdit = new QLineEdit(step3Widget);
+    confirmPasswordEdit->setPlaceholderText("Подтвердите пароль");
+    confirmPasswordEdit->setEchoMode(QLineEdit::Password);
+    confirmPasswordEdit->setMinimumHeight(38);
+    confirmPasswordEdit->setStyleSheet(inputStyle());
+    pass2Row->addWidget(confirmPasswordEdit);
+    connect(confirmPasswordEdit, &QLineEdit::textChanged, this, &ResetWidget::onConfirmPasswordTextChanged);
+
+    togglePassBtn2 = new QPushButton("\xF0\x9F\x91\x81", step3Widget);
+    togglePassBtn2->setFixedSize(38, 38);
+    togglePassBtn2->setToolTip("Показать/скрыть пароль");
+    togglePassBtn2->setStyleSheet(ghostBtnStyle());
+    connect(togglePassBtn2, &QPushButton::clicked, this, &ResetWidget::onTogglePassword2);
+    pass2Row->addWidget(togglePassBtn2);
+    s3->addLayout(pass2Row);
+
+    confirmErrorLabel = new QLabel(step3Widget);
+    confirmErrorLabel->setStyleSheet(errorLabelStyle());
+    confirmErrorLabel->hide();
+    s3->addWidget(confirmErrorLabel);
+
+    s3->addSpacing(6);
+    saveBtn = new QPushButton("Сохранить пароль", step3Widget);
+    saveBtn->setMinimumHeight(38);
+    saveBtn->setEnabled(false);
+    saveBtn->setStyleSheet(primaryBtnStyle(false));
+    connect(saveBtn, &QPushButton::clicked, this, &ResetWidget::onSavePasswordClicked);
+    s3->addWidget(saveBtn);
+
+    cardLayout->addWidget(step3Widget);
+
+    cardLayout->addSpacing(8);
+    QFrame *line = new QFrame(card);
+    line->setFrameShape(QFrame::HLine);
+    line->setStyleSheet(QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
+    cardLayout->addWidget(line);
+    cardLayout->addSpacing(4);
+
+    backBtn = new QPushButton("\u2190 Назад к входу", card);
+    backBtn->setFlat(true);
+    backBtn->setStyleSheet(linkBtnStyle());
+    connect(backBtn, &QPushButton::clicked, this, &ResetWidget::onBackClicked);
+    cardLayout->addWidget(backBtn, 0, Qt::AlignCenter);
+
+    outerH->addWidget(card);
+    outerH->addStretch(1);
+    outerV->addLayout(outerH);
+    outerV->addStretch(1);
+
+    setLayout(outerV);
+    showStep(StepEmail);
+}
+
+// ── showStep ───────────────────────────────────────────────────────────────────
+void ResetWidget::showStep(Step step)
+{
+    m_currentStep = step;
+    step1Widget->setVisible(step == StepEmail);
+    step2Widget->setVisible(step == StepCode);
+    step3Widget->setVisible(step == StepPassword);
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+bool ResetWidget::isEmailValid(const QString &email) const
+{
+    QRegularExpression re("^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$");
+    return re.match(email).hasMatch();
+}
+
+void ResetWidget::validatePasswords()
+{
+    bool passOk    = (newPasswordEdit->text().length() >= 8);
+    bool confirmOk = (!confirmPasswordEdit->text().isEmpty()
+                      && confirmPasswordEdit->text() == newPasswordEdit->text());
+    bool ok = passOk && confirmOk;
+    saveBtn->setEnabled(ok);
+    saveBtn->setStyleSheet(primaryBtnStyle(ok));
+}
+
+void ResetWidget::applyLock(int minutes, const QString &message)
+{
+    isLocked = true;
+    verifyCodeBtn->setEnabled(false);
+    verifyCodeBtn->setStyleSheet(blueBtnStyle(false));
+    codeErrorLabel->setText(message);
+    codeErrorLabel->show();
+    lockTimer->start(minutes == 0 ? 30 * 1000 : minutes * 60 * 1000);
+}
+
+// ── Slots — Step 1 ───────────────────────────────────────────────────────────
+void ResetWidget::onEmailTextChanged(const QString &text)
+{
+    if (text.isEmpty()) {
+        emailErrorLabel->hide();
+        continueBtn->setEnabled(false);
+        continueBtn->setStyleSheet(primaryBtnStyle(false));
+        return;
+    }
+    if (!isEmailValid(text)) {
+        emailErrorLabel->setText("Неверный формат почты");
+        emailErrorLabel->show();
+        continueBtn->setEnabled(false);
+        continueBtn->setStyleSheet(primaryBtnStyle(false));
+    } else {
+        emailErrorLabel->hide();
+        continueBtn->setEnabled(true);
+        continueBtn->setStyleSheet(primaryBtnStyle(true));
+    }
+}
+
+// Fire-and-forget: сразу переходим на шаг 2, запрос уходит в фон
+// Если почта не найдена — onResetResponseReceived вернёт на шаг 1 с ошибкой
+void ResetWidget::onContinueClicked()
+{
+    m_email = emailEdit->text().trimmed();
+    m_waitingForResponse = true;
+
+    ClientSingleton::instance().sendRequestAsync(QString("reset_password||%1").arg(m_email));
+
+    // Сразу переходим к вводу кода, не ждём ответа сервера
+    codeEdit->clear();
+    codeErrorLabel->hide();
+    codeStatusLabel->setText("Код отправлен на: " + m_email);
+    codeStatusLabel->setStyleSheet(hintLabelStyle());
+    codeStatusLabel->show();
+    verifyCodeBtn->setEnabled(false);
+    verifyCodeBtn->setStyleSheet(blueBtnStyle(false));
+    failedAttempts = 0;
+    isLocked = false;
+    showStep(StepCode);
+}
+
+// ── Slots — Step 2 ───────────────────────────────────────────────────────────
+void ResetWidget::onCodeTextChanged(const QString &text)
+{
+    bool en = !text.trimmed().isEmpty() && !isLocked;
+    verifyCodeBtn->setEnabled(en);
+    verifyCodeBtn->setStyleSheet(blueBtnStyle(en));
+}
+
+void ResetWidget::onVerifyCodeClicked()
+{
+    if (isLocked) {
+        int remainingSec    = lockTimer->remainingTime() / 1000;
+        int remainingMin    = remainingSec / 60;
+        int remainingSecMod = remainingSec % 60;
+        codeErrorLabel->setText(remainingMin > 0
+            ? QString("Заблокировано. Осталось %1 мин %2 сек").arg(remainingMin).arg(remainingSecMod)
+            : QString("Заблокировано. Осталось %1 сек").arg(remainingSec));
+        codeErrorLabel->show();
+        return;
+    }
+
+    m_code = codeEdit->text().trimmed();
+    if (m_code.isEmpty()) {
+        codeErrorLabel->setText("Введите код из письма.");
+        codeErrorLabel->show();
+        return;
+    }
+
+    m_waitingForResponse = true;
+    verifyCodeBtn->setEnabled(false);
+    verifyCodeBtn->setStyleSheet(blueBtnStyle(false));
+    codeErrorLabel->hide();
+    codeStatusLabel->setText("Проверяем код...");
+    codeStatusLabel->setStyleSheet(hintLabelStyle());
+    codeStatusLabel->show();
+
+    ClientSingleton::instance().sendRequestAsync(
+        QString("verify_reset||%1||%2").arg(m_email, m_code));
+}
+
+void ResetWidget::onLockTimerFired()
+{
+    isLocked = false;
+    if (!codeEdit->text().trimmed().isEmpty()) {
+        verifyCodeBtn->setEnabled(true);
+        verifyCodeBtn->setStyleSheet(blueBtnStyle(true));
+    }
+    codeErrorLabel->hide();
+}
+
+// ── Slots — Step 3 ───────────────────────────────────────────────────────────
+void ResetWidget::onNewPasswordTextChanged(const QString &text)
+{
+    if (text.length() < 8 && !text.isEmpty()) {
+        newPasswordErrorLabel->setText("Минимум 8 символов");
+        newPasswordErrorLabel->show();
+    } else {
+        newPasswordErrorLabel->hide();
+    }
+    validatePasswords();
+}
+
+void ResetWidget::onConfirmPasswordTextChanged(const QString &text)
+{
+    if (!text.isEmpty() && text != newPasswordEdit->text()) {
+        confirmErrorLabel->setText("Пароли не совпадают");
+        confirmErrorLabel->show();
+    } else {
+        confirmErrorLabel->hide();
+    }
+    validatePasswords();
+}
+
+void ResetWidget::onTogglePassword1()
+{
+    newPasswordEdit->setEchoMode(
+        newPasswordEdit->echoMode() == QLineEdit::Password ? QLineEdit::Normal : QLineEdit::Password);
+}
+
+void ResetWidget::onTogglePassword2()
+{
+    confirmPasswordEdit->setEchoMode(
+        confirmPasswordEdit->echoMode() == QLineEdit::Password ? QLineEdit::Normal : QLineEdit::Password);
+}
+
+void ResetWidget::onSavePasswordClicked()
+{
+    QByteArray hashBytes = QCryptographicHash::hash(
+        newPasswordEdit->text().toUtf8(), QCryptographicHash::Sha256);
+    QString passwordHash = QString::fromLatin1(hashBytes.toHex());
+
+    m_waitingForResponse = true;
+    saveBtn->setEnabled(false);
+    saveBtn->setText("Сохраняем...");
+    saveBtn->setStyleSheet(primaryBtnStyle(false));
+
+    ClientSingleton::instance().sendRequestAsync(
+        QString("set_new_password||%1||%2||%3").arg(m_email, m_code, passwordHash));
+}
+
+// ── Response handler ───────────────────────────────────────────────────────────────
+void ResetWidget::onResetResponseReceived(const QString &response)
+{
+    if (!m_waitingForResponse) return;
+    m_waitingForResponse = false;
+
+    QString r = response.trimmed();
+
+    // Step 1: если почта не найдена — возвращаемся назад
+    if (m_currentStep == StepCode && r == "email_not_found") {
+        codeStatusLabel->hide();
+        showStep(StepEmail);
+        emailErrorLabel->setText("Почта не найдена.");
+        emailErrorLabel->show();
+        continueBtn->setEnabled(true);
+        continueBtn->setStyleSheet(primaryBtnStyle(true));
+        return;
+    }
+
+    if (r.isEmpty() || r == "error") {
+        if (m_currentStep == StepCode) {
+            verifyCodeBtn->setEnabled(true);
+            verifyCodeBtn->setStyleSheet(blueBtnStyle(true));
+            codeStatusLabel->hide();
+            codeErrorLabel->setText("Ошибка соединения с сервером.");
+            codeErrorLabel->show();
+        } else if (m_currentStep == StepPassword) {
+            saveBtn->setEnabled(true);
+            saveBtn->setText("Сохранить пароль");
+            saveBtn->setStyleSheet(primaryBtnStyle(true));
+        }
+        return;
+    }
+
+    // Step 2
+    if (m_currentStep == StepCode) {
+        if (r == "reset_code_ok") {
+            codeStatusLabel->hide();
+            codeErrorLabel->hide();
+            newPasswordEdit->clear();
+            confirmPasswordEdit->clear();
+            newPasswordErrorLabel->hide();
+            confirmErrorLabel->hide();
+            saveBtn->setEnabled(false);
+            saveBtn->setText("Сохранить пароль");
+            saveBtn->setStyleSheet(primaryBtnStyle(false));
+            showStep(StepPassword);
+            return;
+        }
+        verifyCodeBtn->setEnabled(true);
+        verifyCodeBtn->setStyleSheet(blueBtnStyle(true));
+        codeStatusLabel->hide();
+        failedAttempts++;
+        if (failedAttempts < 4) {
+            codeErrorLabel->setText(
+                QString("Неверный код. Осталось попыток: %1").arg(4 - failedAttempts));
+            codeErrorLabel->show();
+            return;
+        }
+        if (failedAttempts == 4) { applyLock(0,    "Слишком много попыток. Заблокировано на 30 секунд"); return; }
+        if (failedAttempts == 5) { applyLock(5,    "Слишком много попыток. Заблокировано на 5 минут");   return; }
+        if (failedAttempts == 6) { applyLock(10,   "Слишком много попыток. Заблокировано на 10 минут");  return; }
+        applyLock(9999, "Слишком много попыток. Заблокировано навсегда");
+        return;
+    }
+
+    // Step 3
+    if (m_currentStep == StepPassword) {
+        if (r == "password_changed") {
+            QTimer::singleShot(500, this, [this]() { emit resetSuccess(); });
+        } else {
+            saveBtn->setEnabled(true);
+            saveBtn->setText("Сохранить пароль");
+            saveBtn->setStyleSheet(primaryBtnStyle(true));
+            confirmErrorLabel->setText("Ошибка сервера. Попробуйте снова.");
+            confirmErrorLabel->show();
+        }
+    }
+}
+
+// ── Back ──────────────────────────────────────────────────────────────────────
+void ResetWidget::onBackClicked()
+{
+    m_waitingForResponse = false;
+    isLocked = false;
+    failedAttempts = 0;
+    if (lockTimer->isActive()) lockTimer->stop();
+
+    emailEdit->clear();
+    emailErrorLabel->hide();
+    continueBtn->setEnabled(false);
+    continueBtn->setText("Продолжить");
+    continueBtn->setStyleSheet(primaryBtnStyle(false));
+
+    codeEdit->clear();
+    codeErrorLabel->hide();
+    codeStatusLabel->hide();
+    verifyCodeBtn->setEnabled(false);
+    verifyCodeBtn->setStyleSheet(blueBtnStyle(false));
+
+    newPasswordEdit->clear();
+    confirmPasswordEdit->clear();
+    newPasswordErrorLabel->hide();
+    confirmErrorLabel->hide();
+
+    showStep(StepEmail);
+    emit backToAuth();
+}
