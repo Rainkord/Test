@@ -22,9 +22,10 @@ debug/
 release/
 
 # ── Compiled binaries (server / client / tests) ───────────────────────────────
-echoServer
-client
-tests
+# Leading slash = only root-level binary, not the source folder
+/echoServer
+/client
+/tests
 
 # ── Database ──────────────────────────────────────────────────────────────────
 *.db
