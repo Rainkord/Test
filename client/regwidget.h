@@ -15,7 +15,7 @@ public:
     explicit RegWidget(QWidget *parent = nullptr);
     ~RegWidget();
 
-    void clearFields();   // сброс всех полей и возврат на шаг 1
+    void clearFields();
 
 signals:
     void registrationSuccess(const QString &login);
@@ -30,8 +30,6 @@ private slots:
     void onContinueClicked();
     void onEmailTextChanged(const QString &text);
     void onBackClicked();
-    void onSendCodeBtnClicked();
-    void onBackFromCodeClicked();
     void onConfirmEmailClicked();
     void onRegistrationResponseReceived(const QString &response);
     void onCodeTextChanged(const QString &text);
@@ -55,12 +53,9 @@ private:
     QLineEdit   *emailEdit;
     QLabel      *emailErrorLabel;
     QPushButton *backBtn;
-    QPushButton *sendCodeBtn;
-    QPushButton *backFromCodeBtn;
-    QLabel      *emailSentLabel;
 
     QWidget     *step3Widget;
-    QPushButton *confirmEmailBtn;  // alias to sendCodeBtn
+    QPushButton *confirmEmailBtn;
     QLabel      *codeStatusLabel;
     QLineEdit   *codeEdit;
     QLabel      *codeErrorLabel;
