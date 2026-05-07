@@ -38,6 +38,7 @@ private:
     int     lockLevel;
     QTimer  *lockTimer;
     bool    isLocked;
+    bool    m_waitingForVerify;
     QString m_login;
 
     void setupUI();

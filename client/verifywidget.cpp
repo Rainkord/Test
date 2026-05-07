@@ -51,7 +51,7 @@ static QString linkBtnStyle()
 }
 
 VerifyWidget::VerifyWidget(QWidget *parent)
-    : QWidget(parent), lockLevel(0), isLocked(false)
+    : QWidget(parent), lockLevel(0), isLocked(false), m_waitingForVerify(false)
 {
     lockTimer = new QTimer(this);
     lockTimer->setSingleShot(true);
@@ -72,6 +72,7 @@ VerifyWidget::~VerifyWidget() {}
 void VerifyWidget::setLogin(const QString &login)
 {
     m_login = login;
+    m_waitingForVerify = false;
     verifyBtn->setEnabled(true);
     codeEdit->clear();
     statusLabel->hide();
@@ -139,7 +140,7 @@ void VerifyWidget::setupUI()
     codeEdit->setAlignment(Qt::AlignCenter);
     codeEdit->setStyleSheet(
         inputStyle() +
-        "QLineEdit { letter-spacing: 4px; font-size: 16pt; font-weight: bold; }"
+        "QLineEdit { letter-spacing: 4px; font-weight: bold; }"
     );
     cardLayout->addWidget(codeEdit);
 
@@ -195,6 +196,7 @@ void VerifyWidget::onVerifyClicked()
     statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_MUTED).arg(FONT_SIZE_SMALL));
     statusLabel->show();
 
+    m_waitingForVerify = true;
     ClientSingleton::instance().sendRequestAsync(
         QString("verify_auth||%1||%2").arg(m_login, code));
 }
@@ -208,6 +210,9 @@ void VerifyWidget::onLockTimerFired()
 
 void VerifyWidget::onVerifyResponseReceived(const QString &response)
 {
+    if (!m_waitingForVerify) return;
+    m_waitingForVerify = false;
+
     QString r = response.trimmed();
     if (r.isEmpty()) return;
 
@@ -252,6 +257,7 @@ void VerifyWidget::onBackClicked()
     if (lockTimer->isActive()) lockTimer->stop();
     isLocked  = false;
     lockLevel = 0;
+    m_waitingForVerify = false;
     codeEdit->clear();
     statusLabel->hide();
     emit backToAuth();
