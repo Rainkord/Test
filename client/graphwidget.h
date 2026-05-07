@@ -68,7 +68,8 @@ private:
     QString userLogin;
 
     QWidget *leftPanel;
-    static const int LEFT_PANEL_WIDTH = 320;
+    // Увеличена с 320 до 420
+    static const int LEFT_PANEL_WIDTH = 420;
 
     void setupUI();
     void setupLeftPanel();

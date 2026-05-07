@@ -1,4 +1,3 @@
-
 #include "mainwindow.h"
 #include "clientsingleton.h"
 #include "taskdialog.h"
@@ -10,89 +9,125 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include <QStackedWidget>
-#include <QMessageBox>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QShowEvent>
-#include <QCloseEvent>
-#include <QIcon>
-#include <QMouseEvent>
-#include <QResizeEvent>
-#include <QDebug>
 
-static const int IDX_AUTH  = 0;
-static const int IDX_REG   = 1;
-static const int IDX_GRAPH = 2;
-static const int IDX_RESET = 3;
-static const int IDX_VERIFY= 4;
+static const char* GH_BG     = "#0d1117";
+static const char* GH_PANEL  = "#161b22";
+static const char* GH_BORDER = "#30363d";
+static const char* GH_TEXT   = "#e6edf3";
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("TIMP Client");
-    setMinimumSize(960, 620);
+    setWindowTitle(QString::fromUtf8("\xd0\x93\xd1\x80\xd0\xb0\xd1\x84\xd0\xb8\xd0\xba \xd1\x84\xd1\x83\xd0\xbd\xd0\xba\xd1\x86\xd0\xb8\xd0\xb8"));
+    setupUI();
+    connectSignals();
 
-    QWidget *central = new QWidget(this);
-    setCentralWidget(central);
-
-    QVBoxLayout *root = new QVBoxLayout(central);
-    root->setContentsMargins(0,0,0,0);
-    root->setSpacing(0);
-
-    stackedWidget = new QStackedWidget(this);
-    root->addWidget(stackedWidget);
-
-    authWidget   = new AuthWidget(this);
-    regWidget    = new RegWidget(this);
-    graphWidget  = new GraphWidget(this);
-    resetWidget  = new ResetWidget(this);
-    verifyWidget = new VerifyWidget(this);
-
-    stackedWidget->addWidget(authWidget);    // 0
-    stackedWidget->addWidget(regWidget);     // 1
-    stackedWidget->addWidget(graphWidget);   // 2
-    stackedWidget->addWidget(resetWidget);   // 3
-    stackedWidget->addWidget(verifyWidget);  // 4
-
-    // ── Auth widget signals ────────────────────────────────────────────────
-    connect(authWidget, &AuthWidget::showRegister,   this, &MainWindow::onShowRegister);
-    connect(authWidget, &AuthWidget::loginSuccess,   this, &MainWindow::onLoginSuccess);
-    connect(authWidget, &AuthWidget::showReset,      this, &MainWindow::onShowReset);
-
-    // ── Reg widget signals ─────────────────────────────────────────────────
-    connect(regWidget, &RegWidget::showAuth,          this, &MainWindow::onShowAuth);
-    connect(regWidget, &RegWidget::registrationSuccess, this, &MainWindow::onRegistrationSuccess);
-
-    // ── Reset widget signals ───────────────────────────────────────────────
-    connect(resetWidget, &ResetWidget::showAuth,      this, &MainWindow::onShowAuth);
-    connect(resetWidget, &ResetWidget::showVerify,    this, &MainWindow::onShowVerify);
-
-    // ── Verify widget signals ──────────────────────────────────────────────
-    connect(verifyWidget, &VerifyWidget::showAuth,    this, &MainWindow::onShowAuth);
-    connect(verifyWidget, &VerifyWidget::verifySuccess, this, &MainWindow::onVerifySuccess);
-
-    // ── Graph widget signals ───────────────────────────────────────────────
-    connect(graphWidget, &GraphWidget::logout,        this, &MainWindow::onLogout);
-    connect(graphWidget, &GraphWidget::showTask,      this, &MainWindow::onShowTask);
-    connect(graphWidget, &GraphWidget::showSchema,    this, &MainWindow::onShowSchema);
-
-    stackedWidget->setCurrentIndex(IDX_AUTH);
-
-    // centre window
-    QScreen *scr = QApplication::primaryScreen();
-    if (scr) {
-        QRect sg = scr->availableGeometry();
+    QScreen *screen = QApplication::primaryScreen();
+    if (screen) {
+        QRect sg = screen->availableGeometry();
+        resize(qMin(1280, sg.width()), qMin(800, sg.height()));
         move(sg.center() - rect().center());
     }
 }
 
 MainWindow::~MainWindow() {}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Slot implementations
-// ─────────────────────────────────────────────────────────────────────────────
+void MainWindow::setupUI()
+{
+    centralWidget = new QWidget(this);
+    centralWidget->setStyleSheet(QString("background-color: %1;").arg(GH_BG));
+    setCentralWidget(centralWidget);
+
+    mainVLayout = new QVBoxLayout(centralWidget);
+    mainVLayout->setContentsMargins(0, 0, 0, 0);
+    mainVLayout->setSpacing(0);
+
+    // ── Top bar (always visible on all screens) ────────────────────────────
+    QWidget *topBar = new QWidget(centralWidget);
+    topBar->setFixedHeight(48);
+    topBar->setStyleSheet(QString(
+        "QWidget { background-color: %1; border-bottom: 1px solid %2; }"
+    ).arg(GH_PANEL).arg(GH_BORDER));
+
+    topBarLayout = new QHBoxLayout(topBar);
+    topBarLayout->setContentsMargins(16, 0, 16, 0);
+    topBarLayout->setSpacing(8);
+
+    appTitleLabel = new QLabel(
+        QString::fromUtf8("\xd0\x93\xd1\x80\xd0\xb0\xd1\x84\xd0\xb8\xd0\xba \xd1\x84\xd1\x83\xd0\xbd\xd0\xba\xd1\x86\xd0\xb8\xd0\xb8"),
+        topBar);
+    appTitleLabel->setStyleSheet(QString(
+        "QLabel { color: %1; font-size: 14px; font-weight: bold; background: transparent; border: none; }"
+    ).arg(GH_TEXT));
+
+    QString btnStyle = QString(
+        "QPushButton { background-color: %1; color: %2; border: 1px solid %3;"
+        " border-radius: 6px; padding: 4px 12px; font-size: 12px; }"
+        "QPushButton:hover { background-color: #21262d; }"
+    ).arg(GH_PANEL).arg(GH_TEXT).arg(GH_BORDER);
+
+    taskBtn = new QPushButton(
+        QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5"),
+        topBar);
+    taskBtn->setStyleSheet(btnStyle);
+
+    schemaBtn = new QPushButton(
+        QString::fromUtf8("\xd0\xa1\xd1\x85\xd0\xb5\xd0\xbc\xd0\xb0"),
+        topBar);
+    schemaBtn->setStyleSheet(btnStyle);
+
+    topBarLayout->addWidget(appTitleLabel);
+    topBarLayout->addStretch();
+    topBarLayout->addWidget(taskBtn);
+    topBarLayout->addWidget(schemaBtn);
+
+    mainVLayout->addWidget(topBar);
+
+    // ── Stacked widget ─────────────────────────────────────────────────────
+    stackedWidget = new QStackedWidget(centralWidget);
+    stackedWidget->setStyleSheet("background: transparent;");
+    mainVLayout->addWidget(stackedWidget, 1);
+
+    authWidget   = new AuthWidget(centralWidget);
+    regWidget    = new RegWidget(centralWidget);
+    verifyWidget = new VerifyWidget(centralWidget);
+    graphWidget  = new GraphWidget(centralWidget);
+    resetWidget  = new ResetWidget(centralWidget);
+
+    stackedWidget->addWidget(authWidget);    // 0 IDX_AUTH
+    stackedWidget->addWidget(regWidget);     // 1 IDX_REG
+    stackedWidget->addWidget(verifyWidget);  // 2 IDX_VERIFY
+    stackedWidget->addWidget(graphWidget);   // 3 IDX_GRAPH
+    stackedWidget->addWidget(resetWidget);   // 4 IDX_RESET
+
+    stackedWidget->setCurrentIndex(IDX_AUTH);
+}
+
+void MainWindow::connectSignals()
+{
+    connect(authWidget, &AuthWidget::loginSuccess,   this, [this](const QString &login) {
+        graphWidget->setUserLogin(login);
+        graphWidget->updateGraph();
+        stackedWidget->setCurrentIndex(IDX_GRAPH);
+    });
+    connect(authWidget, &AuthWidget::showRegister,   this, &MainWindow::onShowRegister);
+    connect(authWidget, &AuthWidget::showVerifyAuth, this, &MainWindow::onShowVerifyAuth);
+    connect(authWidget, &AuthWidget::showReset,      this, &MainWindow::onShowReset);
+
+    connect(regWidget,  &RegWidget::registrationSuccess, this, &MainWindow::onRegistrationSuccess);
+    connect(regWidget,  &RegWidget::showAuth,             this, &MainWindow::onShowAuth);
+
+    connect(verifyWidget, &VerifyWidget::verificationSuccess, this, &MainWindow::onVerificationSuccess);
+    connect(verifyWidget, &VerifyWidget::backToAuth,          this, &MainWindow::onBackToAuth);
+
+    connect(resetWidget, &ResetWidget::resetSuccess, this, &MainWindow::onResetSuccess);
+    connect(resetWidget, &ResetWidget::backToAuth,   this, &MainWindow::onBackToAuth);
+
+    connect(graphWidget, &GraphWidget::logout, this, &MainWindow::onLogout);
+
+    connect(taskBtn,   &QPushButton::clicked, this, &MainWindow::onTaskBtnClicked);
+    connect(schemaBtn, &QPushButton::clicked, this, &MainWindow::onSchemaBtnClicked);
+}
 
 void MainWindow::onShowRegister()
 {
@@ -106,15 +141,10 @@ void MainWindow::onShowAuth()
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
-void MainWindow::onShowReset()
+void MainWindow::onBackToAuth()
 {
-    stackedWidget->setCurrentIndex(IDX_RESET);
-}
-
-void MainWindow::onShowVerify(const QString &email)
-{
-    verifyWidget->setEmail(email);
-    stackedWidget->setCurrentIndex(IDX_VERIFY);
+    authWidget->clearFields();
+    stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
 void MainWindow::onLogout()
@@ -123,33 +153,44 @@ void MainWindow::onLogout()
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
-void MainWindow::onLoginSuccess(const QString &login)
+void MainWindow::onShowVerifyAuth(const QString &login)
 {
-    graphWidget->setLogin(login);
+    verifyWidget->setLogin(login);
+    stackedWidget->setCurrentIndex(IDX_VERIFY);
+}
+
+void MainWindow::onVerificationSuccess(const QString &login)
+{
+    graphWidget->setUserLogin(login);
+    graphWidget->updateGraph();
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
 void MainWindow::onRegistrationSuccess(const QString &login)
 {
-    authWidget->clearFields();
-    graphWidget->setLogin(login);
+    graphWidget->setUserLogin(login);
+    graphWidget->updateGraph();
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
-void MainWindow::onVerifySuccess(const QString &login)
+void MainWindow::onShowReset()
+{
+    stackedWidget->setCurrentIndex(IDX_RESET);
+}
+
+void MainWindow::onResetSuccess()
 {
     authWidget->clearFields();
-    graphWidget->setLogin(login);
-    stackedWidget->setCurrentIndex(IDX_GRAPH);
+    stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
-void MainWindow::onShowTask()
+void MainWindow::onTaskBtnClicked()
 {
     TaskDialog dlg(this);
     dlg.exec();
 }
 
-void MainWindow::onShowSchema()
+void MainWindow::onSchemaBtnClicked()
 {
     SchemaDialog dlg(this);
     dlg.exec();

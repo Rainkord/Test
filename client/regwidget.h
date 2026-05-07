@@ -27,12 +27,11 @@ private slots:
     void onConfirmPasswordTextChanged(const QString &text);
     void onTogglePassword1();
     void onTogglePassword2();
-    void onContinueClicked();
+    void onContinueClicked();       // шаг 1 → проверить логин
     void onEmailTextChanged(const QString &text);
-    void onEmailNextClicked();          // новая кнопка «Далее» на шаге 2
-    void onBackFromEmailClicked();      // назад с шага 2 на шаг 1
-    void onBackFromCodeClicked();       // назад с шага 3 на шаг 2
-    void onConfirmEmailClicked();       // отправить код
+    void onEmailNextClicked();      // шаг 2 → послать код
+    void onBackToStep1Clicked();    // шаг 2/3 → назад на шаг 1
+    void onBackToStep2Clicked();    // шаг 3 → назад на шаг 2
     void onRegistrationResponseReceived(const QString &response);
     void onCodeTextChanged(const QString &text);
     void onVerifyCodeClicked();
@@ -40,7 +39,7 @@ private slots:
     void onShowAuthClicked();
 
 private:
-    // Шаг 1: логин + пароль
+    // Step 1: login + password
     QWidget     *step1Widget;
     QLineEdit   *loginEdit;
     QLabel      *loginErrorLabel;
@@ -52,22 +51,21 @@ private:
     QPushButton *togglePassBtn2;
     QPushButton *continueBtn;
 
-    // Шаг 2: ввод email
+    // Step 2: email input
     QWidget     *step2Widget;
     QLineEdit   *emailEdit;
     QLabel      *emailErrorLabel;
-    QPushButton *backFromEmailBtn;
-    QPushButton *emailNextBtn;
+    QPushButton *emailNextBtn;   // зелёная кнопка "Далее"
+    QPushButton *backToStep1Btn;
 
-    // Шаг 3: ввод кода
+    // Step 3: code input
     QWidget     *step3Widget;
-    QLabel      *codeSentToLabel;   // «Код отправлен на ...@mail.ru»
-    QPushButton *confirmEmailBtn;   // «Отправить код повторно»
-    QLabel      *codeStatusLabel;
+    QLabel      *emailHintLabel; // "Код отправлен на ..."
     QLineEdit   *codeEdit;
     QLabel      *codeErrorLabel;
-    QPushButton *verifyCodeBtn;
-    QPushButton *backFromCodeBtn;
+    QLabel      *codeStatusLabel;
+    QPushButton *verifyCodeBtn;  // зелёная кнопка
+    QPushButton *backToStep2Btn;
 
     QPushButton *showAuthBtn;
 
@@ -77,7 +75,6 @@ private:
     bool    codeIsLocked;
     bool    m_verifyingCode;
     bool    m_checkingLogin;
-    bool    m_codeSent;
     QString currentLogin;
     QString currentEmail;
 
@@ -86,6 +83,15 @@ private:
     bool isEmailValid(const QString &email) const;
     void applyCodeLock(int minutes, const QString &message);
     void showStep(int step);
+
+    QString primaryBtnStyle() const;
+    QString secondaryBtnStyle() const;
+    QString ghostBtnStyle() const;
+    QString linkBtnStyle() const;
+    QString inputStyle() const;
+    QString errorLabelStyle() const;
+    QString infoLabelStyle() const;
+    QString successLabelStyle() const;
 };
 
 #endif // REGWIDGET_H

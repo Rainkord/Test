@@ -32,26 +32,25 @@ private slots:
     void onLogout();
     void onShowReset();
     void onResetSuccess();
-
     void onTaskBtnClicked();
     void onSchemaBtnClicked();
 
 private:
-    QWidget         *centralWidget;
-    QVBoxLayout     *mainVLayout;
-    QHBoxLayout     *topBarLayout;
+    QWidget        *centralWidget;
+    QVBoxLayout    *mainVLayout;
+    QHBoxLayout    *topBarLayout;
 
-    QPushButton     *taskBtn;
-    QPushButton     *schemaBtn;
-    QLabel          *appTitleLabel;
+    QPushButton    *taskBtn;
+    QPushButton    *schemaBtn;
+    QLabel         *appTitleLabel;
 
-    QStackedWidget  *stackedWidget;
+    QStackedWidget *stackedWidget;
 
-    AuthWidget      *authWidget;
-    RegWidget       *regWidget;
-    VerifyWidget    *verifyWidget;
-    ResetWidget     *resetWidget;
-    GraphWidget     *graphWidget;
+    AuthWidget     *authWidget;
+    RegWidget      *regWidget;
+    VerifyWidget   *verifyWidget;
+    ResetWidget    *resetWidget;
+    GraphWidget    *graphWidget;
 
     void setupUI();
     void connectSignals();
