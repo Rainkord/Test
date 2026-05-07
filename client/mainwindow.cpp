@@ -1,3 +1,4 @@
+
 #include "mainwindow.h"
 #include "clientsingleton.h"
 #include "taskdialog.h"
@@ -101,14 +102,16 @@ void MainWindow::setupUI()
 
 void MainWindow::connectSignals()
 {
-    // AuthWidget signals: loginSuccess(login), showRegister()
-    connect(authWidget, &AuthWidget::loginSuccess, this, [this](const QString &login) {
+    // AuthWidget signals: loginSuccess(login), showRegister(), showVerifyAuth(login), showReset()
+    connect(authWidget, &AuthWidget::loginSuccess,   this, [this](const QString &login) {
         graphWidget->setUserLogin(login);
         graphWidget->updateGraph();
         taskBtn->show(); schemaBtn->show();
         stackedWidget->setCurrentIndex(IDX_GRAPH);
     });
-    connect(authWidget, &AuthWidget::showRegister, this, &MainWindow::onShowRegister);
+    connect(authWidget, &AuthWidget::showRegister,   this, &MainWindow::onShowRegister);
+    connect(authWidget, &AuthWidget::showVerifyAuth, this, &MainWindow::onShowVerifyAuth);
+    connect(authWidget, &AuthWidget::showReset,      this, &MainWindow::onShowReset);
 
     // RegWidget signals: registrationSuccess(login), showAuth()
     connect(regWidget, &RegWidget::registrationSuccess, this, &MainWindow::onRegistrationSuccess);
@@ -117,6 +120,10 @@ void MainWindow::connectSignals()
     // VerifyWidget signals: verificationSuccess(login), backToAuth()
     connect(verifyWidget, &VerifyWidget::verificationSuccess, this, &MainWindow::onVerificationSuccess);
     connect(verifyWidget, &VerifyWidget::backToAuth, this, &MainWindow::onBackToAuth);
+
+    // ResetWidget signals
+    connect(resetWidget, &ResetWidget::resetSuccess, this, &MainWindow::onResetSuccess);
+    connect(resetWidget, &ResetWidget::backToAuth,   this, &MainWindow::onBackToAuth);
 
     // GraphWidget signals: logout()
     connect(graphWidget, &GraphWidget::logout, this, &MainWindow::onLogout);
