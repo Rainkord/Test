@@ -15,6 +15,8 @@ public:
     explicit RegWidget(QWidget *parent = nullptr);
     ~RegWidget();
 
+    void clearFields();   // сброс всех полей и возврат на шаг 1
+
 signals:
     void registrationSuccess(const QString &login);
     void showAuth();
