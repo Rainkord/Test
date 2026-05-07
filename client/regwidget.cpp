@@ -161,6 +161,7 @@ void RegWidget::clearFields()
     continueBtn->setEnabled(false);
     continueBtn->setText(QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xbe\xd0\xb4\xd0\xbe\xd0\xbb\xd0\xb6\xd0\xb8\xd1\x82\xd1\x8c"));
     emailNextBtn->setEnabled(false);
+    emailNextBtn->setText(QString::fromUtf8("\xd0\x94\xd0\xb0\xd0\xbb\xd0\xb5\xd0\xb5 \xe2\x86\x92"));
 
     codeFailedAttempts = 0;
     codeLockLevel      = 0;
@@ -536,14 +537,14 @@ void RegWidget::onEmailTextChanged(const QString &text)
     }
 }
 
+// ── onEmailNextClicked ─────────────────────────────────────────────────────
+// Сразу переходим на шаг ввода кода, не ожидая ответа сервера.
+// Ответ сервера обрабатывается в onRegistrationResponseReceived —
+// если придёт email_exists, вернёмся на step2 и покажем ошибку.
 void RegWidget::onEmailNextClicked()
 {
     if (!emailNextBtn->isEnabled()) return;
     currentEmail = emailEdit->text().trimmed();
-
-    emailNextBtn->setEnabled(false);
-    emailNextBtn->setText(
-        QString::fromUtf8("\xd0\x9e\xd1\x82\xd0\xbf\xd1\x80\xd0\xb0\xd0\xb2\xd0\xbb\xd1\x8f\xd0\xb5\xd0\xbc..."));
 
     QString login    = loginEdit->text().trimmed();
     QString password = passwordEdit->text();
@@ -551,8 +552,20 @@ void RegWidget::onEmailNextClicked()
     QString passHash = QString::fromLatin1(hash.toHex());
 
     m_verifyingCode = false;
+
+    // Отправляем запрос на сервер (fire-and-forget)
     ClientSingleton::instance().sendRequestAsync(
         QString("registration||%1||%2||%3").arg(login, passHash, currentEmail));
+
+    // Сразу показываем шаг ввода кода
+    emailHintLabel->setText(
+        QString::fromUtf8("\xd0\x9a\xd0\xbe\xd0\xb4 \xd0\xbe\xd1\x82\xd0\xbf\xd1\x80\xd0\xb0\xd0\xb2\xd0\xbb\xd0\xb5\xd0\xbd \xd0\xbd\xd0\xb0: ") + currentEmail);
+    emailHintLabel->show();
+    codeEdit->clear();
+    codeErrorLabel->hide();
+    codeStatusLabel->hide();
+    verifyCodeBtn->setEnabled(false);
+    showStep(3);
 }
 
 void RegWidget::onBackToStep1Clicked()
@@ -626,6 +639,7 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
     QString r = response.trimmed();
     if (r.isEmpty()) return;
 
+    // ── Ответ на check_login ───────────────────────────────────────────────
     if (m_checkingLogin) {
         m_checkingLogin = false;
         continueBtn->setText(
@@ -653,42 +667,21 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         return;
     }
 
-    if (!m_verifyingCode && r != "reg+" && !r.startsWith("reg-")) {
-        emailNextBtn->setEnabled(true);
-        emailNextBtn->setText(
-            QString::fromUtf8("\xd0\x94\xd0\xb0\xd0\xbb\xd0\xb5\xd0\xb5 \xe2\x86\x92"));
-
-        if (r == "email_sent" || r == "code_sent" || r == "ok" || r == "email_exists_pending" || r == "wait") {
-            emailHintLabel->setText(
-                QString::fromUtf8("\xd0\x9a\xd0\xbe\xd0\xb4 \xd0\xbe\xd1\x82\xd0\xbf\xd1\x80\xd0\xb0\xd0\xb2\xd0\xbb\xd0\xb5\xd0\xbd \xd0\xbd\xd0\xb0: ") + currentEmail);
-            emailHintLabel->show();
-            codeEdit->clear();
-            codeErrorLabel->hide();
-            codeStatusLabel->hide();
-            verifyCodeBtn->setEnabled(false);
-            m_verifyingCode = false;
-            showStep(3);
-            return;
-        }
+    // ── Ответ на registration (fire-and-forget) ────────────────────────────
+    // Мы уже на step3. Если email занят — возвращаемся на step2 с ошибкой.
+    if (!m_verifyingCode) {
         if (r.contains("email_exists")) {
             emailErrorLabel->setText(
                 QString::fromUtf8("\xd0\x9d\xd0\xb0 \xd1\x8d\xd1\x82\xd1\x83 \xd0\xbf\xd0\xbe\xd1\x87\xd1\x82\xd1\x83 \xd1\x83\xd0\xb6\xd0\xb5 \xd0\xb7\xd0\xb0\xd1\x80\xd0\xb5\xd0\xb3\xd0\xb8\xd1\x81\xd1\x82\xd1\x80\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd \xd0\xb0\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82"));
             emailErrorLabel->show();
             showStep(2);
-        } else {
-            emailHintLabel->setText(
-                QString::fromUtf8("\xd0\x9a\xd0\xbe\xd0\xb4 \xd0\xbe\xd1\x82\xd0\xbf\xd1\x80\xd0\xb0\xd0\xb2\xd0\xbb\xd0\xb5\xd0\xbd \xd0\xbd\xd0\xb0: ") + currentEmail);
-            emailHintLabel->show();
-            codeEdit->clear();
-            codeErrorLabel->hide();
-            codeStatusLabel->hide();
-            verifyCodeBtn->setEnabled(false);
-            m_verifyingCode = false;
-            showStep(3);
         }
+        // Для всех остальных ответов (email_sent, ok, wait, ...) ничего не делаем —
+        // пользователь уже вводит код на step3.
         return;
     }
 
+    // ── Ответ на verify_code ───────────────────────────────────────────────
     if (m_verifyingCode) {
         m_verifyingCode = false;
         verifyCodeBtn->setEnabled(true);
