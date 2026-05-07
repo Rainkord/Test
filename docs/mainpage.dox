@@ -1,0 +1,102 @@
+/**
+ * @mainpage ТИМП — Подгруппа 5
+ *
+ * @section intro Описание проекта
+ *
+ * Клиент-серверное приложение на **Qt/C++** для построения графиков
+ * ветвящейся функции с регистрацией, авторизацией (2FA через email)
+ * и восстановлением пароля.
+ *
+ * @section arch Архитектура
+ *
+ * | Компонент | Технологии |
+ * |-----------|-----------|
+ * | Клиент    | Qt Widgets, QTcpSocket, QPainter |
+ * | Сервер    | QTcpServer, SQLite (QSqlDatabase), SMTP/SSL |
+ * | Тесты     | Qt Test |
+ * | Docker    | Ubuntu 22.04, порт 33333 |
+ *
+ * @section struct Структура репозитория
+ *
+ * @code
+ * ├── client/     — Qt-приложение (виджеты, GUI)
+ * ├── server/     — серверная часть (обработка запросов, БД, SMTP)
+ * ├── docs/       — Doxyfile и эта стартовая страница
+ * ├── docker/     — Dockerfile и вспомогательные скрипты
+ * └── tests/      — модульные тесты (Qt Test)
+ * @endcode
+ *
+ * @section client_modules Клиентские модули
+ *
+ * | Класс | Назначение |
+ * |-------|-----------|
+ * | AuthWidget     | Экран авторизации (логин + пароль) |
+ * | RegWidget      | Экран регистрации (3 шага) |
+ * | VerifyWidget   | Ввод кода подтверждения email |
+ * | ResetWidget    | Восстановление пароля (email → код → новый пароль) |
+ * | MainWindow     | Главное окно — переключение между экранами |
+ * | GraphWidget    | Построение и отрисовка графика функции |
+ * | ClientSingleton | TCP-соединение с сервером (Singleton) |
+ * | TaskDialog     | Диалог просмотра задания |
+ * | SchemaDialog   | Диалог отображения блок-схемы |
+ *
+ * @section server_modules Серверные модули
+ *
+ * | Класс | Назначение |
+ * |-------|-----------|
+ * | MyTcpServer       | TCP-сервер: приём соединений, маршрутизация запросов |
+ * | FunctionsForServer | Диспетчер команд протокола ||  |
+ * | Database          | Singleton-обёртка над SQLite |
+ * | SmtpClient        | Отправка писем через Gmail SMTP (SSL, порт 465) |
+ * | Calculator        | Вычисление f(x) и генерация точек графика |
+ *
+ * @section formula Вычисляемая функция
+ *
+ * @f[
+ *   f(x) =
+ *   \begin{cases}
+ *     |x \cdot a| - 2,  & x < -2 \\
+ *     b \cdot x^2 + x + 1, & -2 \le x < 2 \\
+ *     |x - 2| + c,      & x \ge 2
+ *   \end{cases}
+ * @f]
+ *
+ * @section build Сборка
+ *
+ * **Сервер:**
+ * @code{.bash}
+ * cd server && qmake echoServer.pro && make -j$(nproc) && ./echoServer
+ * @endcode
+ *
+ * **Клиент:**
+ * @code{.bash}
+ * cd client && qmake client.pro && make -j$(nproc)
+ * @endcode
+ *
+ * **Docker:**
+ * @code{.bash}
+ * docker pull rainkord/timp-server:latest
+ * docker run -d --name timp-server -p 33333:33333 rainkord/timp-server:latest
+ * @endcode
+ *
+ * **Документация:**
+ * @code{.bash}
+ * doxygen docs/Doxyfile && xdg-open docs/output/html/index.html
+ * @endcode
+ *
+ * @section email Настройка email.txt
+ *
+ * Файл `server/email.txt` хранит учётные данные Gmail для рассылки кодов
+ * подтверждения. Формат:
+ * @code
+ * email=your_address@gmail.com
+ * key=xxxx xxxx xxxx xxxx
+ * @endcode
+ * Пароль приложения генерируется на https://myaccount.google.com/apppasswords
+ *
+ * @warning Файл `email.txt` добавлен в `.gitignore` — не коммитьте его в репозиторий.
+ *
+ * @section authors Авторы
+ *
+ * ТИМП, группа 251-372, подгруппа 5.
+ */
