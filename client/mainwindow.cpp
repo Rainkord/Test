@@ -107,11 +107,8 @@ void MainWindow::setupUI()
     topBarLayout->addWidget(appTitleLabel);
     topBarLayout->addStretch(1);
 
-    // ── StackedWidget ─────────────────────────────────────────────────────
+    // ── StackedWidget ───────────────────────────────────────────
     stackedWidget = new QStackedWidget(centralWidget);
-    stackedWidget->setStyleSheet(QString(
-        "QStackedWidget { background-color: %1; }"
-    ).arg(GH_BG));
 
     authWidget   = new AuthWidget(stackedWidget);
     regWidget    = new RegWidget(stackedWidget);
@@ -126,25 +123,18 @@ void MainWindow::setupUI()
     stackedWidget->addWidget(resetWidget);   // 4
 
     mainVLayout->addWidget(topBar);
-    mainVLayout->addWidget(stackedWidget, 1);
-
-    centralWidget->setLayout(mainVLayout);
+    mainVLayout->addWidget(stackedWidget);
 }
 
 void MainWindow::connectSignals()
 {
-    connect(taskBtn,   &QPushButton::clicked, this, &MainWindow::onTaskBtnClicked);
-    connect(schemaBtn, &QPushButton::clicked, this, &MainWindow::onSchemaBtnClicked);
-
-    connect(authWidget, &AuthWidget::showVerifyAuth,  this, &MainWindow::onShowVerifyAuth);
     connect(authWidget, &AuthWidget::showRegister,    this, &MainWindow::onShowRegister);
-    connect(authWidget, &AuthWidget::showReset,       this, &MainWindow::onShowReset);
-    connect(authWidget, &AuthWidget::loginSuccess,
-            this, [this](const QString &login) {
-                graphWidget->setUserLogin(login);
-                graphWidget->updateGraph();
-                stackedWidget->setCurrentIndex(IDX_GRAPH);
-            });
+    connect(authWidget, &AuthWidget::loginSuccess,    this, [this](const QString &login) {
+        graphWidget->setLogin(login);
+        stackedWidget->setCurrentIndex(IDX_GRAPH);
+    });
+    connect(authWidget, &AuthWidget::showVerifyAuth, this, &MainWindow::onShowVerifyAuth);
+    connect(authWidget, &AuthWidget::showReset,      this, &MainWindow::onShowReset);
 
     connect(regWidget, &RegWidget::registrationSuccess, this, &MainWindow::onRegistrationSuccess);
     connect(regWidget, &RegWidget::showAuth,            this, &MainWindow::onShowAuth);
@@ -156,10 +146,13 @@ void MainWindow::connectSignals()
     connect(resetWidget, &ResetWidget::resetSuccess, this, &MainWindow::onResetSuccess);
 
     connect(graphWidget, &GraphWidget::logout, this, &MainWindow::onLogout);
+
+    connect(taskBtn,   &QPushButton::clicked, this, &MainWindow::onTaskBtnClicked);
+    connect(schemaBtn, &QPushButton::clicked, this, &MainWindow::onSchemaBtnClicked);
 }
 
-void MainWindow::onShowRegister()  { stackedWidget->setCurrentIndex(IDX_REG);   }
-void MainWindow::onShowAuth()      { stackedWidget->setCurrentIndex(IDX_AUTH);  }
+void MainWindow::onShowRegister()  { regWidget->clearFields();  stackedWidget->setCurrentIndex(IDX_REG);   }
+void MainWindow::onShowAuth()      { authWidget->clearFields(); stackedWidget->setCurrentIndex(IDX_AUTH);  }
 void MainWindow::onShowReset()     { stackedWidget->setCurrentIndex(IDX_RESET); }
 
 void MainWindow::onShowVerifyAuth(const QString &login)
@@ -170,8 +163,7 @@ void MainWindow::onShowVerifyAuth(const QString &login)
 
 void MainWindow::onVerificationSuccess(const QString &login)
 {
-    graphWidget->setUserLogin(login);
-    graphWidget->updateGraph();
+    graphWidget->setLogin(login);
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
@@ -179,13 +171,21 @@ void MainWindow::onBackToAuth()    { stackedWidget->setCurrentIndex(IDX_AUTH); }
 
 void MainWindow::onRegistrationSuccess(const QString &login)
 {
-    graphWidget->setUserLogin(login);
-    graphWidget->updateGraph();
+    graphWidget->setLogin(login);
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
-void MainWindow::onLogout()        { stackedWidget->setCurrentIndex(IDX_AUTH); }
+void MainWindow::onLogout()        { authWidget->clearFields(); stackedWidget->setCurrentIndex(IDX_AUTH); }
 void MainWindow::onResetSuccess()  { stackedWidget->setCurrentIndex(IDX_AUTH); }
 
-void MainWindow::onTaskBtnClicked()  { TaskDialog   dlg(this); dlg.exec(); }
-void MainWindow::onSchemaBtnClicked(){ SchemaDialog dlg(this); dlg.exec(); }
+void MainWindow::onTaskBtnClicked()
+{
+    TaskDialog dlg(this);
+    dlg.exec();
+}
+
+void MainWindow::onSchemaBtnClicked()
+{
+    SchemaDialog dlg(this);
+    dlg.exec();
+}

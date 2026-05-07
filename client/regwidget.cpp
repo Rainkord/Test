@@ -57,6 +57,44 @@ RegWidget::RegWidget(QWidget *parent)
 
 RegWidget::~RegWidget() {}
 
+void RegWidget::clearFields()
+{
+    loginEdit->clear();
+    passwordEdit->clear();
+    confirmPasswordEdit->clear();
+    emailEdit->clear();
+    codeEdit->clear();
+
+    loginErrorLabel->hide();
+    passwordErrorLabel->hide();
+    confirmErrorLabel->hide();
+    emailErrorLabel->hide();
+    codeErrorLabel->hide();
+    codeStatusLabel->hide();
+
+    loginEdit->setReadOnly(false);
+    passwordEdit->setReadOnly(false);
+    confirmPasswordEdit->setReadOnly(false);
+
+    continueBtn->setEnabled(false);
+    continueBtn->setText("Продолжить");
+
+    confirmEmailBtn->setEnabled(true);
+    confirmEmailBtn->setText("Отправить код на почту");
+
+    codeFailedAttempts = 0;
+    codeLockLevel      = 0;
+    codeIsLocked       = false;
+    m_verifyingCode    = false;
+    m_checkingLogin    = false;
+    currentLogin.clear();
+
+    if (codeLockTimer->isActive())
+        codeLockTimer->stop();
+
+    showStep(1);
+}
+
 // ── Style helpers ────────────────────────────────────────────────────────
 static QString inputStyle()
 {
@@ -215,7 +253,7 @@ void RegWidget::setupUI()
     pass1Row->addWidget(passwordEdit);
     connect(passwordEdit, &QLineEdit::textChanged, this, &RegWidget::onPasswordTextChanged);
 
-    togglePassBtn1 = new QPushButton("👁", step1Widget);
+    togglePassBtn1 = new QPushButton("\U0001f441", step1Widget);
     togglePassBtn1->setFixedSize(38, 38);
     togglePassBtn1->setStyleSheet(ghostBtnStyle());
     connect(togglePassBtn1, &QPushButton::clicked, this, &RegWidget::onTogglePassword1);
@@ -237,7 +275,7 @@ void RegWidget::setupUI()
     pass2Row->addWidget(confirmPasswordEdit);
     connect(confirmPasswordEdit, &QLineEdit::textChanged, this, &RegWidget::onConfirmPasswordTextChanged);
 
-    togglePassBtn2 = new QPushButton("👁", step1Widget);
+    togglePassBtn2 = new QPushButton("\U0001f441", step1Widget);
     togglePassBtn2->setFixedSize(38, 38);
     togglePassBtn2->setStyleSheet(ghostBtnStyle());
     connect(togglePassBtn2, &QPushButton::clicked, this, &RegWidget::onTogglePassword2);
@@ -549,7 +587,6 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             codeStatusLabel->show();
             codeErrorLabel->hide();
             verifyCodeBtn->setEnabled(false);
-            // Передаём логин — mainwindow сразу откроет граф
             QTimer::singleShot(800, this, [this]() { emit registrationSuccess(currentLogin); });
             return;
         }

@@ -83,11 +83,11 @@ void TaskDialog::setupUI()
     membersLabel->setText(QString(
         "<p style='font-size:10pt; color:%1; line-height:1.9;'>"
         "<b style='color:%2; font-size:11pt;'>Участники:</b><br><br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Орлов Руслан<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Карелин Кирилл<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Серёгина Елизавета<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Воробьёва Елизавета<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Сарафанов Алексей"
+        "&nbsp;&nbsp;&bull;&nbsp;&nbsp;Орлов Руслан<br>"
+        "&nbsp;&nbsp;&bull;&nbsp;&nbsp;Карелин Кирилл<br>"
+        "&nbsp;&nbsp;&bull;&nbsp;&nbsp;Серёгина Елизавета<br>"
+        "&nbsp;&nbsp;&bull;&nbsp;&nbsp;Воробьёва Елизавета<br>"
+        "&nbsp;&nbsp;&bull;&nbsp;&nbsp;Сарафанов Алексей"
         "</p>"
     ).arg(GH_TEXT).arg(GH_TEXT));
     membersLabel->setTextFormat(Qt::RichText);
@@ -104,7 +104,7 @@ void TaskDialog::setupUI()
     formulaLabel = new QLabel(this);
     formulaLabel->setText(
         "<p style='font-size:10pt; margin:0; line-height:2.0;'>"
-        "<b style='color:#e6edf3; font-size:11pt;'>Функция &numero;9:</b><br><br>"
+        "<b style='color:#e6edf3; font-size:11pt;'>Функция &#8470;9:</b><br><br>"
         "<span style='color:#f85149;'>&bull;&nbsp; |x &middot; a| &minus; 2,&nbsp;&nbsp; x &lt; &minus;2</span><br>"
         "<span style='color:#3fb950;'>&bull;&nbsp; b &middot; (x&sup2;) + x + 1,&nbsp;&nbsp; &minus;2 &le; x &lt; 2</span><br>"
         "<span style='color:#58a6ff;'>&bull;&nbsp; |x &minus; 2| + 1 &middot; c,&nbsp;&nbsp; x &ge; 2</span>"
