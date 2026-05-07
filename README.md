@@ -142,7 +142,7 @@ docker build -f docker/Dockerfile -t <ваш_логин>/timp-server:latest .
 docker push <ваш_логин>/timp-server:latest
 ```
 5. После этого образ будет доступен по адресу `hub.docker.com/<ваш_логин>/timp-server`.
-Скачать и запустить на любой машႀне:
+Скачать и запустить на любой машине:
 ```bash
 docker pull <ваш_логин>/timp-server:latest
 docker run -d --name timp-server -p 33333:33333 <ваш_логин>/timp-server:latest
@@ -189,15 +189,15 @@ LaTeX, XML и прочие форматы вывода игнорируются 
 
 | Файл | Назначение | Ключевые методы / слоты | Qt-инструменты |
 |---|---|---|---|
-| `authwidget.cpp/h` | Экран авторизации (логин + пароль) | `onLoginClicked()`, `onForgotClicked()` | `QWidget`, `QLineEdit`, `QPushButton`, `QTcpSocket` через `ClientSingleton` |
-| `regwidget.cpp/h` | Экран регистрации (3 шага) | `onNextClicked()`, `onRegisterClicked()`, `onBackClicked()` | `QStackedWidget`, `QLineEdit`, `QRegularExpressionValidator` |
-| `verifywidget.cpp/h` | Ввод кода подтверждения email (регистрация) | `onConfirmClicked()`, `onResendClicked()` | `QLineEdit`, `QTimer` (обратный отсчёт) |
-| `resetwidget.cpp/h` | Восстановление пароля (3 шага: email → код → новый пароль) | `onSendCodeClicked()`, `onVerifyClicked()`, `onResetClicked()` | `QStackedWidget`, `QTimer`, `QLineEdit` |
-| `clientsingleton.cpp/h` | TCP-соединение с сервером (Singleton, JSON-протокол) | `instance()`, `sendRequest()`, `readResponse()` | `QTcpSocket`, `QJsonDocument`, `QJsonObject` |
-| `mainwindow.cpp/h` | Главное окно — переключение между экранами | `showAuth()`, `showMain()`, `showGraph()` | `QMainWindow`, `QStackedWidget` |
-| `graphwidget.cpp/h` | Отрисовка графа / блок-схемы алгоритма | `paintEvent()`, `addNode()`, `addEdge()`, `exportToPng()` | `QPainter`, `QPainterPath`, `QGraphicsScene` / `QGraphicsView` |
-| `schemadialog.cpp/h` | Диалог выбора / редактирования схемы | `onAccepted()`, `onRejected()`, `loadSchemas()` | `QDialog`, `QListWidget`, `QDialogButtonBox` |
-| `taskdialog.cpp/h` | Диалог создания / редактирования задачи | `onSaveClicked()`, `populate()` | `QDialog`, `QLineEdit`, `QComboBox`, `QDateEdit` |
+| `authwidget.cpp/h` | Экран авторизации (логин + пароль, защита от перебора) | `onLoginClicked()`, `onForgotClicked()`, `onRegisterClicked()`, `clearFields()`, `applyLock()` | `QWidget`, `QLineEdit`, `QPushButton`, `QTimer` |
+| `regwidget.cpp/h` | Экран регистрации (3 шага) | `onNextClicked()`, `onRegisterClicked()`, `onBackClicked()`, `clearFields()`, `showStep()` | `QStackedWidget`, `QLineEdit`, `QRegularExpressionValidator` |
+| `verifywidget.cpp/h` | Ввод кода подтверждения email (вход / регистрация) | `onConfirmClicked()`, `onResendClicked()`, `setLogin()` | `QLineEdit`, `QTimer` (обратный отсчёт) |
+| `resetwidget.cpp/h` | Восстановление пароля (email → код → новый пароль) | `onSendCodeClicked()`, `onVerifyClicked()`, `onResetClicked()`, `clearFields()` | `QStackedWidget`, `QTimer`, `QLineEdit` |
+| `clientsingleton.cpp/h` | TCP-соединение с сервером (Singleton) | `instance()`, `sendRequestAsync()`, `responseReceived` (signal) | `QTcpSocket` |
+| `mainwindow.cpp/h` | Главное окно — переключение между экранами | `onShowAuth()`, `onShowRegister()`, `onShowVerifyAuth()`, `onRegistrationSuccess()`, `onVerificationSuccess()`, `onLogout()`, `onShowReset()`, `onTaskBtnClicked()`, `onSchemaBtnClicked()` | `QMainWindow`, `QStackedWidget` |
+| `graphwidget.cpp/h` | Построение и отрисовка графика функции | `evalFunction()`, `onBuildClicked()`, `onExportClicked()`, `paintEvent()` | `QPainter`, `QPainterPath` |
+| `schemadialog.cpp/h` | Диалог отображения блок-схемы алгоритма | конструктор, `schemaLabel` | `QDialog`, `QLabel`, `QScrollArea` |
+| `taskdialog.cpp/h` | Диалог просмотра задания (вариант 9) | конструктор | `QDialog`, `QLabel` (Rich Text) |
 
 ---
 
@@ -205,10 +205,11 @@ LaTeX, XML и прочие форматы вывода игнорируются 
 
 | Файл | Назначение | Ключевые методы / слоты | Qt-инструменты |
 |---|---|---|---|
-| `mytcpserver.cpp/h` | TCP-сервер: приём соединений, маршрутизация запросов | `slotNewConnection()`, `slotServerRead()`, `processBuffer()`, `sendResponse()`, `slotClientDisconnected()` | `QTcpServer`, `QTcpSocket`, `QJsonDocument` |
-| `database.cpp/h` | Singleton-обёртка над SQLite: CRUD для пользователей, схем, задач | `instance()`, `addUser()`, `getUser()`, `addTask()`, `getTasks()`, `updateTask()`, `deleteTask()` | `QSqlDatabase`, `QSqlQuery` (драйвер `QSQLITE`) |
-| `smtpclient.cpp/h` | Отправка писем через Gmail SMTP (SSL, порт 465) | `sendVerificationCode()`, `sendPasswordResetCode()` | `QSslSocket`, `QByteArray::toBase64()`, `QFile` / `QTextStream` (чтение `email.txt`) |
-| `calculator.cpp/h` | Вычисление f(x) и генерация точек графика (тестируемый модуль) | `calculate()`, `generateGraphData()` | Чистый C++, `<cmath>` |
+| `mytcpserver.cpp/h` | TCP-сервер: приём соединений, маршрутизация запросов | `slotNewConnection()`, `slotServerRead()`, `slotClientDisconnected()` | `QTcpServer`, `QTcpSocket` |
+| `database.cpp/h` | Singleton-обёртка над SQLite: CRUD пользователей | `instance()`, `addUser()`, `checkUser()`, `userExists()`, `emailExists()`, `getUserEmail()`, `getLoginByEmail()`, `updatePasswordByEmail()` | `QSqlDatabase`, `QSqlQuery` (драйвер `QSQLITE`) |
+| `smtpclient.cpp/h` | Отправка писем через Gmail SMTP (SSL, порт 465) | `sendVerificationCode()`, `sendPasswordResetCode()` | `QSslSocket`, `QByteArray::toBase64()` |
+| `functionsforserver.cpp/h` | Диспетчер команд протокола `\|\|` | `processMessage()` | Чистый C++ + Qt |
+| `calculator.cpp/h` | Вычисление f(x) и генерация точек графика | `calculate()`, `generateGraphData()` | Чистый C++, `<cmath>` |
 | `main.cpp` | Точка входа: инициализация `QCoreApplication` и `MyTcpServer` | — | `QCoreApplication` |
 
 ---

@@ -10,7 +10,7 @@
  * @section arch Архитектура
  *
  * | Компонент | Технологии |
- * |-----------|-----------|
+ * |-----------|----------|
  * | Клиент    | Qt Widgets, QTcpSocket, QPainter |
  * | Сервер    | QTcpServer, SQLite (QSqlDatabase), SMTP/SSL |
  * | Тесты     | Qt Test |
@@ -28,36 +28,36 @@
  *
  * @section client_modules Клиентские модули
  *
- * | Класс | Назначение |
- * |-------|-----------|
- * | AuthWidget     | Экран авторизации (логин + пароль) |
- * | RegWidget      | Экран регистрации (3 шага) |
- * | VerifyWidget   | Ввод кода подтверждения email |
- * | ResetWidget    | Восстановление пароля (email → код → новый пароль) |
- * | MainWindow     | Главное окно — переключение между экранами |
- * | GraphWidget    | Построение и отрисовка графика функции |
- * | ClientSingleton | TCP-соединение с сервером (Singleton) |
- * | TaskDialog     | Диалог просмотра задания |
- * | SchemaDialog   | Диалог отображения блок-схемы |
+ * | Класс | Назначение | Ключевые методы |
+ * |-------|-----------|----------------|
+ * | AuthWidget      | Экран авторизации (логин + пароль, защита от перебора) | `onLoginClicked()`, `onForgotClicked()`, `clearFields()`, `applyLock()` |
+ * | RegWidget       | Экран регистрации (3 шага) | `onNextClicked()`, `onRegisterClicked()`, `clearFields()`, `showStep()` |
+ * | VerifyWidget    | Ввод кода подтверждения email | `onConfirmClicked()`, `onResendClicked()`, `setLogin()` |
+ * | ResetWidget     | Восстановление пароля (email → код → новый пароль) | `onSendCodeClicked()`, `onVerifyClicked()`, `onResetClicked()`, `clearFields()` |
+ * | MainWindow      | Главное окно, переключение экранов | `onShowAuth()`, `onShowRegister()`, `onShowVerifyAuth()`, `onRegistrationSuccess()`, `onVerificationSuccess()`, `onLogout()`, `onTaskBtnClicked()`, `onSchemaBtnClicked()` |
+ * | GraphWidget     | Построение и отрисовка графика функции | `evalFunction()`, `onBuildClicked()`, `onExportClicked()`, `paintEvent()` |
+ * | ClientSingleton | TCP-соединение с сервером (Singleton) | `instance()`, `sendRequestAsync()`, signal `responseReceived` |
+ * | TaskDialog      | Диалог просмотра задания (вариант 9) | конструктор |
+ * | SchemaDialog    | Диалог отображения блок-схемы | конструктор, `schemaLabel` |
  *
  * @section server_modules Серверные модули
  *
- * | Класс | Назначение |
- * |-------|-----------|
- * | MyTcpServer       | TCP-сервер: приём соединений, маршрутизация запросов |
- * | FunctionsForServer | Диспетчер команд протокола ||  |
- * | Database          | Singleton-обёртка над SQLite |
- * | SmtpClient        | Отправка писем через Gmail SMTP (SSL, порт 465) |
- * | Calculator        | Вычисление f(x) и генерация точек графика |
+ * | Класс | Назначение | Ключевые методы |
+ * |-------|-----------|----------------|
+ * | MyTcpServer        | TCP-сервер: приём соединений, маршрутизация запросов | `slotNewConnection()`, `slotServerRead()`, `slotClientDisconnected()` |
+ * | FunctionsForServer | Диспетчер команд протокола `\|\|` | `processMessage()` |
+ * | Database           | Singleton-обёртка над SQLite | `instance()`, `addUser()`, `checkUser()`, `userExists()`, `emailExists()`, `getUserEmail()`, `getLoginByEmail()`, `updatePasswordByEmail()` |
+ * | SmtpClient         | Отправка писем через Gmail SMTP (SSL, порт 465) | `sendVerificationCode()`, `sendPasswordResetCode()` |
+ * | Calculator         | Вычисление f(x) и генерация точек графика | `calculate()`, `generateGraphData()` |
  *
  * @section formula Вычисляемая функция
  *
  * @f[
  *   f(x) =
  *   \begin{cases}
- *     |x \cdot a| - 2,  & x < -2 \\
+ *     |x \cdot a| - 2,      & x < -2 \\
  *     b \cdot x^2 + x + 1, & -2 \le x < 2 \\
- *     |x - 2| + c,      & x \ge 2
+ *     |x - 2| + c,          & x \ge 2
  *   \end{cases}
  * @f]
  *
