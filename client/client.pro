@@ -28,6 +28,8 @@ HEADERS += \
     schemadialog.h \
     resetwidget.h
 
+RESOURCES += resources.qrc
+
 # Suppress deprecation warnings for Qt5 compatibility
 DEFINES += QT_DEPRECATED_WARNINGS
 

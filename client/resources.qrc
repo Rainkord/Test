@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>formula_task.png</file>
+        <file>formula_graph.png</file>
+    </qresource>
+</RCC>
