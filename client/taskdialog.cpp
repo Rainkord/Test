@@ -4,48 +4,31 @@
 #include <QPixmap>
 #include <QScrollArea>
 
-// ── GitHub-dark palette ────────────────────────────────────────────────────
 static const char* GH_BG      = "#0d1117";
 static const char* GH_SURFACE = "#161b22";
 static const char* GH_BORDER  = "#30363d";
 static const char* GH_TEXT    = "#e6edf3";
-static const char* GH_MUTED   = "#8b949e";
 static const char* GH_ACCENT  = "#58a6ff";
 
-TaskDialog::TaskDialog(QWidget *parent)
-    : QDialog(parent)
-{
-    setupUI();
-}
-
+TaskDialog::TaskDialog(QWidget *parent) : QDialog(parent) { setupUI(); }
 TaskDialog::~TaskDialog() {}
 
 void TaskDialog::setupUI()
 {
-    setWindowTitle("Задание");
+    setWindowTitle(QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5"));
     setModal(true);
-
-    // ── overall dialog style ──────────────────────────────────────────────
     setStyleSheet(QString(
         "QDialog { background-color: %1; }"
         "QScrollArea { background: transparent; border: none; }"
-        "QScrollBar:vertical {"
-        "  background: %2; width: 8px; border-radius: 4px;"
-        "}"
-        "QScrollBar::handle:vertical {"
-        "  background: %3; border-radius: 4px; min-height: 20px;"
-        "}"
-        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {"
-        "  height: 0px;"
-        "}"
+        "QScrollBar:vertical { background: %2; width: 8px; border-radius: 4px; }"
+        "QScrollBar::handle:vertical { background: %3; border-radius: 4px; min-height: 20px; }"
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }"
     ).arg(GH_BG).arg(GH_SURFACE).arg(GH_BORDER));
 
-    // ── root layout ───────────────────────────────────────────────────────
     auto *rootLayout = new QVBoxLayout(this);
     rootLayout->setContentsMargins(0, 0, 0, 0);
     rootLayout->setSpacing(0);
 
-    // ── scroll area ───────────────────────────────────────────────────────
     auto *scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
@@ -58,12 +41,10 @@ void TaskDialog::setupUI()
     mainLayout->setContentsMargins(24, 24, 24, 24);
     mainLayout->setSpacing(16);
 
-    // ── helper lambda: make a card widget ────────────────────────────────
     auto makeCard = [&](QWidget *content) -> QWidget* {
         auto *card = new QWidget();
         card->setStyleSheet(QString(
-            "QWidget { background-color: %1; border: 1px solid %2;"
-            " border-radius: 8px; }"
+            "QWidget { background-color: %1; border: 1px solid %2; border-radius: 8px; }"
         ).arg(GH_SURFACE).arg(GH_BORDER));
         auto *cl = new QVBoxLayout(card);
         cl->setContentsMargins(16, 14, 16, 14);
@@ -72,93 +53,102 @@ void TaskDialog::setupUI()
         return card;
     };
 
-    // ── title ─────────────────────────────────────────────────────────────
-    titleLabel = new QLabel("\u2139\ufe0f  \u0418\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f \u043e \u0437\u0430\u0434\u0430\u043d\u0438\u0438");
+    // title
+    titleLabel = new QLabel(QString::fromUtf8("\xe2\x84\xb9\xef\xb8\x8f  \xd0\x98\xd0\xbd\xd1\x84\xd0\xbe\xd1\x80\xd0\xbc\xd0\xb0\xd1\x86\xd0\xb8\xd1\x8f \xd0\xbe \xd0\xb7\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb8"));
     titleLabel->setStyleSheet(QString(
-        "QLabel { color: %1; font-size: 18px; font-weight: bold;"
-        " background: transparent; border: none; }"
+        "QLabel { color: %1; font-size: 18px; font-weight: bold; background: transparent; border: none; }"
     ).arg(GH_TEXT));
     mainLayout->addWidget(titleLabel);
 
-    // ── work title card ───────────────────────────────────────────────────
-    workTitleLabel = new QLabel(
-        "<span style='color:%1; font-size:11pt; font-weight:bold;'>\u0420\u0430\u0431\u043e\u0442\u0430:</span>"
-        "<br>"
-        "<span style='color:%2; font-size:10pt;'>\u0418\u0441\u0441\u043b\u0435\u0434\u043e\u0432\u0430\u043d\u0438\u0435 \u0438 \u043f\u043e\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 \u0433\u0440\u0430\u0444\u0438\u043a\u0430 \u0444\u0443\u043d\u043a\u0446\u0438\u0438</span>"
-        .arg(GH_ACCENT).arg(GH_TEXT)
-    );
+    // work title card
+    workTitleLabel = new QLabel();
     workTitleLabel->setTextFormat(Qt::RichText);
     workTitleLabel->setWordWrap(true);
     workTitleLabel->setStyleSheet("background: transparent; border: none;");
+    workTitleLabel->setText(
+        QString("<span style='color:%1; font-size:11pt; font-weight:bold;'>")
+            .arg(GH_ACCENT)
+        + QString::fromUtf8("\xd0\xa0\xd0\xb0\xd0\xb1\xd0\xbe\xd1\x82\xd0\xb0")
+        + ":</span><br>"
+        + QString("<span style='color:%1; font-size:10pt;'>").arg(GH_TEXT)
+        + QString::fromUtf8("\xd0\x98\xd1\x81\xd1\x81\xd0\xbb\xd0\xb5\xd0\xb4\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5 \xd0\xb8 \xd0\xbf\xd0\xbe\xd1\x81\xd1\x82\xd1\x80\xd0\xbe\xd0\xb5\xd0\xbd\xd0\xb8\xd0\xb5 \xd0\xb3\xd1\x80\xd0\xb0\xd1\x84\xd0\xb8\xd0\xba\xd0\xb0 \xd1\x84\xd1\x83\xd0\xbd\xd0\xba\xd1\x86\xd0\xb8\xd0\xb8")
+        + "</span>"
+    );
     mainLayout->addWidget(makeCard(workTitleLabel));
 
-    // ── group card ────────────────────────────────────────────────────────
-    groupLabel = new QLabel(
-        "<span style='color:%1; font-size:11pt; font-weight:bold;'>\u0413\u0440\u0443\u043f\u043f\u0430:</span>"
-        "<br>"
-        "<span style='color:%2; font-size:10pt;'>251-372, \u0432\u0430\u0440\u0438\u0430\u043d\u0442 9</span>"
-        .arg(GH_ACCENT).arg(GH_TEXT)
-    );
+    // group card
+    groupLabel = new QLabel();
     groupLabel->setTextFormat(Qt::RichText);
     groupLabel->setWordWrap(true);
     groupLabel->setStyleSheet("background: transparent; border: none;");
+    groupLabel->setText(
+        QString("<span style='color:%1; font-size:11pt; font-weight:bold;'>").arg(GH_ACCENT)
+        + QString::fromUtf8("\xd0\x93\xd1\x80\xd1\x83\xd0\xbf\xd0\xbf\xd0\xb0")
+        + ":</span><br>"
+        + QString("<span style='color:%1; font-size:10pt;'>").arg(GH_TEXT)
+        + "251-372, "
+        + QString::fromUtf8("\xd0\xb2\xd0\xb0\xd1\x80\xd0\xb8\xd0\xb0\xd0\xbd\xd1\x82")
+        + " 9</span>"
+    );
     mainLayout->addWidget(makeCard(groupLabel));
 
-    // ── members card ──────────────────────────────────────────────────────
-    membersLabel = new QLabel(
-        "<span style='color:%1; font-size:11pt; font-weight:bold;'>\u0427\u043b\u0435\u043d\u044b \u0433\u0440\u0443\u043f\u043f\u044b:</span>"
-        "<br>"
-        "<span style='color:%2; font-size:10pt;'>"
-        "&#8226; \u041e\u0440\u043b\u043e\u0432 \u0420\u0443\u0441\u043b\u0430\u043d &#8226; \u0422\u0438\u043c\u043e\u0444\u0435\u0435\u0432 \u0410\u043d\u0442\u043e\u043d"
-        "</span>"
-        .arg(GH_ACCENT).arg(GH_TEXT)
-    );
+    // members card
+    membersLabel = new QLabel();
     membersLabel->setTextFormat(Qt::RichText);
     membersLabel->setWordWrap(true);
     membersLabel->setStyleSheet("background: transparent; border: none;");
+    membersLabel->setText(
+        QString("<span style='color:%1; font-size:11pt; font-weight:bold;'>").arg(GH_ACCENT)
+        + QString::fromUtf8("\xd0\xa7\xd0\xbb\xd0\xb5\xd0\xbd\xd1\x8b \xd0\xb3\xd1\x80\xd1\x83\xd0\xbf\xd0\xbf\xd1\x8b")
+        + ":</span><br>"
+        + QString("<span style='color:%1; font-size:10pt;'>").arg(GH_TEXT)
+        + "&#8226; "
+        + QString::fromUtf8("\xd0\x9e\xd1\x80\xd0\xbb\xd0\xbe\xd0\xb2 \xd0\xa0\xd1\x83\xd1\x81\xd0\xbb\xd0\xb0\xd0\xbd")
+        + " &#8226; "
+        + QString::fromUtf8("\xd0\xa2\xd0\xb8\xd0\xbc\xd0\xbe\xd1\x84\xd0\xb5\xd0\xb5\xd0\xb2 \xd0\x90\xd0\xbd\xd1\x82\xd0\xbe\xd0\xbd")
+        + "</span>"
+    );
     mainLayout->addWidget(makeCard(membersLabel));
 
-    // ── formula image card (formula_task.png — без a,b,c) ─────────────────
+    // formula image card
     {
         auto *card = new QWidget();
         card->setStyleSheet(QString(
-            "QWidget { background-color: %1; border: 1px solid %2;"
-            " border-radius: 8px; }"
+            "QWidget { background-color: %1; border: 1px solid %2; border-radius: 8px; }"
         ).arg(GH_SURFACE).arg(GH_BORDER));
         auto *cl = new QVBoxLayout(card);
         cl->setContentsMargins(16, 14, 16, 14);
         cl->setSpacing(8);
 
-        auto *hdr = new QLabel("<b style='color:%1; font-size:11pt;'>\u0424\u0443\u043d\u043a\u0446\u0438\u044f \u2116\u202f9:</b>"
-                               .arg(GH_ACCENT));
+        auto *hdr = new QLabel();
         hdr->setTextFormat(Qt::RichText);
         hdr->setStyleSheet("background: transparent; border: none;");
+        hdr->setText(
+            QString("<b style='color:%1; font-size:11pt;'>").arg(GH_ACCENT)
+            + QString::fromUtf8("\xd0\xa4\xd1\x83\xd0\xbd\xd0\xba\xd1\x86\xd0\xb8\xd1\x8f \xe2\x84\x969:")
+            + "</b>"
+        );
         cl->addWidget(hdr);
 
         formulaLabel = new QLabel();
         formulaLabel->setAlignment(Qt::AlignCenter);
         formulaLabel->setStyleSheet("background: transparent; border: none;");
-
         QPixmap pm(":/formula_task.png");
         if (!pm.isNull())
             formulaLabel->setPixmap(pm.scaledToWidth(460, Qt::SmoothTransformation));
         else
-            formulaLabel->setText("<span style='color:#ff6b6b;'>\u0418\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e</span>");
-
+            formulaLabel->setText("<span style='color:#ff6b6b;'>Image not found</span>");
         cl->addWidget(formulaLabel);
         mainLayout->addWidget(card);
     }
 
     mainLayout->addStretch();
 
-    // ── close button ──────────────────────────────────────────────────────
-    closeBtn = new QPushButton("\u2715  \u0417\u0430\u043a\u0440\u044b\u0442\u044c");
+    closeBtn = new QPushButton();
+    closeBtn->setText(QString::fromUtf8("\xe2\x9c\x95  \xd0\x97\xd0\xb0\xd0\xba\xd1\x80\xd1\x8b\xd1\x82\xd1\x8c"));
     closeBtn->setStyleSheet(QString(
-        "QPushButton {"
-        "  background-color: %1; color: %2;"
-        "  border: 1px solid %3; border-radius: 6px;"
-        "  padding: 8px 20px; font-size: 13px;"
-        "}"
+        "QPushButton { background-color: %1; color: %2; border: 1px solid %3;"
+        " border-radius: 6px; padding: 8px 20px; font-size: 13px; }"
         "QPushButton:hover { background-color: #21262d; }"
         "QPushButton:pressed { background-color: #161b22; }"
     ).arg(GH_SURFACE).arg(GH_TEXT).arg(GH_BORDER));
@@ -168,9 +158,7 @@ void TaskDialog::setupUI()
     scrollArea->setWidget(container);
     rootLayout->addWidget(scrollArea);
 
-    // ── dialog size ───────────────────────────────────────────────────────
     QScreen *screen = QApplication::primaryScreen();
     QRect sg = screen ? screen->availableGeometry() : QRect(0,0,1280,800);
-    resize(qMin(560, sg.width() - 80),
-           qMin(700, sg.height() - 80));
+    resize(qMin(560, sg.width() - 80), qMin(700, sg.height() - 80));
 }

@@ -21,21 +21,15 @@
 #include <algorithm>
 #include <limits>
 
-// ── GitHub Dark palette ────────────────────────────────────────
 #define GH_BG          "#0d1117"
 #define GH_PANEL       "#161b22"
 #define GH_BORDER      "#30363d"
 #define GH_TEXT        "#e6edf3"
 #define GH_MUTED       "#8b949e"
-#define GH_GREEN       "#238636"
-#define GH_GREEN_H     "#2ea043"
 #define GH_RED_BTN     "#b91c1c"
 #define GH_RED_BTN_H   "#991b1b"
 #define GH_INPUT_BG    "#0d1117"
-#define GH_BTN_GHOST   "#21262d"
-#define GH_BTN_GHOST_H "#30363d"
 
-// Canvas colours
 #define CANVAS_BG      QColor(0x0d, 0x11, 0x17)
 #define GRID_COLOR     QColor(0x21, 0x26, 0x2d)
 #define AXIS_COLOR     QColor(0xe6, 0xed, 0xf3)
@@ -47,7 +41,6 @@
 #define FONT_SIZE_BTN  11
 #define FONT_SIZE_UI   10
 
-// ── Constructor ──────────────────────────────────────────────
 GraphWidget::GraphWidget(QWidget *parent)
     : QWidget(parent)
     , currentA(1.0), currentB(1.0), currentC(1.0)
@@ -68,21 +61,15 @@ void GraphWidget::setupUI()
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
-
     leftPanel = new QWidget(this);
     leftPanel->setFixedWidth(LEFT_PANEL_WIDTH);
     leftPanel->setObjectName("leftPanel");
     leftPanel->setStyleSheet(QString(
-        "QWidget#leftPanel {"
-        "  background-color: %1;"
-        "  border-right: 1px solid %2;"
-        "}"
+        "QWidget#leftPanel { background-color: %1; border-right: 1px solid %2; }"
     ).arg(GH_PANEL).arg(GH_BORDER));
     setupLeftPanel();
-
     mainLayout->addWidget(leftPanel);
     mainLayout->addStretch(1);
-
     setLayout(mainLayout);
     setMinimumSize(1000, 700);
 }
@@ -93,21 +80,14 @@ void GraphWidget::setupLeftPanel()
     vbox->setContentsMargins(8, 8, 8, 8);
     vbox->setSpacing(6);
 
-    // ── Formula image (formula_graph.png — с a,b,c) ───────────────────
     formulaLabel = new QLabel(leftPanel);
     formulaLabel->setAlignment(Qt::AlignCenter);
     formulaLabel->setStyleSheet(QString(
-        "QLabel {"
-        "  background-color: %1;"
-        "  border: 1px solid %2;"
-        "  border-radius: 6px;"
-        "  padding: 4px;"
-        "}"
+        "QLabel { background-color: %1; border: 1px solid %2; border-radius: 6px; padding: 4px; }"
     ).arg(GH_INPUT_BG).arg(GH_BORDER));
     updateFormulaLabel();
     vbox->addWidget(formulaLabel);
 
-    // ── Separator ────────────────────────────────────────────────────
     auto makeSep = [&]() {
         QFrame *sep = new QFrame(leftPanel);
         sep->setFrameShape(QFrame::HLine);
@@ -116,46 +96,32 @@ void GraphWidget::setupLeftPanel()
     };
     vbox->addWidget(makeSep());
 
-    // ── Slider rows: a, b, c ────────────────────────────────────────
     QString sliderStyle = QString(
-        "QSlider::groove:horizontal {"
-        "  height: 4px; background: %1; border-radius: 2px;"
-        "}"
-        "QSlider::handle:horizontal {"
-        "  background: %2; border: 2px solid %3;"
-        "  width: 14px; height: 14px; margin: -5px 0; border-radius: 7px;"
-        "}"
+        "QSlider::groove:horizontal { height: 4px; background: %1; border-radius: 2px; }"
+        "QSlider::handle:horizontal { background: %2; border: 2px solid %3; width: 14px; height: 14px; margin: -5px 0; border-radius: 7px; }"
         "QSlider::sub-page:horizontal { background: %4; border-radius: 2px; }"
     ).arg(GH_BORDER).arg(GH_PANEL).arg("#388bfd").arg("#388bfd");
 
     QString spinStyle = QString(
-        "QDoubleSpinBox {"
-        "  background: %1; color: %2; border: 1px solid %3;"
-        "  border-radius: 4px; padding: 2px 4px; font-size: %4pt;"
-        "}"
+        "QDoubleSpinBox { background: %1; color: %2; border: 1px solid %3; border-radius: 4px; padding: 2px 4px; font-size: %4pt; }"
         "QDoubleSpinBox:focus { border-color: #388bfd; }"
     ).arg(GH_INPUT_BG).arg(GH_TEXT).arg(GH_BORDER).arg(FONT_SIZE_UI);
 
-    QString lblStyle = QString("QLabel { color: %1; font-size: %2pt; border: none; }")
-                       .arg(GH_TEXT).arg(FONT_SIZE_UI);
+    QString lblStyle = QString("QLabel { color: %1; font-size: %2pt; border: none; }").arg(GH_TEXT).arg(FONT_SIZE_UI);
 
-    auto makeSliderRow = [&](const QString &name, QLabel *&lbl,
-                              QSlider *&slider, QDoubleSpinBox *&spin) {
+    auto makeSliderRow = [&](const QString &name, QLabel *&lbl, QSlider *&slider, QDoubleSpinBox *&spin) {
         QHBoxLayout *row = new QHBoxLayout();
         row->setSpacing(4);
-
         lbl = new QLabel(name + " =", leftPanel);
         lbl->setFixedWidth(28);
         lbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         lbl->setStyleSheet(lblStyle);
-
         slider = new QSlider(Qt::Horizontal, leftPanel);
         slider->setRange(-50, 50);
         slider->setValue(10);
         slider->setTickInterval(10);
         slider->setTickPosition(QSlider::TicksBelow);
         slider->setStyleSheet(sliderStyle);
-
         spin = new QDoubleSpinBox(leftPanel);
         spin->setRange(-5.0, 5.0);
         spin->setSingleStep(0.1);
@@ -163,7 +129,6 @@ void GraphWidget::setupLeftPanel()
         spin->setValue(1.0);
         spin->setFixedWidth(60);
         spin->setStyleSheet(spinStyle);
-
         row->addWidget(lbl);
         row->addWidget(slider, 1);
         row->addWidget(spin);
@@ -183,7 +148,6 @@ void GraphWidget::setupLeftPanel()
 
     vbox->addWidget(makeSep());
 
-    // ── Table ────────────────────────────────────────────────────────────
     table = new QTableWidget(21, 2, leftPanel);
     table->setHorizontalHeaderLabels({"x", "F(x)"});
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -191,15 +155,8 @@ void GraphWidget::setupLeftPanel()
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setSelectionMode(QAbstractItemView::NoSelection);
     table->setStyleSheet(QString(
-        "QTableWidget {"
-        "  background-color: %1; color: %2;"
-        "  border: 1px solid %3; border-radius: 4px;"
-        "  gridline-color: %3; font-size: %4pt;"
-        "}"
-        "QHeaderView::section {"
-        "  background-color: %5; color: %2;"
-        "  border: none; border-bottom: 1px solid %3; padding: 4px;"
-        "}"
+        "QTableWidget { background-color: %1; color: %2; border: 1px solid %3; border-radius: 4px; gridline-color: %3; font-size: %4pt; }"
+        "QHeaderView::section { background-color: %5; color: %2; border: none; border-bottom: 1px solid %3; padding: 4px; }"
         "QTableWidget::item { padding: 2px; }"
         "QTableWidget::item:selected { background: #1f3a5f; }"
         "QScrollBar:vertical { background: %1; width: 8px; border: none; }"
@@ -207,22 +164,15 @@ void GraphWidget::setupLeftPanel()
     ).arg(GH_INPUT_BG).arg(GH_TEXT).arg(GH_BORDER).arg(FONT_SIZE_UI).arg(GH_PANEL));
     vbox->addWidget(table, 1);
 
-    // ── User label ───────────────────────────────────────────────────────
     userLabel = new QLabel("", leftPanel);
-    userLabel->setStyleSheet(QString("QLabel { color: %1; font-size: %2pt; border: none; }")
-                             .arg(GH_MUTED).arg(FONT_SIZE_UI - 1));
+    userLabel->setStyleSheet(QString("QLabel { color: %1; font-size: %2pt; border: none; }").arg(GH_MUTED).arg(FONT_SIZE_UI - 1));
     userLabel->setAlignment(Qt::AlignCenter);
     vbox->addWidget(userLabel);
 
-    // ── Logout button ────────────────────────────────────────────────
-    logoutBtn = new QPushButton("Выйти из аккаунта", leftPanel);
+    logoutBtn = new QPushButton(QString::fromUtf8("\xd0\x92\xd1\x8b\xd0\xb9\xd1\x82\xd0\xb8 \xd0\xb8\xd0\xb7 \xd0\xb0\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82\xd0\xb0"), leftPanel);
     logoutBtn->setMinimumHeight(34);
     logoutBtn->setStyleSheet(QString(
-        "QPushButton {"
-        "  background-color: %1; color: #ffffff;"
-        "  border: 1px solid rgba(240,246,252,0.1); border-radius: 6px;"
-        "  padding: 6px; font-family: '%3'; font-size: %4pt; font-weight: bold;"
-        "}"
+        "QPushButton { background-color: %1; color: #ffffff; border: 1px solid rgba(240,246,252,0.1); border-radius: 6px; padding: 6px; font-family: '%3'; font-size: %4pt; font-weight: bold; }"
         "QPushButton:hover { background-color: %2; }"
     ).arg(GH_RED_BTN).arg(GH_RED_BTN_H).arg(FONT_FAMILY).arg(FONT_SIZE_BTN));
     connect(logoutBtn, &QPushButton::clicked, this, &GraphWidget::onLogoutClicked);
@@ -231,14 +181,11 @@ void GraphWidget::setupLeftPanel()
 
 void GraphWidget::updateFormulaLabel()
 {
-    // Загружаем скриншот формулы с a, b, c из ресурсов Qt
     QPixmap pm(":/formula_graph.png");
     if (!pm.isNull()) {
-        // Масштабируем под ширину панели с запасом
         int targetW = LEFT_PANEL_WIDTH - 24;
         formulaLabel->setPixmap(pm.scaledToWidth(targetW, Qt::SmoothTransformation));
     } else {
-        // Фоллбэк — текст
         formulaLabel->setTextFormat(Qt::RichText);
         formulaLabel->setWordWrap(true);
         formulaLabel->setText(
@@ -252,7 +199,6 @@ void GraphWidget::updateFormulaLabel()
     }
 }
 
-// ── Slider / Spin handlers ─────────────────────────────────────────
 void GraphWidget::onSliderAChanged(int v) { if(blockSliderA) return; blockSpinA=true; spinA->setValue(v/10.0); blockSpinA=false; updateGraph(); }
 void GraphWidget::onSliderBChanged(int v) { if(blockSliderB) return; blockSpinB=true; spinB->setValue(v/10.0); blockSpinB=false; updateGraph(); }
 void GraphWidget::onSliderCChanged(int v) { if(blockSliderC) return; blockSpinC=true; spinC->setValue(v/10.0); blockSpinC=false; updateGraph(); }
@@ -266,12 +212,11 @@ void GraphWidget::onLogoutClicked()
     emit logout();
 }
 
-// ── Calculation ─────────────────────────────────────────────────────────
 double GraphWidget::calculate(double x, double a, double b, double c) const
 {
-    if (x < -2.0)        return std::fabs(x * a) - 2.0;
-    else if (x < 2.0)   return b * (x * x) + x + 1.0;
-    else                 return std::fabs(x - 2.0) + 1.0 * c;
+    if (x < -2.0)      return std::fabs(x * a) - 2.0;
+    else if (x < 2.0)  return b * (x * x) + x + 1.0;
+    else               return std::fabs(x - 2.0) + 1.0 * c;
 }
 
 void GraphWidget::updateGraph()
@@ -335,10 +280,9 @@ void GraphWidget::setUserLogin(const QString &login)
 {
     userLogin = login;
     if (userLabel)
-        userLabel->setText("Пользователь: " + login);
+        userLabel->setText(QString::fromUtf8("\xd0\x9f\xd0\xbe\xd0\xbb\xd1\x8c\xd0\xb7\xd0\xbe\xd0\xb2\xd0\xb0\xd1\x82\xd0\xb5\xd0\xbb\xd1\x8c: ") + login);
 }
 
-// ── paintEvent ─────────────────────────────────────────────────────────
 void GraphWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -347,7 +291,6 @@ void GraphWidget::paintEvent(QPaintEvent *event)
 
     const int MARGIN     = 60;
     const int leftOffset = LEFT_PANEL_WIDTH;
-
     int drawX = leftOffset + MARGIN;
     int drawY = MARGIN;
     int drawW = width()  - leftOffset - MARGIN * 2;
@@ -369,10 +312,8 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     }
     double yPad = std::max((yMax - yMin) * 0.05, 0.5);
     yMin -= yPad; yMax += yPad;
-    double rangeX = std::max(xMax - xMin, 1e-9);
-    double rangeY = std::max(yMax - yMin, 1e-9);
-    double scaleX = drawW / rangeX;
-    double scaleY = drawH / rangeY;
+    double scaleX = drawW / std::max(xMax - xMin, 1e-9);
+    double scaleY = drawH / std::max(yMax - yMin, 1e-9);
 
     auto sX = [&](double x) { return drawX + (int)((x - xMin) * scaleX); };
     auto sY = [&](double y) { return drawY + drawH - (int)((y - yMin) * scaleY); };
@@ -380,15 +321,14 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     painter.setPen(QPen(QColor(GH_BORDER), 1));
     painter.drawRect(drawX, drawY, drawW, drawH);
 
-    painter.setPen(QPen(GRID_COLOR, 1, Qt::SolidLine));
-    painter.setFont(QFont(FONT_FAMILY, 8));
+    // Grid
+    painter.setPen(QPen(GRID_COLOR, 1));
     double xStep = 2.0;
     for (double gx = std::ceil(xMin/xStep)*xStep; gx <= xMax+1e-9; gx += xStep) {
         int sx = sX(gx);
         if (sx >= drawX && sx <= drawX+drawW) painter.drawLine(sx, drawY, sx, drawY+drawH);
     }
-    double yRange = yMax - yMin;
-    double rawStep = yRange / 8.0;
+    double rawStep = (yMax - yMin) / 8.0;
     double mag = std::pow(10.0, std::floor(std::log10(rawStep)));
     double niceSteps[] = {1.0, 2.0, 5.0, 10.0};
     double yStep = mag;
@@ -399,6 +339,7 @@ void GraphWidget::paintEvent(QPaintEvent *event)
         if (sy >= drawY && sy <= drawY+drawH) painter.drawLine(drawX, sy, drawX+drawW, sy);
     }
 
+    // Axes
     painter.setPen(QPen(AXIS_COLOR, 2));
     if (yMin <= 0.0 && yMax >= 0.0) {
         int sy = sY(0.0);
@@ -413,8 +354,8 @@ void GraphWidget::paintEvent(QPaintEvent *event)
         painter.drawLine(sx+4, drawY+8, sx, drawY);
     }
 
+    // Labels
     painter.setFont(QFont(FONT_FAMILY, 8));
-    painter.setPen(LABEL_COLOR);
     for (double gx = std::ceil(xMin/xStep)*xStep; gx <= xMax+1e-9; gx += xStep) {
         int sx = sX(gx);
         if (sx < drawX || sx > drawX+drawW) continue;
@@ -439,11 +380,41 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     painter.drawText(drawX+drawW-12, drawY+drawH/2+12, "x");
     painter.drawText(drawX+drawW/2-6, drawY+14, "y");
 
-    auto drawBranch = [&](const QVector<QPointF> &pts, const QColor &color) {
+    // Curves
+    auto drawBranchFn = [&](const QVector<QPointF> &pts, const QColor &color) {
         if (pts.size() < 2) return;
         painter.setPen(QPen(color, 2.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         for (int i = 1; i < pts.size(); ++i) {
-            int x1=sX(pts[i-1].x()), y1=sY(pts[i-1].y());
-            int x2=sX(pts[i].x()),   y2=sY(pts[i].y());
-            if ((x1<drawX&&x2<drawX)||(x1>drawX+drawW&&x2>drawX+drawW)) continue;
-       
+            int x1 = sX(pts[i-1].x()), y1 = sY(pts[i-1].y());
+            int x2 = sX(pts[i].x()),   y2 = sY(pts[i].y());
+            if ((x1<drawX && x2<drawX) || (x1>drawX+drawW && x2>drawX+drawW)) continue;
+            if ((y1<drawY && y2<drawY) || (y1>drawY+drawH && y2>drawY+drawH)) continue;
+            painter.drawLine(x1, y1, x2, y2);
+        }
+    };
+    drawBranchFn(pointsBranch1, QColor("#f85149"));
+    drawBranchFn(pointsBranch2, QColor("#3fb950"));
+    drawBranchFn(pointsBranch3, QColor("#58a6ff"));
+
+    // Legend
+    {
+        int lx = drawX + 10, ly = drawY + 10;
+        int lw = 250, lh = 64;
+        painter.fillRect(lx-4, ly-4, lw+8, lh+8, LEGEND_BG);
+        painter.setPen(QPen(LEGEND_BORDER, 1));
+        painter.drawRect(lx-4, ly-4, lw+8, lh+8);
+        painter.setFont(QFont(FONT_FAMILY, 9));
+        struct { QColor color; QString text; } legs[] = {
+            { QColor("#f85149"), "|x\u00B7a| \u2212 2,  x < \u22122" },
+            { QColor("#3fb950"), "b\u00B7(x\u00B2) + x + 1,  \u22122 \u2264 x < 2" },
+            { QColor("#58a6ff"), "|x \u2212 2| + 1\u00B7c,  x \u2265 2" }
+        };
+        for (int i = 0; i < 3; ++i) {
+            int lineY = ly + i*20 + 10;
+            painter.setPen(QPen(legs[i].color, 2.5));
+            painter.drawLine(lx, lineY, lx+25, lineY);
+            painter.setPen(legs[i].color);
+            painter.drawText(lx+30, lineY+4, legs[i].text);
+        }
+    }
+}
