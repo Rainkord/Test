@@ -71,7 +71,7 @@ private:
 
     // === Layout helpers ===
     QWidget *leftPanel;
-    static const int LEFT_PANEL_WIDTH = 280;
+    static const int LEFT_PANEL_WIDTH = 420;
 
     void setupUI();
     void setupLeftPanel();
