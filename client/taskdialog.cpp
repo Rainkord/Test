@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFrame>
+#include <QPixmap>
 
 #define GH_BG          "#0d1117"
 #define GH_CARD        "#161b22"
@@ -27,10 +28,9 @@ TaskDialog::~TaskDialog() {}
 
 void TaskDialog::setupUI()
 {
-    setWindowTitle("Задание — Подгруппа 5");
-    // Высота увеличена, чтобы всё помещалось без скролла
-    resize(560, 720);
-    setFixedSize(560, 720);
+    setWindowTitle("\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5 \xe2\x80\x94 \xd0\x9f\xd0\xbe\xd0\xb4\xd0\xb3\xd1\x80\xd1\x83\xd0\xbf\xd0\xbf\xd0\xb0 5");
+    resize(580, 780);
+    setFixedSize(580, 780);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(24, 24, 24, 20);
@@ -48,7 +48,7 @@ void TaskDialog::setupUI()
     // ── Title
     titleLabel = new QLabel(this);
     titleLabel->setText(QString(
-        "<b style='font-size:16pt; color:%1;'>Задание</b>"
+        "<b style='font-size:16pt; color:%1;'>\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5</b>"
     ).arg(GH_TEXT));
     titleLabel->setTextFormat(Qt::RichText);
     titleLabel->setAlignment(Qt::AlignCenter);
@@ -60,8 +60,8 @@ void TaskDialog::setupUI()
     workTitleLabel = new QLabel(this);
     workTitleLabel->setText(QString(
         "<p style='font-size:12pt; font-weight:bold; color:%1; text-align:center;'>"
-        "Графическое отображение ветвящейся функции<br>"
-        "в рамках клиент-серверного проекта"
+        "\xd0\x93\xd1\x80\xd0\xb0\xd1\x84\xd0\xb8\xd1\x87\xd0\xb5\xd1\x81\xd0\xba\xd0\xbe\xd0\xb5 \xd0\xbe\xd1\x82\xd0\xbe\xd0\xb1\xd1\x80\xd0\xb0\xd0\xb6\xd0\xb5\xd0\xbd\xd0\xb8\xd0\xb5 \xd0\xb2\xd0\xb5\xd1\x82\xd0\xb2\xd1\x8f\xd1\x89\xd0\xb5\xd0\xb9\xd1\x81\xd1\x8f \xd1\x84\xd1\x83\xd0\xbd\xd0\xba\xd1\x86\xd0\xb8\xd0\xb8<br>"
+        "\xd0\xb2 \xd1\x80\xd0\xb0\xd0\xbc\xd0\xba\xd0\xb0\xd1\x85 \xd0\xba\xd0\xbb\xd0\xb8\xd0\xb5\xd0\xbd\xd1\x82-\xd1\x81\xd0\xb5\xd1\x80\xd0\xb2\xd0\xb5\xd1\x80\xd0\xbd\xd0\xbe\xd0\xb3\xd0\xbe \xd0\xbf\xd1\x80\xd0\xbe\xd0\xb5\xd0\xba\xd1\x82\xd0\xb0"
         "</p>"
     ).arg(GH_TEXT));
     workTitleLabel->setTextFormat(Qt::RichText);
@@ -72,7 +72,7 @@ void TaskDialog::setupUI()
     // ── Group
     groupLabel = new QLabel(this);
     groupLabel->setText(QString(
-        "<p style='font-size:11pt; color:%1; text-align:center;'><b>Подгруппа 5</b></p>"
+        "<p style='font-size:11pt; color:%1; text-align:center;'><b>\xd0\x9f\xd0\xbe\xd0\xb4\xd0\xb3\xd1\x80\xd1\x83\xd0\xbf\xd0\xbf\xd0\xb0 5</b></p>"
     ).arg(GH_MUTED));
     groupLabel->setTextFormat(Qt::RichText);
     groupLabel->setAlignment(Qt::AlignCenter);
@@ -82,12 +82,12 @@ void TaskDialog::setupUI()
     membersLabel = new QLabel(this);
     membersLabel->setText(QString(
         "<p style='font-size:10pt; color:%1; line-height:1.9;'>"
-        "<b style='color:%2; font-size:11pt;'>Участники:</b><br><br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Орлов Руслан<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Карелин Кирилл<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Серёгина Елизавета<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Воробьёва Елизавета<br>"
-        "&nbsp;&nbsp;●&nbsp;&nbsp;Сарафанов Алексей"
+        "<b style='color:%2; font-size:11pt;'>\xd0\xa3\xd1\x87\xd0\xb0\xd1\x81\xd1\x82\xd0\xbd\xd0\xb8\xd0\xba\xd0\xb8:</b><br><br>"
+        "&nbsp;&nbsp;\xe2\x97\x8f&nbsp;&nbsp;\xd0\x9e\xd1\x80\xd0\xbb\xd0\xbe\xd0\xb2 \xd0\xa0\xd1\x83\xd1\x81\xd0\xbb\xd0\xb0\xd0\xbd<br>"
+        "&nbsp;&nbsp;\xe2\x97\x8f&nbsp;&nbsp;\xd0\x9a\xd0\xb0\xd1\x80\xd0\xb5\xd0\xbb\xd0\xb8\xd0\xbd \xd0\x9a\xd0\xb8\xd1\x80\xd0\xb8\xd0\xbb\xd0\xbb<br>"
+        "&nbsp;&nbsp;\xe2\x97\x8f&nbsp;&nbsp;\xd0\xa1\xd0\xb5\xd1\x80\xd1\x91\xd0\xb3\xd0\xb8\xd0\xbd\xd0\xb0 \xd0\x95\xd0\xbb\xd0\xb8\xd0\xb7\xd0\xb0\xd0\xb2\xd0\xb5\xd1\x82\xd0\xb0<br>"
+        "&nbsp;&nbsp;\xe2\x97\x8f&nbsp;&nbsp;\xd0\x92\xd0\xbe\xd1\x80\xd0\xbe\xd0\xb1\xd1\x8c\xd0\xb5\xd0\xb2\xd0\xb0 \xd0\x95\xd0\xbb\xd0\xb8\xd0\xb7\xd0\xb0\xd0\xb2\xd0\xb5\xd1\x82\xd0\xb0<br>"
+        "&nbsp;&nbsp;\xe2\x97\x8f&nbsp;&nbsp;\xd0\xa1\xd0\xb0\xd1\x80\xd0\xb0\xd1\x84\xd0\xb0\xd0\xbd\xd0\xbe\xd0\xb2 \xd0\x90\xd0\xbb\xd0\xb5\xd0\xba\xd1\x81\xd0\xb5\xd0\xb9"
         "</p>"
     ).arg(GH_TEXT).arg(GH_TEXT));
     membersLabel->setTextFormat(Qt::RichText);
@@ -100,28 +100,30 @@ void TaskDialog::setupUI()
 
     mainLayout->addWidget(makeSep());
 
-    // ── Formula card
+    // ── Formula image (formula_task.png from Qt resources)
     formulaLabel = new QLabel(this);
-    formulaLabel->setText(
-        "<p style='font-size:10pt; margin:0; line-height:2.0;'>"
-        "<b style='color:#e6edf3; font-size:11pt;'>Функция &#8470;9:</b><br><br>"
-        "<span style='color:#f85149;'>&bull;&nbsp; |x &middot; a| &minus; 2,&nbsp;&nbsp; x &lt; &minus;2</span><br>"
-        "<span style='color:#3fb950;'>&bull;&nbsp; b &middot; (x&sup2;) + x + 1,&nbsp;&nbsp; &minus;2 &le; x &lt; 2</span><br>"
-        "<span style='color:#58a6ff;'>&bull;&nbsp; |x &minus; 2| + 1 &middot; c,&nbsp;&nbsp; x &ge; 2</span>"
-        "</p>"
+    QPixmap formulaPix(":/formula_task.png");
+    if (!formulaPix.isNull()) {
+        // Масштабируем под ширину диалога с сохранением пропорций
+        formulaLabel->setPixmap(
+            formulaPix.scaledToWidth(520, Qt::SmoothTransformation)
+        );
+    } else {
+        // Fallback если ресурс не загрузился
+        formulaLabel->setText("\xd0\xa4\xd0\xbe\xd1\x80\xd0\xbc\xd1\x83\xd0\xbb\xd0\xb0 \xd0\xbd\xd0\xb5 \xd0\xbd\xd0\xb0\xd0\xb9\xd0\xb4\xd0\xb5\xd0\xbd\xd0\xb0");
+        formulaLabel->setStyleSheet(QString("QLabel { color: %1; }").arg(GH_MUTED));
+    }
+    formulaLabel->setAlignment(Qt::AlignCenter);
+    formulaLabel->setStyleSheet(
+        QString("QLabel { background-color: %1; border: 1px solid %2; border-radius: 8px; padding: 10px; }")
+        .arg(GH_BG).arg(GH_BORDER)
     );
-    formulaLabel->setTextFormat(Qt::RichText);
-    formulaLabel->setWordWrap(true);
-    formulaLabel->setStyleSheet(QString(
-        "QLabel { background-color: %1; border: 1px solid %2; border-radius: 8px; padding: 14px 16px; }"
-    ).arg(GH_BG).arg(GH_BORDER));
-    formulaLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     mainLayout->addWidget(formulaLabel);
 
     mainLayout->addStretch(1);
 
     // ── Close button
-    closeBtn = new QPushButton("Закрыть", this);
+    closeBtn = new QPushButton("\xd0\x97\xd0\xb0\xd0\xba\xd1\x80\xd1\x8b\xd1\x82\xd1\x8c", this);
     closeBtn->setMinimumHeight(36);
     closeBtn->setStyleSheet(QString(
         "QPushButton {"
