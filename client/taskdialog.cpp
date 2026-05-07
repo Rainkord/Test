@@ -1,144 +1,142 @@
 #include "taskdialog.h"
-#include <QApplication>
-#include <QScreen>
-#include <QScrollArea>
-#include <QPixmap>
 
-static const char* GH_BG      = "#0d1117";
-static const char* GH_SURFACE = "#161b22";
-static const char* GH_BORDER  = "#30363d";
-static const char* GH_TEXT    = "#e6edf3";
-static const char* GH_MUTED   = "#8b949e";
-static const char* GH_ACCENT  = "#238636";
-static const char* GH_BTN_BG  = "#21262d";
-static const char* GH_BTN_HV  = "#30363d";
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFrame>
+
+#define GH_BG          "#0d1117"
+#define GH_CARD        "#161b22"
+#define GH_BORDER      "#30363d"
+#define GH_TEXT        "#e6edf3"
+#define GH_MUTED       "#8b949e"
+#define GH_BLUE        "#388bfd"
+#define GH_BLUE_H      "#58a6ff"
+#define FONT_FAMILY    "Segoe UI"
 
 TaskDialog::TaskDialog(QWidget *parent)
     : QDialog(parent)
 {
-    setWindowTitle(QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5"));
-    setModal(true);
-
-    // ---- root layout ----
-    QVBoxLayout *rootLayout = new QVBoxLayout(this);
-    rootLayout->setContentsMargins(0, 0, 0, 0);
-    rootLayout->setSpacing(0);
-
-    // ---- style ----
     setStyleSheet(QString(
-        "QDialog { background: %1; }"
-        "QScrollArea { background: %1; border: none; }"
-        "QWidget#container { background: %1; }"
-        "QLabel { color: %4; }"
-        "QPushButton {"
-        "  background: %7; color: %4;"
-        "  border: 1px solid %3;"
-        "  border-radius: 6px;"
-        "  padding: 6px 16px;"
-        "  font-size: 13px;"
-        "}"
-        "QPushButton:hover { background: %8; }"
-    ).arg(GH_BG, GH_SURFACE, GH_BORDER, GH_TEXT,
-          GH_MUTED, GH_ACCENT, GH_BTN_BG, GH_BTN_HV));
-
-    // ---- scroll area ----
-    QScrollArea *scrollArea = new QScrollArea(this);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    QWidget *container = new QWidget;
-    container->setObjectName("container");
-    QVBoxLayout *lay = new QVBoxLayout(container);
-    lay->setContentsMargins(28, 28, 28, 28);
-    lay->setSpacing(20);
-
-    // ---- title ----
-    QLabel *titleLabel = new QLabel;
-    titleLabel->setTextFormat(Qt::RichText);
-    titleLabel->setWordWrap(true);
-    titleLabel->setText(
-        QString("<b style='color:%1; font-size:16pt;'>")
-            .arg(GH_TEXT) +
-        QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5") +
-        "</b>"
-    );
-    lay->addWidget(titleLabel);
-
-    // ---- separator ----
-    QFrame *sep = new QFrame;
-    sep->setFrameShape(QFrame::HLine);
-    sep->setStyleSheet(QString("color: %1;").arg(GH_BORDER));
-    lay->addWidget(sep);
-
-    // ---- task description ----
-    QLabel *taskLabel = new QLabel;
-    taskLabel->setTextFormat(Qt::RichText);
-    taskLabel->setWordWrap(true);
-    taskLabel->setOpenExternalLinks(false);
-
-    QString taskHtml =
-        QString("<div style='font-size:11pt; color:%1; line-height:1.6;'>").arg(GH_TEXT) +
-
-        QString("<b style='color:%1; font-size:11pt;'>&#8470;9:</b><br><br>").arg(GH_TEXT) +
-
-        QString::fromUtf8(
-            "<b>\xd0\xa4\xd1\x83\xd0\xbd\xd0\xba\xd1\x86\xd0\xb8\xd1\x8f:</b> "
-            "y = f(x), \xd0\xb3\xd0\xb4\xd0\xb5 f \xd0\xb7\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb0 "
-            "\xd0\xba\xd1\x83\xd1\x81\xd0\xbe\xd1\x87\xd0\xbd\xd0\xbe:<br><br>"
-        ) +
-
-        "<table cellspacing='8'>"
-        "<tr><td>|x|&nbsp;&minus;&nbsp;2,</td>"
-            "<td>x&nbsp;&lt;&nbsp;&minus;2</td></tr>"
-        "<tr><td>x&#178;&nbsp;+&nbsp;x&nbsp;+&nbsp;1,</td>"
-            "<td>&minus;2&nbsp;&le;&nbsp;x&nbsp;&lt;&nbsp;2</td></tr>"
-        "<tr><td>|x&nbsp;&minus;&nbsp;2|&nbsp;+&nbsp;1,</td>"
-            "<td>x&nbsp;&ge;&nbsp;2</td></tr>"
-        "</table><br>"
-
-        + QString::fromUtf8(
-            "<b>\xd0\x9f\xd0\xb0\xd1\x80\xd0\xb0\xd0\xbc\xd0\xb5\xd1\x82\xd1\x80\xd1\x8b:</b> "
-            "a, b, c \xe2\x80\x94 \xd0\xb2\xd0\xb5\xd1\x89\xd0\xb5\xd1\x81\xd1\x82\xd0\xb2\xd0\xb5\xd0\xbd\xd0\xbd\xd1\x8b\xd0\xb5 \xd1\x87\xd0\xb8\xd1\x81\xd0\xbb\xd0\xb0.<br><br>"
-        )
-
-        + "<table cellspacing='8'>"
-        "<tr><td>|x&nbsp;&middot;&nbsp;a|&nbsp;&minus;&nbsp;2,</td>"
-            "<td>x&nbsp;&lt;&nbsp;&minus;2</td></tr>"
-        "<tr><td>b&nbsp;&middot;&nbsp;x&#178;&nbsp;+&nbsp;x&nbsp;+&nbsp;1,</td>"
-            "<td>&minus;2&nbsp;&le;&nbsp;x&nbsp;&lt;&nbsp;2</td></tr>"
-        "<tr><td>|x&nbsp;&minus;&nbsp;2|&nbsp;+&nbsp;1&nbsp;&middot;&nbsp;c,</td>"
-            "<td>x&nbsp;&ge;&nbsp;2</td></tr>"
-        "</table><br>"
-
-        + "</div>";
-
-    taskLabel->setText(taskHtml);
-    lay->addWidget(taskLabel);
-
-    // ---- graph image ----
-    QLabel *imgLabel = new QLabel;
-    imgLabel->setAlignment(Qt::AlignCenter);
-    QPixmap px(":/formula_graph.png");
-    if (!px.isNull()) {
-        imgLabel->setPixmap(px.scaledToWidth(460, Qt::SmoothTransformation));
-    }
-    lay->addWidget(imgLabel);
-
-    lay->addStretch();
-
-    // ---- close button ----
-    QPushButton *closeBtn = new QPushButton(
-        QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xba\xd1\x80\xd1\x8b\xd1\x82\xd1\x8c"));
-    connect(closeBtn, &QPushButton::clicked, this, &QDialog::accept);
-    lay->addWidget(closeBtn, 0, Qt::AlignRight);
-
-    scrollArea->setWidget(container);
-    rootLayout->addWidget(scrollArea);
-
-    QScreen *screen = QApplication::primaryScreen();
-    QRect sg = screen ? screen->availableGeometry() : QRect(0,0,1280,800);
-    resize(qMin(560, sg.width() - 80), qMin(700, sg.height() - 80));
+        "QDialog { background-color: %1; color: %2; font-family: '%3'; font-size: 10pt; }"
+        "QLabel  { background: transparent; color: %2; }"
+    ).arg(GH_BG).arg(GH_TEXT).arg(FONT_FAMILY));
+    setupUI();
 }
 
 TaskDialog::~TaskDialog() {}
+
+void TaskDialog::setupUI()
+{
+    setWindowTitle("Задание — Подгруппа 5");
+    // Высота увеличена, чтобы всё помещалось без скролла
+    resize(560, 720);
+    setFixedSize(560, 720);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(24, 24, 24, 20);
+    mainLayout->setSpacing(12);
+
+    auto makeSep = [&]() {
+        QFrame *sep = new QFrame(this);
+        sep->setFrameShape(QFrame::HLine);
+        sep->setStyleSheet(QString(
+            "QFrame { background: %1; border: none; max-height: 1px; }"
+        ).arg(GH_BORDER));
+        return sep;
+    };
+
+    // ── Title
+    titleLabel = new QLabel(this);
+    titleLabel->setText(QString(
+        "<b style='font-size:16pt; color:%1;'>Задание</b>"
+    ).arg(GH_TEXT));
+    titleLabel->setTextFormat(Qt::RichText);
+    titleLabel->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(titleLabel);
+
+    mainLayout->addWidget(makeSep());
+
+    // ── Work title
+    workTitleLabel = new QLabel(this);
+    workTitleLabel->setText(QString(
+        "<p style='font-size:12pt; font-weight:bold; color:%1; text-align:center;'>"
+        "Графическое отображение ветвящейся функции<br>"
+        "в рамках клиент-серверного проекта"
+        "</p>"
+    ).arg(GH_TEXT));
+    workTitleLabel->setTextFormat(Qt::RichText);
+    workTitleLabel->setWordWrap(true);
+    workTitleLabel->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(workTitleLabel);
+
+    // ── Group
+    groupLabel = new QLabel(this);
+    groupLabel->setText(QString(
+        "<p style='font-size:11pt; color:%1; text-align:center;'><b>Подгруппа 5</b></p>"
+    ).arg(GH_MUTED));
+    groupLabel->setTextFormat(Qt::RichText);
+    groupLabel->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(groupLabel);
+
+    // ── Members card
+    membersLabel = new QLabel(this);
+    membersLabel->setText(QString(
+        "<p style='font-size:10pt; color:%1; line-height:1.9;'>"
+        "<b style='color:%2; font-size:11pt;'>Участники:</b><br><br>"
+        "&nbsp;&nbsp;●&nbsp;&nbsp;Орлов Руслан<br>"
+        "&nbsp;&nbsp;●&nbsp;&nbsp;Карелин Кирилл<br>"
+        "&nbsp;&nbsp;●&nbsp;&nbsp;Серёгина Елизавета<br>"
+        "&nbsp;&nbsp;●&nbsp;&nbsp;Воробьёва Елизавета<br>"
+        "&nbsp;&nbsp;●&nbsp;&nbsp;Сарафанов Алексей"
+        "</p>"
+    ).arg(GH_TEXT).arg(GH_TEXT));
+    membersLabel->setTextFormat(Qt::RichText);
+    membersLabel->setWordWrap(true);
+    membersLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    membersLabel->setStyleSheet(QString(
+        "QLabel { background-color: %1; border: 1px solid %2; border-radius: 8px; padding: 14px 16px; }"
+    ).arg(GH_CARD).arg(GH_BORDER));
+    mainLayout->addWidget(membersLabel);
+
+    mainLayout->addWidget(makeSep());
+
+    // ── Formula card
+    formulaLabel = new QLabel(this);
+    formulaLabel->setText(
+        "<p style='font-size:10pt; margin:0; line-height:2.0;'>"
+        "<b style='color:#e6edf3; font-size:11pt;'>Функция &#8470;9:</b><br><br>"
+        "<span style='color:#f85149;'>&bull;&nbsp; |x &middot; a| &minus; 2,&nbsp;&nbsp; x &lt; &minus;2</span><br>"
+        "<span style='color:#3fb950;'>&bull;&nbsp; b &middot; (x&sup2;) + x + 1,&nbsp;&nbsp; &minus;2 &le; x &lt; 2</span><br>"
+        "<span style='color:#58a6ff;'>&bull;&nbsp; |x &minus; 2| + 1 &middot; c,&nbsp;&nbsp; x &ge; 2</span>"
+        "</p>"
+    );
+    formulaLabel->setTextFormat(Qt::RichText);
+    formulaLabel->setWordWrap(true);
+    formulaLabel->setStyleSheet(QString(
+        "QLabel { background-color: %1; border: 1px solid %2; border-radius: 8px; padding: 14px 16px; }"
+    ).arg(GH_BG).arg(GH_BORDER));
+    formulaLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    mainLayout->addWidget(formulaLabel);
+
+    mainLayout->addStretch(1);
+
+    // ── Close button
+    closeBtn = new QPushButton("Закрыть", this);
+    closeBtn->setMinimumHeight(36);
+    closeBtn->setStyleSheet(QString(
+        "QPushButton {"
+        "  background-color: %1; color: #ffffff;"
+        "  border: 1px solid rgba(240,246,252,0.1); border-radius: 6px;"
+        "  font-size: 11pt; padding: 4px 20px; font-family: '%3';"
+        "}"
+        "QPushButton:hover { background-color: %2; }"
+    ).arg(GH_BLUE).arg(GH_BLUE_H).arg(FONT_FAMILY));
+    QHBoxLayout *btnRow = new QHBoxLayout();
+    btnRow->addStretch(1);
+    btnRow->addWidget(closeBtn);
+    btnRow->addStretch(1);
+    mainLayout->addLayout(btnRow);
+
+    connect(closeBtn, &QPushButton::clicked, this, &QDialog::accept);
+    setLayout(mainLayout);
+}
