@@ -140,3 +140,5 @@ TaskDialog::TaskDialog(QWidget *parent)
     QRect sg = screen ? screen->availableGeometry() : QRect(0,0,1280,800);
     resize(qMin(560, sg.width() - 80), qMin(700, sg.height() - 80));
 }
+
+TaskDialog::~TaskDialog() {}
