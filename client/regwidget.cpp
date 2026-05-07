@@ -286,10 +286,9 @@ void RegWidget::setupUI()
     continueBtn->setAutoDefault(true);
     continueBtn->setStyleSheet(primaryBtnStyle());
     connect(continueBtn, &QPushButton::clicked, this, &RegWidget::onContinueClicked);
-    // Enter на любом поле шага 1 → нажать зелёную кнопку
-    connect(loginEdit,          &QLineEdit::returnPressed, continueBtn, &QPushButton::click);
-    connect(passwordEdit,       &QLineEdit::returnPressed, continueBtn, &QPushButton::click);
-    connect(confirmPasswordEdit,&QLineEdit::returnPressed, continueBtn, &QPushButton::click);
+    connect(loginEdit, &QLineEdit::returnPressed, continueBtn, &QPushButton::click);
+    connect(passwordEdit, &QLineEdit::returnPressed, continueBtn, &QPushButton::click);
+    connect(confirmPasswordEdit, &QLineEdit::returnPressed, continueBtn, &QPushButton::click);
     s1->addWidget(continueBtn);
 
     mainLayout->addWidget(step1Widget);
@@ -316,7 +315,6 @@ void RegWidget::setupUI()
     s2->addWidget(emailErrorLabel);
     s2->addSpacing(4);
 
-    // Кнопки: «Назад» и зелёная «Далее»
     QHBoxLayout *s2Btns = new QHBoxLayout();
     s2Btns->setSpacing(8);
 
@@ -352,7 +350,6 @@ void RegWidget::setupUI()
     s3->setContentsMargins(0, 0, 0, 0);
     s3->setSpacing(6);
 
-    // Подсказка «Код отправлен на ...»
     emailHintLabel = new QLabel(step3Widget);
     emailHintLabel->setStyleSheet(infoLabelStyle());
     emailHintLabel->setAlignment(Qt::AlignCenter);
@@ -407,7 +404,6 @@ void RegWidget::setupUI()
     s3->addLayout(s3Btns);
     mainLayout->addWidget(step3Widget);
 
-    // ── Разделитель + кнопка «Войти» ──────────────────────────────────────
     QFrame *line = new QFrame(card);
     line->setFrameShape(QFrame::HLine);
     line->setStyleSheet(
@@ -431,7 +427,6 @@ void RegWidget::setupUI()
     showStep(1);
 }
 
-// ── showStep ────────────────────────────────────────────────────────────────
 void RegWidget::showStep(int step)
 {
     step1Widget->setVisible(step == 1);
@@ -439,7 +434,6 @@ void RegWidget::showStep(int step)
     step3Widget->setVisible(step == 3);
 }
 
-// ── Validation ──────────────────────────────────────────────────────────────
 bool RegWidget::isEmailValid(const QString &email) const
 {
     QRegularExpression re("^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$");
@@ -455,7 +449,6 @@ void RegWidget::validateStep1()
     continueBtn->setEnabled(ok);
 }
 
-// ── Step 1 slots ─────────────────────────────────────────────────────────────
 void RegWidget::onLoginTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text.length() < 4) {
@@ -525,7 +518,6 @@ void RegWidget::onContinueClicked()
         QString("check_login||%1").arg(loginEdit->text().trimmed()));
 }
 
-// ── Step 2 slots ─────────────────────────────────────────────────────────────
 void RegWidget::onEmailTextChanged(const QString &text)
 {
     if (text.isEmpty()) {
@@ -549,7 +541,6 @@ void RegWidget::onEmailNextClicked()
     if (!emailNextBtn->isEnabled()) return;
     currentEmail = emailEdit->text().trimmed();
 
-    // Отправить код
     emailNextBtn->setEnabled(false);
     emailNextBtn->setText(
         QString::fromUtf8("\xd0\x9e\xd1\x82\xd0\xbf\xd1\x80\xd0\xb0\xd0\xb2\xd0\xbb\xd1\x8f\xd0\xb5\xd0\xbc..."));
@@ -578,7 +569,6 @@ void RegWidget::onBackToStep1Clicked()
     showStep(1);
 }
 
-// ── Step 3 slots ─────────────────────────────────────────────────────────────
 void RegWidget::onBackToStep2Clicked()
 {
     codeEdit->clear();
@@ -621,7 +611,6 @@ void RegWidget::onCodeLockTimerFired()
 
 void RegWidget::onShowAuthClicked() { emit showAuth(); }
 
-// ── applyCodeLock ─────────────────────────────────────────────────────────────
 void RegWidget::applyCodeLock(int minutes, const QString &message)
 {
     codeIsLocked = true;
@@ -632,13 +621,11 @@ void RegWidget::applyCodeLock(int minutes, const QString &message)
     codeLockTimer->start(minutes == 0 ? 30 * 1000 : minutes * 60 * 1000);
 }
 
-// ── onRegistrationResponseReceived ────────────────────────────────────────────
 void RegWidget::onRegistrationResponseReceived(const QString &response)
 {
     QString r = response.trimmed();
     if (r.isEmpty()) return;
 
-    // ── Ответ на check_login ──────────────────────────────────────────────
     if (m_checkingLogin) {
         m_checkingLogin = false;
         continueBtn->setText(
@@ -666,15 +653,12 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         return;
     }
 
-    // ── Ответ на registration (отправка кода на почту) ────────────────────
     if (!m_verifyingCode && r != "reg+" && !r.startsWith("reg-")) {
-        // Сервер принял запрос на отправку кода
         emailNextBtn->setEnabled(true);
         emailNextBtn->setText(
             QString::fromUtf8("\xd0\x94\xd0\xb0\xd0\xbb\xd0\xb5\xd0\xb5 \xe2\x86\x92"));
 
         if (r == "email_sent" || r == "code_sent" || r == "ok" || r == "email_exists_pending" || r == "wait") {
-            // Переходим на шаг 3 с подсказкой
             emailHintLabel->setText(
                 QString::fromUtf8("\xd0\x9a\xd0\xbe\xd0\xb4 \xd0\xbe\xd1\x82\xd0\xbf\xd1\x80\xd0\xb0\xd0\xb2\xd0\xbb\xd0\xb5\xd0\xbd \xd0\xbd\xd0\xb0: ") + currentEmail);
             emailHintLabel->show();
@@ -686,14 +670,12 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             showStep(3);
             return;
         }
-        // Если сервер вернул ошибку при попытке отправить код
         if (r.contains("email_exists")) {
             emailErrorLabel->setText(
                 QString::fromUtf8("\xd0\x9d\xd0\xb0 \xd1\x8d\xd1\x82\xd1\x83 \xd0\xbf\xd0\xbe\xd1\x87\xd1\x82\xd1\x83 \xd1\x83\xd0\xb6\xd0\xb5 \xd0\xb7\xd0\xb0\xd1\x80\xd0\xb5\xd0\xb3\xd0\xb8\xd1\x81\xd1\x82\xd1\x80\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd \xd0\xb0\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82"));
             emailErrorLabel->show();
             showStep(2);
         } else {
-            // Неизвестный ответ — всё равно переходим на шаг 3
             emailHintLabel->setText(
                 QString::fromUtf8("\xd0\x9a\xd0\xbe\xd0\xb4 \xd0\xbe\xd1\x82\xd0\xbf\xd1\x80\xd0\xb0\xd0\xb2\xd0\xbb\xd0\xb5\xd0\xbd \xd0\xbd\xd0\xb0: ") + currentEmail);
             emailHintLabel->show();
@@ -707,7 +689,6 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         return;
     }
 
-    // ── Ответ на verify_code ──────────────────────────────────────────────
     if (m_verifyingCode) {
         m_verifyingCode = false;
         verifyCodeBtn->setEnabled(true);
