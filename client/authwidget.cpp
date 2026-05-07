@@ -54,6 +54,23 @@ AuthWidget::AuthWidget(QWidget *parent)
 
 AuthWidget::~AuthWidget() {}
 
+// ── Сброс полей и состояния при повторном открытии виджета ─────────────────
+void AuthWidget::clearFields()
+{
+    loginEdit->clear();
+    passwordEdit->clear();
+    passwordEdit->setEchoMode(QLineEdit::Password);
+    statusLabel->hide();
+    attemptsLabel->hide();
+    loginBtn->setEnabled(true);
+    failedAttempts  = 0;
+    lockLevel       = 0;
+    isLocked        = false;
+    m_waitingForAuth = false;
+    if (lockTimer->isActive())
+        lockTimer->stop();
+}
+
 static QString inputStyle()
 {
     return QString(
@@ -171,7 +188,7 @@ void AuthWidget::setupUI()
     passwordEdit->setStyleSheet(inputStyle());
     passRow->addWidget(passwordEdit);
 
-    togglePasswordBtn = new QPushButton("👁", card);
+    togglePasswordBtn = new QPushButton("\U0001f441", card);
     togglePasswordBtn->setFixedSize(38, 38);
     togglePasswordBtn->setToolTip("Показать/скрыть пароль");
     togglePasswordBtn->setStyleSheet(ghostBtnStyle());
