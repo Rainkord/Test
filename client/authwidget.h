@@ -15,6 +15,8 @@ public:
     explicit AuthWidget(QWidget *parent = nullptr);
     ~AuthWidget();
 
+    void clearFields();   // сброс полей и состояния при показе виджета
+
 signals:
     void loginSuccess(QString login);
     void showRegister();
