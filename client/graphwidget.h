@@ -40,7 +40,6 @@ private slots:
     void onLogoutClicked();
 
 private:
-    // === Left panel widgets ===
     QLabel         *formulaLabel;
 
     QLabel         *labelA;
@@ -59,19 +58,17 @@ private:
     QPushButton    *logoutBtn;
     QLabel         *userLabel;
 
-    // === Graph data ===
-    QVector<QPointF> pointsBranch1;  // x < -2
-    QVector<QPointF> pointsBranch2;  // -2 <= x < 2
-    QVector<QPointF> pointsBranch3;  // x >= 2
+    QVector<QPointF> pointsBranch1;
+    QVector<QPointF> pointsBranch2;
+    QVector<QPointF> pointsBranch3;
 
     double currentA;
     double currentB;
     double currentC;
     QString userLogin;
 
-    // === Layout helpers ===
     QWidget *leftPanel;
-    static const int LEFT_PANEL_WIDTH = 420;
+    static const int LEFT_PANEL_WIDTH = 320;
 
     void setupUI();
     void setupLeftPanel();
@@ -91,7 +88,6 @@ private:
                     const QColor &color);
     void drawLegend(QPainter &painter, int drawX, int drawY);
 
-    // Disable slider→spinBox feedback loops
     bool blockSliderA;
     bool blockSliderB;
     bool blockSliderC;

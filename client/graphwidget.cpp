@@ -17,6 +17,7 @@
 #include <QStyle>
 #include <QApplication>
 #include <QPixmap>
+#include <QSizePolicy>
 #include <cmath>
 #include <algorithm>
 #include <limits>
@@ -61,17 +62,21 @@ void GraphWidget::setupUI()
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
+
     leftPanel = new QWidget(this);
-    leftPanel->setFixedWidth(LEFT_PANEL_WIDTH);
+    leftPanel->setMinimumWidth(260);
+    leftPanel->setMaximumWidth(500);
+    leftPanel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     leftPanel->setObjectName("leftPanel");
     leftPanel->setStyleSheet(QString(
         "QWidget#leftPanel { background-color: %1; border-right: 1px solid %2; }"
     ).arg(GH_PANEL).arg(GH_BORDER));
     setupLeftPanel();
-    mainLayout->addWidget(leftPanel);
-    mainLayout->addStretch(1);
+
+    mainLayout->addWidget(leftPanel, 3);  // stretch=3
+    mainLayout->addStretch(7);            // graph gets 7 parts
     setLayout(mainLayout);
-    setMinimumSize(1000, 700);
+    setMinimumSize(900, 600);
 }
 
 void GraphWidget::setupLeftPanel()
@@ -183,8 +188,7 @@ void GraphWidget::updateFormulaLabel()
 {
     QPixmap pm(":/formula_graph.png");
     if (!pm.isNull()) {
-        int targetW = LEFT_PANEL_WIDTH - 24;
-        formulaLabel->setPixmap(pm.scaledToWidth(targetW, Qt::SmoothTransformation));
+        formulaLabel->setPixmap(pm.scaledToWidth(280, Qt::SmoothTransformation));
     } else {
         formulaLabel->setTextFormat(Qt::RichText);
         formulaLabel->setWordWrap(true);
@@ -290,7 +294,7 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
 
     const int MARGIN     = 60;
-    const int leftOffset = LEFT_PANEL_WIDTH;
+    const int leftOffset = leftPanel->width();
     int drawX = leftOffset + MARGIN;
     int drawY = MARGIN;
     int drawW = width()  - leftOffset - MARGIN * 2;
@@ -321,7 +325,6 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     painter.setPen(QPen(QColor(GH_BORDER), 1));
     painter.drawRect(drawX, drawY, drawW, drawH);
 
-    // Grid
     painter.setPen(QPen(GRID_COLOR, 1));
     double xStep = 2.0;
     for (double gx = std::ceil(xMin/xStep)*xStep; gx <= xMax+1e-9; gx += xStep) {
@@ -339,7 +342,6 @@ void GraphWidget::paintEvent(QPaintEvent *event)
         if (sy >= drawY && sy <= drawY+drawH) painter.drawLine(drawX, sy, drawX+drawW, sy);
     }
 
-    // Axes
     painter.setPen(QPen(AXIS_COLOR, 2));
     if (yMin <= 0.0 && yMax >= 0.0) {
         int sy = sY(0.0);
@@ -354,7 +356,6 @@ void GraphWidget::paintEvent(QPaintEvent *event)
         painter.drawLine(sx+4, drawY+8, sx, drawY);
     }
 
-    // Labels
     painter.setFont(QFont(FONT_FAMILY, 8));
     for (double gx = std::ceil(xMin/xStep)*xStep; gx <= xMax+1e-9; gx += xStep) {
         int sx = sX(gx);
@@ -380,7 +381,6 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     painter.drawText(drawX+drawW-12, drawY+drawH/2+12, "x");
     painter.drawText(drawX+drawW/2-6, drawY+14, "y");
 
-    // Curves
     auto drawBranchFn = [&](const QVector<QPointF> &pts, const QColor &color) {
         if (pts.size() < 2) return;
         painter.setPen(QPen(color, 2.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -396,7 +396,6 @@ void GraphWidget::paintEvent(QPaintEvent *event)
     drawBranchFn(pointsBranch2, QColor("#3fb950"));
     drawBranchFn(pointsBranch3, QColor("#58a6ff"));
 
-    // Legend
     {
         int lx = drawX + 10, ly = drawY + 10;
         int lw = 250, lh = 64;

@@ -29,8 +29,10 @@ private slots:
     void onTogglePassword2();
     void onContinueClicked();
     void onEmailTextChanged(const QString &text);
-    void onBackClicked();
-    void onConfirmEmailClicked();
+    void onEmailNextClicked();          // новая кнопка «Далее» на шаге 2
+    void onBackFromEmailClicked();      // назад с шага 2 на шаг 1
+    void onBackFromCodeClicked();       // назад с шага 3 на шаг 2
+    void onConfirmEmailClicked();       // отправить код
     void onRegistrationResponseReceived(const QString &response);
     void onCodeTextChanged(const QString &text);
     void onVerifyCodeClicked();
@@ -38,6 +40,7 @@ private slots:
     void onShowAuthClicked();
 
 private:
+    // Шаг 1: логин + пароль
     QWidget     *step1Widget;
     QLineEdit   *loginEdit;
     QLabel      *loginErrorLabel;
@@ -49,17 +52,22 @@ private:
     QPushButton *togglePassBtn2;
     QPushButton *continueBtn;
 
+    // Шаг 2: ввод email
     QWidget     *step2Widget;
     QLineEdit   *emailEdit;
     QLabel      *emailErrorLabel;
-    QPushButton *backBtn;
+    QPushButton *backFromEmailBtn;
+    QPushButton *emailNextBtn;
 
+    // Шаг 3: ввод кода
     QWidget     *step3Widget;
-    QPushButton *confirmEmailBtn;
+    QLabel      *codeSentToLabel;   // «Код отправлен на ...@mail.ru»
+    QPushButton *confirmEmailBtn;   // «Отправить код повторно»
     QLabel      *codeStatusLabel;
     QLineEdit   *codeEdit;
     QLabel      *codeErrorLabel;
     QPushButton *verifyCodeBtn;
+    QPushButton *backFromCodeBtn;
 
     QPushButton *showAuthBtn;
 
@@ -69,7 +77,9 @@ private:
     bool    codeIsLocked;
     bool    m_verifyingCode;
     bool    m_checkingLogin;
+    bool    m_codeSent;
     QString currentLogin;
+    QString currentEmail;
 
     void setupUI();
     void validateStep1();
