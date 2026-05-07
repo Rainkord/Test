@@ -18,7 +18,7 @@ public:
     void setLogin(const QString &login);
 
 signals:
-    void verificationSuccess(QString login);
+    void verificationSuccess(const QString &login);
     void backToAuth();
 
 private slots:
@@ -28,22 +28,19 @@ private slots:
     void onVerifyResponseReceived(const QString &response);
 
 private:
+    QLabel      *promptLabel;
     QLabel      *infoLabel;
     QLineEdit   *codeEdit;
     QPushButton *verifyBtn;
     QLabel      *statusLabel;
-    QLabel      *attemptsLabel;
     QPushButton *backBtn;
 
-    int    failedAttempts;
-    int    lockLevel;
-    QTimer *lockTimer;
-    bool   isLocked;
-    bool   m_waitingForVerify;
-    QString login;
+    int     lockLevel;
+    QTimer  *lockTimer;
+    bool    isLocked;
+    QString m_login;
 
     void setupUI();
-    void applyLock(int minutes, const QString &message);
 };
 
 #endif // VERIFYWIDGET_H
