@@ -1,100 +1,96 @@
+/**
+ * @file graphwidget.h
+ * @brief Виджет построения и отображения графика функции.
+ */
+
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
 
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSlider>
 #include <QDoubleSpinBox>
-#include <QTableWidget>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QScrollArea>
 #include <QVector>
 #include <QPointF>
-#include <QString>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 
+/**
+ * @class GraphWidget
+ * @brief Основной рабочий экран: построение графика кусочной функции.
+ *
+ * Позволяет пользователю задавать параметры a, b, c, диапазон
+ * отображения и шаг дискретизации. Отрисовывает график с помощью
+ * кастомного paintEvent, поддерживает экспорт в PNG и выход из аккаунта.
+ */
 class GraphWidget : public QWidget
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief Конструктор.
+     * @param parent Родительский виджет.
+     */
     explicit GraphWidget(QWidget *parent = nullptr);
+
+    /** @brief Деструктор. */
     ~GraphWidget();
 
+    /**
+     * @brief Сохраняет логин текущего пользователя для отображения.
+     * @param login Логин пользователя.
+     */
     void setUserLogin(const QString &login);
+
+    /** @brief Пересчитывает точки и перерисовывает график. */
     void updateGraph();
 
 signals:
+    /** @brief Испускается при нажатии кнопки «Выйти». */
     void logout();
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
-
 private slots:
-    void onSliderAChanged(int value);
-    void onSliderBChanged(int value);
-    void onSliderCChanged(int value);
-    void onSpinAChanged(double value);
-    void onSpinBChanged(double value);
-    void onSpinCChanged(double value);
+    /** @brief Обновляет график при изменении любого параметра. */
+    void onParamChanged();
+
+    /** @brief Сохраняет текущий график в PNG-файл. */
+    void onExportClicked();
+
+    /** @brief Выполняет выход из аккаунта. */
     void onLogoutClicked();
 
 private:
-    QLabel         *formulaLabel;
+    QLabel        *userLabel;       ///< Метка с именем текущего пользователя.
+    QDoubleSpinBox *spinA;          ///< Спинбокс параметра a.
+    QDoubleSpinBox *spinB;          ///< Спинбокс параметра b.
+    QDoubleSpinBox *spinC;          ///< Спинбокс параметра c.
+    QDoubleSpinBox *spinXMin;       ///< Спинбокс минимума оси X.
+    QDoubleSpinBox *spinXMax;       ///< Спинбокс максимума оси X.
+    QDoubleSpinBox *spinStep;       ///< Спинбокс шага дискретизации.
+    QCheckBox     *chkGrid;         ///< Чекбокс отображения сетки.
+    QPushButton   *exportBtn;       ///< Кнопка экспорта в PNG.
+    QPushButton   *logoutBtn;       ///< Кнопка выхода из аккаунта.
+    QWidget       *canvas;          ///< Область отрисовки графика.
 
-    QLabel         *labelA;
-    QSlider        *sliderA;
-    QDoubleSpinBox *spinA;
+    QVector<QPointF> m_points;      ///< Вычисленные точки графика.
+    QString          m_login;       ///< Логин текущего пользователя.
 
-    QLabel         *labelB;
-    QSlider        *sliderB;
-    QDoubleSpinBox *spinB;
-
-    QLabel         *labelC;
-    QSlider        *sliderC;
-    QDoubleSpinBox *spinC;
-
-    QTableWidget   *table;
-    QPushButton    *logoutBtn;
-    QLabel         *userLabel;
-
-    QVector<QPointF> pointsBranch1;
-    QVector<QPointF> pointsBranch2;
-    QVector<QPointF> pointsBranch3;
-
-    double currentA;
-    double currentB;
-    double currentC;
-    QString userLogin;
-
-    QWidget *leftPanel;
-    // Увеличена с 320 до 420
-    static const int LEFT_PANEL_WIDTH = 420;
-
+    /** @brief Инициализирует и компонует элементы интерфейса. */
     void setupUI();
-    void setupLeftPanel();
-    void updateFormulaLabel();
-    void fillTable(double a, double b, double c);
-    double calculate(double x, double a, double b, double c) const;
-    void drawGrid(QPainter &painter, int drawX, int drawY, int drawW, int drawH,
-                  double xMin, double xMax, double yMin, double yMax,
-                  double scaleX, double scaleY);
-    void drawAxes(QPainter &painter, int drawX, int drawY, int drawW, int drawH,
-                  double xMin, double xMax, double yMin, double yMax,
-                  double scaleX, double scaleY);
-    void drawBranch(QPainter &painter, const QVector<QPointF> &pts,
-                    int drawX, int drawY, int drawH,
-                    double xMin, double yMin,
-                    double scaleX, double scaleY,
-                    const QColor &color);
-    void drawLegend(QPainter &painter, int drawX, int drawY);
 
-    bool blockSliderA;
-    bool blockSliderB;
-    bool blockSliderC;
-    bool blockSpinA;
-    bool blockSpinB;
-    bool blockSpinC;
+    /**
+     * @brief Вычисляет значение кусочной функции в точке x.
+     * @param x Аргумент функции.
+     * @param a Параметр a.
+     * @param b Параметр b.
+     * @param c Параметр c.
+     * @return Значение функции f(x).
+     */
+    double evalFunction(double x, double a, double b, double c) const;
 };
 
 #endif // GRAPHWIDGET_H
