@@ -64,8 +64,8 @@ void GraphWidget::setupUI()
     mainLayout->setSpacing(0);
 
     leftPanel = new QWidget(this);
-    leftPanel->setMinimumWidth(260);
-    leftPanel->setMaximumWidth(500);
+    leftPanel->setMinimumWidth(300);
+    leftPanel->setMaximumWidth(420);
     leftPanel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     leftPanel->setObjectName("leftPanel");
     leftPanel->setStyleSheet(QString(
@@ -73,8 +73,8 @@ void GraphWidget::setupUI()
     ).arg(GH_PANEL).arg(GH_BORDER));
     setupLeftPanel();
 
-    mainLayout->addWidget(leftPanel, 3);  // stretch=3
-    mainLayout->addStretch(7);            // graph gets 7 parts
+    mainLayout->addWidget(leftPanel, 4);
+    mainLayout->addStretch(6);
     setLayout(mainLayout);
     setMinimumSize(900, 600);
 }
@@ -188,7 +188,7 @@ void GraphWidget::updateFormulaLabel()
 {
     QPixmap pm(":/formula_graph.png");
     if (!pm.isNull()) {
-        formulaLabel->setPixmap(pm.scaledToWidth(280, Qt::SmoothTransformation));
+        formulaLabel->setPixmap(pm.scaledToWidth(320, Qt::SmoothTransformation));
     } else {
         formulaLabel->setTextFormat(Qt::RichText);
         formulaLabel->setWordWrap(true);
