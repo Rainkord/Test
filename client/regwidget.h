@@ -30,6 +30,8 @@ private slots:
     void onContinueClicked();
     void onEmailTextChanged(const QString &text);
     void onBackClicked();
+    void onSendCodeBtnClicked();
+    void onBackFromCodeClicked();
     void onConfirmEmailClicked();
     void onRegistrationResponseReceived(const QString &response);
     void onCodeTextChanged(const QString &text);
@@ -53,9 +55,12 @@ private:
     QLineEdit   *emailEdit;
     QLabel      *emailErrorLabel;
     QPushButton *backBtn;
+    QPushButton *sendCodeBtn;
+    QPushButton *backFromCodeBtn;
+    QLabel      *emailSentLabel;
 
     QWidget     *step3Widget;
-    QPushButton *confirmEmailBtn;
+    QPushButton *confirmEmailBtn;  // alias to sendCodeBtn
     QLabel      *codeStatusLabel;
     QLineEdit   *codeEdit;
     QLabel      *codeErrorLabel;
