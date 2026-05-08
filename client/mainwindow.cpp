@@ -12,7 +12,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle(QString::fromUtf8("Проект"));
+    setWindowTitle(QString::fromUtf8("\u041f\u0440\u043e\u0435\u043a\u0442"));
     resize(480, 600);
 
     stack = new QStackedWidget(this);
@@ -38,20 +38,26 @@ MainWindow::~MainWindow() {}
 
 void MainWindow::setupConnections()
 {
-    // AuthWidget испускает showVerifyAuth — переходим к VerifyWidget.
+    // AuthWidget
     connect(authWidget, &AuthWidget::showVerifyAuth, this, &MainWindow::onShowVerifyAuth);
     connect(authWidget, &AuthWidget::showRegister,   this, &MainWindow::onShowRegister);
     connect(authWidget, &AuthWidget::showReset,      this, &MainWindow::onShowReset);
 
+    // VerifyWidget
     connect(verifyWidget, &VerifyWidget::verificationSuccess, this, &MainWindow::onAuthSuccess);
     connect(verifyWidget, &VerifyWidget::backToAuth,          this, &MainWindow::onShowAuth);
 
+    // RegWidget
+    // NOTE: signal name is showAuth (not showLogin)
     connect(regWidget, &RegWidget::registrationSuccess, this, &MainWindow::onShowMain);
-    connect(regWidget, &RegWidget::showLogin,           this, &MainWindow::onShowAuth);
+    connect(regWidget, &RegWidget::showAuth,            this, &MainWindow::onShowAuth);
 
+    // ResetWidget
+    // NOTE: signal name is backToAuth (not backToLogin)
     connect(resetWidget, &ResetWidget::resetSuccess, this, &MainWindow::onResetSuccess);
-    connect(resetWidget, &ResetWidget::backToLogin,  this, &MainWindow::onShowAuth);
+    connect(resetWidget, &ResetWidget::backToAuth,   this, &MainWindow::onShowAuth);
 
+    // MainAppWidget
     connect(mainAppWidget, &MainAppWidget::logout, this, &MainWindow::onLogout);
 }
 
@@ -63,7 +69,8 @@ void MainWindow::onShowAuth()
 
 void MainWindow::onShowRegister()
 {
-    regWidget->clearAll();
+    // NOTE: method is clearFields() (not clearAll())
+    regWidget->clearFields();
     stack->setCurrentWidget(regWidget);
 }
 
@@ -86,7 +93,8 @@ void MainWindow::onShowMain(const QString &login)
 
 void MainWindow::onShowReset()
 {
-    resetWidget->clearAll();
+    // NOTE: ResetWidget has no clearAll(), reset state is in constructor defaults.
+    // Call a manual reset by showing fresh widget state.
     stack->setCurrentWidget(resetWidget);
 }
 
