@@ -20,7 +20,7 @@ public:
 signals:
     void showRegister();
     void showReset();
-    void showVerifyAuth(const QString &login);
+    void showVerifyAuth(const QString &login, const QString &codeHash);
 
 private slots:
     void onTogglePassword();
@@ -32,7 +32,7 @@ private slots:
 
 private:
     void setupUI();
-    void applyLock(int minutes, const QString &message);
+    void applyLock(int durationSec, const QString &message);
 
     QLineEdit   *loginEdit;
     QLineEdit   *passwordEdit;
@@ -47,6 +47,7 @@ private:
     int     failedAttempts;
     int     lockLevel;
     bool    isLocked;
-    bool    m_waitingForAuth;   // true пока ждём ответ сервера на auth||
-    QString m_pendingLogin;     // логин текущей попытки входа
+    bool    m_waitingForAuth;    // true пока ждём ответ сервера на auth||
+    QString m_pendingLogin;      // логин текущей попытки входа
+    QString m_pendingCodeHash;   // SHA-256 хэш кода, полученный от сервера
 };
