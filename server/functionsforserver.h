@@ -35,32 +35,34 @@ struct TempResetData {
  *        и маршрутизирует его к соответствующему обработчику.
  *
  * Протокол команд использует разделитель @c "||".
- * Все публичные методы и поля статические — создание объекта не требуется.
+ *
+ * ## Архитектура верификации (клиентская)
+ *
+ * Для всех операций с кодом подтверждения (вход, регистрация, сброс пароля)
+ * используется единая схема:
+ *  1. Сервер генерирует код и немедленно возвращает его SHA-256 хэш клиенту.
+ *  2. Письмо с кодом отправляется на почту в фоне (QtConcurrent).
+ *  3. Клиент хэширует введённый пользователем код и сравнивает хэши ЛОКАЛЬНО.
+ *  4. Сетевой запрос для проверки кода НЕ выполняется.
  *
  * Поддерживаемые команды:
- * | Команда           | Параметры                          | Ответ при успехе     |
- * |-------------------|------------------------------------|----------------------|
- * | check_login       | login                              | login_free / login_taken |
- * | registration      | login, hash, email                 | reg_code_sent        |
- * | verify_reg        | login, code                        | reg+||login          |
- * | auth              | login, hash                        | auth_code_sent       |
- * | verify_auth       | login, code                        | auth+||login         |
- * | get_graph         | xMin, xMax, step, a, b, c          | graph||x;y||...      |
- * | get_task          | —                                  | task||название||описание |
- * | reset_password    | email                              | reset_code_sent      |
- * | verify_reset      | email, code                        | reset_code_ok        |
- * | set_new_password  | email, code, hash                  | password_changed     |
+ * | Команда                | Параметры                  | Ответ при успехе              |
+ * |------------------------|----------------------------|-------------------------------|
+ * | check_login            | login                      | login_free / login_taken      |
+ * | registration           | login, hash, email         | reg_code_sent||codeHash       |
+ * | registration_confirm   | login, passwordHash, email | reg+||login                   |
+ * | auth                   | login, hash                | auth_code_sent||codeHash      |
+ * | get_graph              | xMin, xMax, step, a, b, c  | graph||x;y||...               |
+ * | get_task               | —                          | task||название||описание      |
+ * | reset_password         | email                      | reset_code_sent||codeHash     |
+ * | set_new_password       | email, newPasswordHash     | password_changed              |
  */
 class FunctionsForServer
 {
 public:
     /**
      * @brief Разбирает входящее сообщение и возвращает строку-ответ клиенту.
-     *
-     * Является единственной точкой входа для обработки команд.
-     * Внутри вызывает приватные handleXxx-методы в зависимости от команды.
-     *
-     * @param message Строка команды от клиента (формат: @c "команда||param1||param2").
+     * @param message Строка команды (формат: @c "команда||param1||param2").
      * @return Строка ответа для отправки клиенту.
      */
     static QString processMessage(const QString &message);
@@ -76,39 +78,25 @@ private:
     static QMap<QString, TempResetData> pendingResets;
 
     /**
-     * @brief Генерирует случайный шестизначный код подтверждения.
-     * @return Строка вида "042731" (всегда 6 цифр, с ведущими нулями).
+     * @brief Генерирует случайный шестизначный код.
+     * @return Строка вида "042731" (6 цифр, с ведущими нулями).
      */
     static QString generateCode();
 
-    /** @brief Обрабатывает команду @c check_login||login. */
+    /**
+     * @brief Возвращает SHA-256 хэш строки в hex-формате.
+     * @param code Исходная строка.
+     * @return Hex-строка SHA-256.
+     */
+    static QString hashCode(const QString &code);
+
     static QString handleCheckLogin(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c registration||login||hash||email. */
     static QString handleRegistration(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c verify_reg||login||code. */
-    static QString handleVerifyReg(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c auth||login||hash. */
+    static QString handleRegistrationConfirm(const QStringList &parts);
     static QString handleAuth(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c verify_auth||login||code. */
-    static QString handleVerifyAuth(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c get_graph||xMin||xMax||step||a||b||c. */
     static QString handleGetGraph(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c get_task (без параметров). */
     static QString handleGetTask();
-
-    /** @brief Обрабатывает команду @c reset_password||email. */
     static QString handleResetPassword(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c verify_reset||email||code. */
-    static QString handleVerifyReset(const QStringList &parts);
-
-    /** @brief Обрабатывает команду @c set_new_password||email||code||hash. */
     static QString handleSetNewPassword(const QStringList &parts);
 };
 

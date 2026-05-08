@@ -4,6 +4,7 @@
 #include "smtpclient.h"
 
 #include <QDebug>
+#include <QCryptographicHash>
 #include <QRandomGenerator>
 #include <QtConcurrent/QtConcurrent>
 
@@ -20,39 +21,29 @@ QString FunctionsForServer::generateCode()
     return QString("%1").arg(number, 6, 10, QChar('0'));
 }
 
+QString FunctionsForServer::hashCode(const QString &code)
+{
+    return QString::fromLatin1(
+        QCryptographicHash::hash(code.toUtf8(), QCryptographicHash::Sha256).toHex());
+}
+
 // ─── Main dispatcher ────────────────────────────────────────────────────────
 
 QString FunctionsForServer::processMessage(const QString &message)
 {
     QStringList parts = message.split("||");
-    if (parts.isEmpty()) {
-        return "error||empty_message";
-    }
-
+    if (parts.isEmpty()) return "error||empty_message";
     QString command = parts[0].trimmed();
-    qDebug() << "[Server] Command received:" << command;
+    qDebug() << "[Server] Command:" << command;
 
-    if (command == "check_login") {
-        return handleCheckLogin(parts);
-    } else if (command == "registration") {
-        return handleRegistration(parts);
-    } else if (command == "verify_reg") {
-        return handleVerifyReg(parts);
-    } else if (command == "auth") {
-        return handleAuth(parts);
-    } else if (command == "verify_auth") {
-        return handleVerifyAuth(parts);
-    } else if (command == "get_graph") {
-        return handleGetGraph(parts);
-    } else if (command == "get_task") {
-        return handleGetTask();
-    } else if (command == "reset_password") {
-        return handleResetPassword(parts);
-    } else if (command == "verify_reset") {
-        return handleVerifyReset(parts);
-    } else if (command == "set_new_password") {
-        return handleSetNewPassword(parts);
-    }
+    if (command == "check_login")          return handleCheckLogin(parts);
+    if (command == "registration")         return handleRegistration(parts);
+    if (command == "registration_confirm") return handleRegistrationConfirm(parts);
+    if (command == "auth")                 return handleAuth(parts);
+    if (command == "get_graph")            return handleGetGraph(parts);
+    if (command == "get_task")             return handleGetTask();
+    if (command == "reset_password")       return handleResetPassword(parts);
+    if (command == "set_new_password")     return handleSetNewPassword(parts);
 
     return "error||unknown_command";
 }
@@ -69,36 +60,30 @@ QString FunctionsForServer::handleCheckLogin(const QStringList &parts)
         qDebug() << "[Server] check_login: taken:" << login;
         return "login_taken";
     }
-
     qDebug() << "[Server] check_login: free:" << login;
     return "login_free";
 }
 
-// ─── registration||login||password_hash||email ──────────────────────────────
+// ─── registration||login||passwordHash||email ────────────────────────────────
+//
+// Сервер генерирует код и НЕМЕДЛЕННО возвращает его SHA-256 хэш клиенту.
+// Письмо уходит в фоне. Клиент сравнивает хэши локально.
+// После успеха клиент отправляет registration_confirm.
 
 QString FunctionsForServer::handleRegistration(const QStringList &parts)
 {
-    if (parts.size() < 4) {
-        return "error||invalid_params";
-    }
-
+    if (parts.size() < 4) return "error||invalid_params";
     QString login        = parts[1].trimmed();
     QString passwordHash = parts[2].trimmed();
     QString email        = parts[3].trimmed();
-
-    if (login.isEmpty() || passwordHash.isEmpty() || email.isEmpty()) {
+    if (login.isEmpty() || passwordHash.isEmpty() || email.isEmpty())
         return "error||invalid_params";
-    }
 
-    if (Database::instance().userExists(login)) {
-        return "reg-||user_exists";
-    }
+    if (Database::instance().userExists(login))  return "reg-||user_exists";
+    if (Database::instance().emailExists(email)) return "reg-||email_exists";
 
-    if (Database::instance().emailExists(email)) {
-        return "reg-||email_exists";
-    }
-
-    QString code = generateCode();
+    QString code     = generateCode();
+    QString codeHash = hashCode(code);
 
     TempRegData data;
     data.name         = login;
@@ -106,132 +91,80 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
     data.email        = email;
     data.code         = code;
     pendingRegistrations[login] = data;
+    qDebug() << "[Server] Reg code for" << login << ":" << code;
 
-    qDebug() << "[Server] Registration code for" << login << ":" << code;
-
-    // Send email asynchronously — do NOT block the reply
     QtConcurrent::run([email, code]() {
         SmtpClient::sendVerificationCode(email, code);
     });
 
-    return "reg_code_sent";
+    return QString("reg_code_sent||%1").arg(codeHash);
 }
 
-// ─── verify_reg||login||code ─────────────────────────────────────────────────
+// ─── registration_confirm||login||passwordHash||email ────────────────────────
+//
+// Вызывается клиентом только после успешного локального сравнения хэшей.
 
-QString FunctionsForServer::handleVerifyReg(const QStringList &parts)
+QString FunctionsForServer::handleRegistrationConfirm(const QStringList &parts)
 {
-    if (parts.size() < 3) {
-        return "error||invalid_params";
-    }
+    if (parts.size() < 4) return "error||invalid_params";
+    QString login        = parts[1].trimmed();
+    QString passwordHash = parts[2].trimmed();
+    QString email        = parts[3].trimmed();
 
-    QString login = parts[1].trimmed();
-    QString code  = parts[2].trimmed();
+    if (!pendingRegistrations.contains(login))
+        return "reg-||session_expired";
 
-    if (!pendingRegistrations.contains(login)) {
-        return "reg-||no_pending_registration";
-    }
-
-    TempRegData data = pendingRegistrations[login];
-
-    if (data.code != code) {
-        return "reg-||wrong_code";
-    }
-
-    bool ok = Database::instance().addUser(data.name, data.passwordHash, data.email);
-    if (!ok) {
+    if (Database::instance().userExists(login)) {
         pendingRegistrations.remove(login);
-        return "reg-||db_error";
+        return "reg-||user_exists";
     }
 
+    bool ok = Database::instance().addUser(login, passwordHash, email);
     pendingRegistrations.remove(login);
-    qDebug() << "[Server] User registered successfully:" << login;
+    if (!ok) return "reg-||db_error";
+
+    qDebug() << "[Server] User registered:" << login;
     return "reg+||" + login;
 }
 
-// ─── auth||login||password_hash ──────────────────────────────────────────────
+// ─── auth||login||passwordHash ───────────────────────────────────────────────
 //
-// FIX: Previously SmtpClient::sendVerificationCode() was called BEFORE
-// returning the reply. SMTP takes several seconds → the client's
-// sendRequest() / sendRequestAsync() waited that long before getting
-// "auth_code_sent", causing the "infinite checking" effect.
-//
-// Now:
-//  1. DB check (instant, ~1-5 ms)
-//  2. Generate code and store it
-//  3. Return "auth_code_sent" IMMEDIATELY
-//  4. Send email in a detached background thread (QtConcurrent::run)
-//
-// The email will be in the user's inbox by the time they finish typing
-// the 6-digit code — there is no perceptible delay.
+// Сервер генерирует код и НЕМЕДЛЕННО возвращает его SHA-256 хэш клиенту.
+// Письмо уходит в фоне. Клиент сравнивает хэши локально.
 
 QString FunctionsForServer::handleAuth(const QStringList &parts)
 {
-    if (parts.size() < 3) {
-        return "error||invalid_params";
-    }
-
+    if (parts.size() < 3) return "error||invalid_params";
     QString login        = parts[1].trimmed();
     QString passwordHash = parts[2].trimmed();
 
-    // Step 1: verify credentials — instant DB lookup
     if (!Database::instance().checkUser(login, passwordHash)) {
         qDebug() << "[Server] Auth failed for:" << login;
         return "auth-";
     }
 
-    // Step 2: generate and store the 2FA code
-    QString code = generateCode();
+    QString code     = generateCode();
+    QString codeHash = hashCode(code);
     pendingCodes[login] = code;
     qDebug() << "[Server] Auth code for" << login << ":" << code;
 
-    // Step 3: fetch email address (still fast — another DB lookup)
     QString email = Database::instance().getUserEmail(login);
-
-    // Step 4: fire email in background — reply is sent BEFORE this finishes
     if (!email.isEmpty()) {
         QtConcurrent::run([email, code]() {
             SmtpClient::sendVerificationCode(email, code);
         });
     } else {
-        qDebug() << "[Server] Could not find email for user:" << login;
+        qDebug() << "[Server] Could not find email for:" << login;
     }
 
-    // Step 5: reply immediately — client gets this in ~1-5 ms
-    return "auth_code_sent";
+    return QString("auth_code_sent||%1").arg(codeHash);
 }
 
-// ─── verify_auth||login||code ────────────────────────────────────────────────
-
-QString FunctionsForServer::handleVerifyAuth(const QStringList &parts)
-{
-    if (parts.size() < 3) {
-        return "error||invalid_params";
-    }
-
-    QString login = parts[1].trimmed();
-    QString code  = parts[2].trimmed();
-
-    if (!pendingCodes.contains(login)) {
-        return "auth-||no_pending_auth";
-    }
-
-    if (pendingCodes[login] != code) {
-        return "auth-||wrong_code";
-    }
-
-    pendingCodes.remove(login);
-    qDebug() << "[Server] User authenticated successfully:" << login;
-    return "auth+||" + login;
-}
-
-// ─── get_graph||xMin||xMax||step||a||b||c ────────────────────────────────────
+// ─── get_graph||xMin||xMax||step||a||b||c ───────────────────────────────────
 
 QString FunctionsForServer::handleGetGraph(const QStringList &parts)
 {
-    if (parts.size() < 7) {
-        return "error||invalid_params";
-    }
+    if (parts.size() < 7) return "error||invalid_params";
 
     bool okXMin, okXMax, okStep, okA, okB, okC;
     double xMin = parts[1].toDouble(&okXMin);
@@ -241,20 +174,12 @@ QString FunctionsForServer::handleGetGraph(const QStringList &parts)
     double b    = parts[5].toDouble(&okB);
     double c    = parts[6].toDouble(&okC);
 
-    if (!okXMin || !okXMax || !okStep || !okA || !okB || !okC) {
+    if (!okXMin || !okXMax || !okStep || !okA || !okB || !okC)
         return "error||invalid_number_format";
-    }
+    if (xMin >= xMax)  return "error||xMin_must_be_less_than_xMax";
+    if (step <= 0.0)   return "error||step_must_be_positive";
 
-    if (xMin >= xMax) {
-        return "error||xMin_must_be_less_than_xMax";
-    }
-
-    if (step <= 0.0) {
-        return "error||step_must_be_positive";
-    }
-
-    QString graphData = Calculator::generateGraphData(xMin, xMax, step, a, b, c);
-    return graphData;
+    return Calculator::generateGraphData(xMin, xMax, step, a, b, c);
 }
 
 // ─── get_task ────────────────────────────────────────────────────────────────
@@ -269,89 +194,55 @@ QString FunctionsForServer::handleGetTask()
 }
 
 // ─── reset_password||email ───────────────────────────────────────────────────
+//
+// Сервер генерирует код и НЕМЕДЛЕННО возвращает его SHA-256 хэш клиенту.
 
 QString FunctionsForServer::handleResetPassword(const QStringList &parts)
 {
-    if (parts.size() < 2) {
-        return "error||invalid_params";
-    }
-
+    if (parts.size() < 2) return "error||invalid_params";
     QString email = parts[1].trimmed();
-    if (email.isEmpty()) {
-        return "error||invalid_params";
-    }
+    if (email.isEmpty()) return "error||invalid_params";
 
     if (!Database::instance().emailExists(email)) {
         qDebug() << "[Server] reset_password: email not found:" << email;
         return "reset_error";
     }
 
-    QString login = Database::instance().getLoginByEmail(email);
-    QString code  = generateCode();
+    QString code     = generateCode();
+    QString codeHash = hashCode(code);
 
     TempResetData data;
     data.email = email;
     data.code  = code;
     pendingResets[email] = data;
+    qDebug() << "[Server] Reset code for" << email << ":" << code;
 
-    qDebug() << "[Server] Password reset code for" << email << ":" << code;
-
-    // Send email asynchronously
+    QString login = Database::instance().getLoginByEmail(email);
     QtConcurrent::run([email, login, code]() {
         SmtpClient::sendPasswordResetCode(email, login, code);
     });
 
-    return "reset_code_sent";
+    return QString("reset_code_sent||%1").arg(codeHash);
 }
 
-// ─── verify_reset||email||code ───────────────────────────────────────────────
-
-QString FunctionsForServer::handleVerifyReset(const QStringList &parts)
-{
-    if (parts.size() < 3) {
-        return "error||invalid_params";
-    }
-
-    QString email = parts[1].trimmed();
-    QString code  = parts[2].trimmed();
-
-    if (!pendingResets.contains(email)) {
-        return "reset_code_fail";
-    }
-
-    if (pendingResets[email].code != code) {
-        qDebug() << "[Server] verify_reset: wrong code for" << email;
-        return "reset_code_fail";
-    }
-
-    qDebug() << "[Server] verify_reset: code correct for" << email;
-    return "reset_code_ok";
-}
-
-// ─── set_new_password||email||code||hash ─────────────────────────────────────
+// ─── set_new_password||email||newPasswordHash ────────────────────────────────
+//
+// Код уже проверен на клиенте локально — сервер только обновляет пароль.
 
 QString FunctionsForServer::handleSetNewPassword(const QStringList &parts)
 {
-    if (parts.size() < 4) {
-        return "error||invalid_params";
-    }
-
+    if (parts.size() < 3) return "error||invalid_params";
     QString email        = parts[1].trimmed();
-    QString code         = parts[2].trimmed();
-    QString passwordHash = parts[3].trimmed();
+    QString passwordHash = parts[2].trimmed();
+    if (email.isEmpty() || passwordHash.isEmpty()) return "error||invalid_params";
 
-    if (!pendingResets.contains(email) || pendingResets[email].code != code) {
-        qDebug() << "[Server] set_new_password: invalid or expired code for" << email;
-        return "reset_error";
-    }
+    if (!pendingResets.contains(email))
+        return "reset_error||session_expired";
 
-    bool ok = Database::instance().updatePasswordByEmail(email, passwordHash);
-    if (!ok) {
-        qDebug() << "[Server] set_new_password: DB update failed for" << email;
-        return "reset_error";
-    }
-
+    bool ok = Database::instance().updatePassword(email, passwordHash);
     pendingResets.remove(email);
-    qDebug() << "[Server] Password changed successfully for" << email;
+    if (!ok) return "reset_error||db_error";
+
+    qDebug() << "[Server] Password updated for" << email;
     return "password_changed";
 }
