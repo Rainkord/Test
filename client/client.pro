@@ -15,7 +15,8 @@ SOURCES += \
     clientsingleton.cpp \
     taskdialog.cpp \
     schemadialog.cpp \
-    resetwidget.cpp
+    resetwidget.cpp \
+    mainappwidget.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -26,7 +27,8 @@ HEADERS += \
     clientsingleton.h \
     taskdialog.h \
     schemadialog.h \
-    resetwidget.h
+    resetwidget.h \
+    mainappwidget.h
 
 RESOURCES += resources.qrc
 
