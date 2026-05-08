@@ -99,7 +99,7 @@ private slots:
      */
     void onCodeTextChanged(const QString &text);
 
-    /** @brief Отправляет введённый код на сервер для верификации. */
+    /** @brief Локально проверяет код и завершает регистрацию через registration_confirm. */
     void onVerifyCodeClicked();
 
     /** @brief Вызывается по истечении таймера блокировки ввода кода. */
@@ -144,7 +144,9 @@ private:
     QTimer  *codeLockTimer;     ///< Таймер снятия блокировки.
     bool    codeIsLocked;       ///< Флаг активной блокировки ввода кода.
     bool    m_checkingLogin;    ///< Флаг ожидания ответа на check_login.
-    bool    m_verifyingCode;    ///< Флаг ожидания ответа на verify_code.
+    bool    m_verifyingCode;    ///< Флаг ожидания ответа на registration_confirm.
+    QString m_pendingCodeHash;  ///< SHA-256 хэш кода от сервера для локального сравнения.
+    QString m_pendingPassHash;  ///< Хэш пароля для финального registration_confirm.
     QString currentLogin;       ///< Логин, прошедший проверку на шаге 1.
     QString currentEmail;       ///< Email, введённый на шаге 2.
 
