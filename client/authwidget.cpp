@@ -278,6 +278,8 @@ void AuthWidget::onLoginClicked()
         return;
     }
 
+    if (m_waitingForAuth) return;   // уже ждём ответа — игнорируем повторный клик
+
     QString login    = loginEdit->text().trimmed();
     QString password = passwordEdit->text();
 
@@ -291,19 +293,89 @@ void AuthWidget::onLoginClicked()
     QByteArray hashBytes = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
     QString passwordHash = QString::fromLatin1(hashBytes.toHex());
 
-    // Отправляем запрос и сразу переходим к вводу кода — не ждём ответа сервера
+    // Блокируем кнопку и ждём ответа сервера — НЕ переходим сразу
+    m_waitingForAuth = true;
+    m_pendingLogin   = login;
+    loginBtn->setEnabled(false);
+    statusLabel->setText(QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb5\xd1\x80\xd1\x8f\xd0\xb5\xd0\xbc..."));
+    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_MUTED).arg(FONT_SIZE_SMALL));
+    statusLabel->show();
+    attemptsLabel->hide();
+
     ClientSingleton::instance().sendRequestAsync(
         QString("auth||%1||%2").arg(login, passwordHash));
-    statusLabel->hide();
-    attemptsLabel->hide();
-    emit showVerifyAuth(login);
 }
 
 void AuthWidget::onRegisterClicked()  { emit showRegister(); }
 void AuthWidget::onForgotClicked()    { emit showReset(); }
 
-void AuthWidget::onAuthResponseReceived(const QString &/*response*/)
+// ── onAuthResponseReceived ─────────────────────────────────────────────────────
+// Возможные ответы сервера на auth||login||hash:
+//   auth_ok||<login>   — успех, переходим к вводу кода
+//   wrong_login        — логин не найден
+//   wrong_password     — неверный пароль
+//   user_not_found     — пользователь не найден (синоним wrong_login)
+//   locked||<sec>      — аккаунт заблокирован
+// Любой другой ответ считается ошибкой сервера.
+void AuthWidget::onAuthResponseReceived(const QString &response)
 {
-    // Не ожидаем ответа сервера перед переходом на экран ввода кода.
-    // Верификация проходит на экране VerifyWidget.
+    if (!m_waitingForAuth) return;   // ответ не для нас (напр., от другого виджета)
+
+    QString r = response.trimmed();
+    if (r.isEmpty()) return;
+
+    m_waitingForAuth = false;
+    loginBtn->setEnabled(!isLocked);
+    statusLabel->hide();
+
+    if (r.startsWith("auth_ok")) {
+        // Авторизация одобрена сервером — теперь переходим к вводу кода
+        emit showVerifyAuth(m_pendingLogin);
+        return;
+    }
+
+    if (r == "wrong_login" || r == "user_not_found") {
+        failedAttempts++;
+        statusLabel->setText(QString::fromUtf8("\xd0\x9f\xd0\xbe\xd0\xbb\xd1\x8c\xd0\xb7\xd0\xbe\xd0\xb2\xd0\xb0\xd1\x82\xd0\xb5\xd0\xbb\xd1\x8c \xd0\xbd\xd0\xb5 \xd0\xbd\xd0\xb0\xd0\xb9\xd0\xb4\xd0\xb5\xd0\xbd."));
+        statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
+        statusLabel->show();
+        loginBtn->setEnabled(true);
+        return;
+    }
+
+    if (r == "wrong_password") {
+        failedAttempts++;
+        if (failedAttempts >= 5) {
+            lockLevel++;
+            failedAttempts = 0;
+            int lockMin = lockLevel == 1 ? 0 : (lockLevel == 2 ? 5 : 30);
+            applyLock(lockMin,
+                lockMin == 0
+                    ? QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xb5\xd0\xb2\xd1\x8b\xd1\x88\xd0\xb5\xd0\xbd \xd0\xbb\xd0\xb8\xd0\xbc\xd0\xb8\xd1\x82. \xd0\x91\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xba\xd0\xb0 \xd0\xbd\xd0\xb0 30 \xd1\x81\xd0\xb5\xd0\xba.")
+                    : QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xb5\xd0\xb2\xd1\x8b\xd1\x88\xd0\xb5\xd0\xbd \xd0\xbb\xd0\xb8\xd0\xbc\xd0\xb8\xd1\x82. \xd0\x91\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xba\xd0\xb0 \xd0\xbd\xd0\xb0 %1 \xd0\xbc\xd0\xb8\xd0\xbd.").arg(lockMin));
+        } else {
+            int left = 5 - failedAttempts;
+            statusLabel->setText(
+                QString::fromUtf8("\xd0\x9d\xd0\xb5\xd0\xb2\xd0\xb5\xd1\x80\xd0\xbd\xd1\x8b\xd0\xb9 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c. \xd0\x9e\xd1\x81\xd1\x82\xd0\xb0\xd0\xbb\xd0\xbe\xd1\x81\xd1\x8c \xd0\xbf\xd0\xbe\xd0\xbf\xd1\x8b\xd1\x82\xd0\xbe\xd0\xba: %1").arg(left));
+            statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
+            statusLabel->show();
+            loginBtn->setEnabled(true);
+        }
+        return;
+    }
+
+    if (r.startsWith("locked")) {
+        // locked||<seconds>
+        QStringList parts = r.split("||");
+        int sec = parts.size() >= 2 ? parts[1].toInt() : 30;
+        applyLock(sec / 60,
+            QString::fromUtf8("\xd0\x90\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82 \xd0\xb7\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd. \xd0\x9f\xd0\xbe\xd0\xb4\xd0\xbe\xd0\xb6\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5."));
+        return;
+    }
+
+    // Неизвестный ответ — показываем ошибку
+    statusLabel->setText(QString::fromUtf8("\xd0\x9e\xd1\x88\xd0\xb8\xd0\xb1\xd0\xba\xd0\xb0 \xd1\x81\xd0\xb5\xd1\x80\xd0\xb2\xd0\xb5\xd1\x80\xd0\xb0. \xd0\x9f\xd0\xbe\xd0\xbf\xd1\x80\xd0\xbe\xd0\xb1\xd1\x83\xd0\xb9\xd1\x82\xd0\xb5 \xd1\x81\xd0\xbd\xd0\xbe\xd0\xb2\xd0\xb0."));
+    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
+    statusLabel->show();
+    loginBtn->setEnabled(true);
 }
