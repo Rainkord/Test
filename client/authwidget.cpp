@@ -31,7 +31,6 @@
 #define FONT_SIZE_INPUT 11
 #define FONT_SIZE_SMALL 9
 
-// 3 wrong attempts -> 30s -> 5min -> 10min -> permanent
 static const int LOCK_DURATIONS_SEC[] = {30, 5*60, 10*60, INT_MAX};
 static const int LOCK_LEVELS_COUNT    = 4;
 
@@ -45,6 +44,10 @@ AuthWidget::AuthWidget(QWidget *parent)
     lockTimer = new QTimer(this);
     lockTimer->setSingleShot(true);
     connect(lockTimer, &QTimer::timeout, this, &AuthWidget::onLockTimerFired);
+
+    // Subscribe to async responses: only used when m_waitingForAuth == true
+    connect(&ClientSingleton::instance(), &ClientSingleton::responseReceived,
+            this, &AuthWidget::onAuthResponseReceived);
 
     setStyleSheet(QString("QWidget { background-color: %1; color: %2; font-family: '%3'; font-size: %4pt; }")
                   .arg(GH_BG).arg(GH_TEXT).arg(FONT_FAMILY).arg(FONT_SIZE_INPUT));
@@ -163,8 +166,6 @@ void AuthWidget::setupUI()
 
     togglePasswordBtn = new QPushButton("\U0001f441", card);
     togglePasswordBtn->setFixedSize(38, 38);
-    togglePasswordBtn->setToolTip(
-        QString::fromUtf8("\xd0\x9f\xd0\xbe\xd0\xba\xd0\xb0\xd0\xb7\xd0\xb0\xd1\x82\xd1\x8c/\xd1\x81\xd0\xba\xd1\x80\xd1\x8b\xd1\x82\xd1\x8c \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c"));
     togglePasswordBtn->setStyleSheet(ghostBtnStyle());
     connect(togglePasswordBtn, &QPushButton::clicked, this, &AuthWidget::onTogglePassword);
     passRow->addWidget(togglePasswordBtn);
@@ -245,7 +246,6 @@ void AuthWidget::applyLock(int durationSec, const QString &message)
     attemptsLabel->hide();
     if (durationSec != INT_MAX)
         lockTimer->start(durationSec * 1000);
-    // INT_MAX == permanent ban: timer is never started
 }
 
 void AuthWidget::onLockTimerFired()
@@ -257,16 +257,17 @@ void AuthWidget::onLockTimerFired()
     attemptsLabel->hide();
 }
 
-// ─── onLoginClicked ──────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// onLoginClicked
 //
 // Flow:
-//   1. Local validation (empty fields, locked, already waiting)
-//   2. sendRequest() — SYNCHRONOUS, fast (just a DB lookup on the server)
-//      Server returns "auth-" instantly if wrong, "auth_code_sent" if correct.
-//      Email sending happens AFTER the server sends the reply, so the client
-//      is NOT blocked by SMTP.
-//   3a. auth_code_sent  → navigate to VerifyWidget immediately
-//   3b. auth-           → count attempt, show error, possibly lock
+//   1. Local checks: empty fields, locked, already waiting
+//   2. sendRequestAsync() — NON-BLOCKING, returns immediately
+//      UI stays responsive; button is disabled to prevent double-submit
+//   3. Server replies (now nearly instant after the SMTP-async server fix):
+//      "auth_code_sent" → onAuthResponseReceived() navigates to VerifyWidget
+//      "auth-"          → onAuthResponseReceived() shows error / locks
+// ─────────────────────────────────────────────────────────────────────────────
 void AuthWidget::onLoginClicked()
 {
     if (isLocked) {
@@ -288,7 +289,7 @@ void AuthWidget::onLoginClicked()
         return;
     }
 
-    if (m_waitingForAuth) return;
+    if (m_waitingForAuth) return;  // prevent double-submit
 
     const QString login    = loginEdit->text().trimmed().remove("||");
     const QString password = passwordEdit->text();
@@ -306,26 +307,47 @@ void AuthWidget::onLoginClicked()
     const QString passwordHash = QString::fromLatin1(
         QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256).toHex());
 
-    // Disable button to prevent double-click
     m_waitingForAuth = true;
-    loginBtn->setEnabled(false);
+    m_pendingLogin   = login;
+    loginBtn->setEnabled(false);  // prevent double-click
     statusLabel->hide();
     attemptsLabel->hide();
 
-    // ── Synchronous request ──────────────────────────────────────────────────
-    // sendRequest() returns as soon as the server sends back the first line.
-    // The server sends the reply BEFORE starting the SMTP send, so this
-    // returns in milliseconds (pure DB lookup time, ~1-5ms locally).
-    const QString response = ClientSingleton::instance().sendRequest(
+    // Non-blocking send — returns immediately
+    // Response arrives via onAuthResponseReceived() through the
+    // ClientSingleton::responseReceived signal
+    ClientSingleton::instance().sendRequestAsync(
         QString("auth||%1||%2").arg(login, passwordHash));
+}
+
+void AuthWidget::onRegisterClicked() { emit showRegister(); }
+void AuthWidget::onForgotClicked()   { emit showReset(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// onAuthResponseReceived
+//
+// Called when the server sends a response to our auth|| request.
+// After the server-side SMTP-async fix, this arrives in ~1-5 ms
+// (pure DB check time). The server replies BEFORE sending the email.
+//
+// Expected responses:
+//   "auth_code_sent"  — credentials OK → navigate to VerifyWidget
+//   "auth-"           — wrong login/password → show error, count attempt
+//   "locked||N"       — server-side lockout
+//   anything else     — connection error
+// ─────────────────────────────────────────────────────────────────────────────
+void AuthWidget::onAuthResponseReceived(const QString &response)
+{
+    // Ignore signals not meant for us (e.g. from other widgets using the same socket)
+    if (!m_waitingForAuth) return;
 
     m_waitingForAuth = false;
-    const QString r = response.trimmed();
+    const QString r  = response.trimmed();
 
-    // ── auth_code_sent: credentials OK, go to code screen immediately ────────
+    // ── auth_code_sent: correct credentials ──────────────────────────────────
     if (r == "auth_code_sent") {
         loginBtn->setEnabled(true);
-        emit showVerifyAuth(login);
+        emit showVerifyAuth(m_pendingLogin);
         return;
     }
 
@@ -361,7 +383,7 @@ void AuthWidget::onLoginClicked()
         return;
     }
 
-    // ── locked response from server side ─────────────────────────────────────
+    // ── locked (server-side) ─────────────────────────────────────────────────
     if (r.startsWith("locked")) {
         const QStringList p = r.split("||");
         const int sec = p.size() >= 2 ? p[1].toInt() : 30;
@@ -370,7 +392,7 @@ void AuthWidget::onLoginClicked()
         return;
     }
 
-    // ── Fallback: connection error or empty response ──────────────────────────
+    // ── connection error / empty ──────────────────────────────────────────────
     statusLabel->setText(
         QString::fromUtf8("\xd0\x9e\xd1\x88\xd0\xb8\xd0\xb1\xd0\xba\xd0\xb0 \xd1\x81\xd0\xbe\xd0\xb5\xd0\xb4\xd0\xb8\xd0\xbd\xd0\xb5\xd0\xbd\xd0\xb8\xd1\x8f. \xd0\x9f\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb5\xd1\x80\xd1\x8c\xd1\x82\xd0\xb5 \xd1\x81\xd0\xb5\xd1\x80\xd0\xb2\xd0\xb5\xd1\x80."));
     statusLabel->setStyleSheet(
@@ -379,10 +401,3 @@ void AuthWidget::onLoginClicked()
     statusLabel->show();
     loginBtn->setEnabled(true);
 }
-
-void AuthWidget::onRegisterClicked() { emit showRegister(); }
-void AuthWidget::onForgotClicked()   { emit showReset(); }
-
-// onAuthResponseReceived is intentionally empty — we use sendRequest() (sync),
-// so we never need the async responseReceived signal for auth.
-void AuthWidget::onAuthResponseReceived(const QString &) {}

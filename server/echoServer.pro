@@ -1,4 +1,4 @@
-QT += core network sql
+QT += core network sql concurrent
 CONFIG += console c++17
 CONFIG -= app_bundle
 TARGET = echoServer

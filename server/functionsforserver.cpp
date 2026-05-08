@@ -5,10 +5,11 @@
 
 #include <QDebug>
 #include <QRandomGenerator>
+#include <QtConcurrent/QtConcurrent>
 
 // Static member definitions
-QMap<QString, QString>     FunctionsForServer::pendingCodes;
-QMap<QString, TempRegData> FunctionsForServer::pendingRegistrations;
+QMap<QString, QString>       FunctionsForServer::pendingCodes;
+QMap<QString, TempRegData>   FunctionsForServer::pendingRegistrations;
 QMap<QString, TempResetData> FunctionsForServer::pendingResets;
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -108,10 +109,10 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
 
     qDebug() << "[Server] Registration code for" << login << ":" << code;
 
-    bool sent = SmtpClient::sendVerificationCode(email, code);
-    if (!sent) {
-        qDebug() << "[Server] Failed to send email to" << email;
-    }
+    // Send email asynchronously — do NOT block the reply
+    QtConcurrent::run([email, code]() {
+        SmtpClient::sendVerificationCode(email, code);
+    });
 
     return "reg_code_sent";
 }
@@ -149,6 +150,20 @@ QString FunctionsForServer::handleVerifyReg(const QStringList &parts)
 }
 
 // ─── auth||login||password_hash ──────────────────────────────────────────────
+//
+// FIX: Previously SmtpClient::sendVerificationCode() was called BEFORE
+// returning the reply. SMTP takes several seconds → the client's
+// sendRequest() / sendRequestAsync() waited that long before getting
+// "auth_code_sent", causing the "infinite checking" effect.
+//
+// Now:
+//  1. DB check (instant, ~1-5 ms)
+//  2. Generate code and store it
+//  3. Return "auth_code_sent" IMMEDIATELY
+//  4. Send email in a detached background thread (QtConcurrent::run)
+//
+// The email will be in the user's inbox by the time they finish typing
+// the 6-digit code — there is no perceptible delay.
 
 QString FunctionsForServer::handleAuth(const QStringList &parts)
 {
@@ -159,23 +174,30 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
     QString login        = parts[1].trimmed();
     QString passwordHash = parts[2].trimmed();
 
+    // Step 1: verify credentials — instant DB lookup
     if (!Database::instance().checkUser(login, passwordHash)) {
         qDebug() << "[Server] Auth failed for:" << login;
         return "auth-";
     }
 
+    // Step 2: generate and store the 2FA code
     QString code = generateCode();
     pendingCodes[login] = code;
-
     qDebug() << "[Server] Auth code for" << login << ":" << code;
 
+    // Step 3: fetch email address (still fast — another DB lookup)
     QString email = Database::instance().getUserEmail(login);
+
+    // Step 4: fire email in background — reply is sent BEFORE this finishes
     if (!email.isEmpty()) {
-        SmtpClient::sendVerificationCode(email, code);
+        QtConcurrent::run([email, code]() {
+            SmtpClient::sendVerificationCode(email, code);
+        });
     } else {
         qDebug() << "[Server] Could not find email for user:" << login;
     }
 
+    // Step 5: reply immediately — client gets this in ~1-5 ms
     return "auth_code_sent";
 }
 
@@ -265,8 +287,7 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
     }
 
     QString login = Database::instance().getLoginByEmail(email);
-
-    QString code = generateCode();
+    QString code  = generateCode();
 
     TempResetData data;
     data.email = email;
@@ -275,10 +296,10 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
 
     qDebug() << "[Server] Password reset code for" << email << ":" << code;
 
-    bool sent = SmtpClient::sendPasswordResetCode(email, login, code);
-    if (!sent) {
-        qDebug() << "[Server] Failed to send reset email to" << email;
-    }
+    // Send email asynchronously
+    QtConcurrent::run([email, login, code]() {
+        SmtpClient::sendPasswordResetCode(email, login, code);
+    });
 
     return "reset_code_sent";
 }
