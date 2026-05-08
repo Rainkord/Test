@@ -3,12 +3,97 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QLabel>
 #include <QTimer>
+#include <QFont>
+#include <QFrame>
 #include <QCryptographicHash>
 
+// ── GitHub dark palette ────────────────────────────────────────────────────
+#define GH_BG           "#0d1117"
+#define GH_CARD         "#161b22"
+#define GH_BORDER       "#30363d"
+#define GH_TEXT         "#e6edf3"
+#define GH_MUTED        "#8b949e"
+#define GH_GREEN        "#238636"
+#define GH_GREEN_H      "#2ea043"
+#define GH_BLUE         "#388bfd"
+#define GH_BLUE_H       "#58a6ff"
+#define GH_RED          "#f85149"
+#define GH_INPUT_BG     "#0d1117"
+#define GH_BTN_GHOST    "#21262d"
+#define GH_BTN_GHOST_H  "#30363d"
+
+#define FONT_FAMILY      "Segoe UI"
+#define FONT_SIZE_TITLE  16
+#define FONT_SIZE_BTN    11
+#define FONT_SIZE_INPUT  11
+#define FONT_SIZE_SMALL   9
+
+// ── Style helpers ───────────────────────────────────────────────────────────────
+static QString s_input()
+{
+    return QString(
+        "QLineEdit {"
+        "  background-color: %1; color: %2;"
+        "  border: 1px solid %3; border-radius: 6px;"
+        "  padding: 6px 10px; font-family: '%4'; font-size: %5pt;"
+        "}"
+        "QLineEdit:focus { border-color: %6; }"
+    ).arg(GH_INPUT_BG).arg(GH_TEXT).arg(GH_BORDER)
+     .arg(FONT_FAMILY).arg(FONT_SIZE_INPUT).arg(GH_BLUE);
+}
+
+static QString s_primaryBtn()
+{
+    return QString(
+        "QPushButton {"
+        "  background-color: %1; color: #ffffff;"
+        "  border: 1px solid rgba(240,246,252,0.1); border-radius: 6px;"
+        "  padding: 6px 16px; font-family: '%3'; font-size: %4pt; font-weight: bold;"
+        "}"
+        "QPushButton:hover { background-color: %2; }"
+        "QPushButton:disabled { background-color: rgba(35,134,54,0.4); color: rgba(255,255,255,0.4); }"
+    ).arg(GH_GREEN).arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
+}
+
+static QString s_ghostBtn()
+{
+    return QString(
+        "QPushButton {"
+        "  background-color: %1; color: %3;"
+        "  border: 1px solid %4; border-radius: 6px;"
+        "  padding: 5px 12px; font-family: '%5'; font-size: %6pt;"
+        "}"
+        "QPushButton:hover { background-color: %2; }"
+    ).arg(GH_BTN_GHOST).arg(GH_BTN_GHOST_H).arg(GH_TEXT)
+     .arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
+}
+
+static QString s_linkBtn()
+{
+    return QString(
+        "QPushButton { color: %1; border: none; background: transparent;"
+        " font-family: '%2'; font-size: %3pt; }"
+        "QPushButton:hover { color: %4; text-decoration: underline; }"
+    ).arg(GH_BLUE).arg(FONT_FAMILY).arg(FONT_SIZE_BTN).arg(GH_BLUE_H);
+}
+
+static QString s_errorLabel()
+{
+    return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
+           .arg(GH_RED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
+}
+
+static QString s_hintLabel()
+{
+    return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
+           .arg(GH_MUTED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
+}
+
+// ── Constructor ───────────────────────────────────────────────────────────────────
 AuthWidget::AuthWidget(QWidget *parent)
     : QWidget(parent)
     , failedAttempts(0)
@@ -16,7 +101,12 @@ AuthWidget::AuthWidget(QWidget *parent)
     , isLocked(false)
     , m_waitingForAuth(false)
 {
+    setStyleSheet(QString(
+        "QWidget { background-color: %1; color: %2; font-family: '%3'; font-size: %4pt; }")
+        .arg(GH_BG).arg(GH_TEXT).arg(FONT_FAMILY).arg(FONT_SIZE_INPUT));
+
     setupUI();
+
     lockTimer = new QTimer(this);
     lockTimer->setSingleShot(true);
     connect(lockTimer, &QTimer::timeout, this, &AuthWidget::onLockTimerFired);
@@ -27,67 +117,119 @@ AuthWidget::AuthWidget(QWidget *parent)
 
 AuthWidget::~AuthWidget() {}
 
+// ── setupUI ────────────────────────────────────────────────────────────────────
 void AuthWidget::setupUI()
 {
-    auto *layout = new QVBoxLayout(this);
-    layout->setSpacing(12);
-    layout->setContentsMargins(40, 40, 40, 40);
+    // Основной layout — всё центрируется по вертикали как в reg/reset
+    auto *outerLayout = new QVBoxLayout(this);
+    outerLayout->setContentsMargins(0, 0, 0, 0);
+    outerLayout->setSpacing(0);
+    outerLayout->addStretch(1);
 
-    auto *title = new QLabel(QString::fromUtf8("\u0412\u0445\u043e\u0434"), this);
-    title->setObjectName("titleLabel");
+    // ── Карточка ───────────────────────────────────────────────────────────
+    QWidget *card = new QWidget(this);
+    card->setFixedWidth(400);
+    card->setStyleSheet(QString(
+        "QWidget { background-color: %1; border: 1px solid %2; border-radius: 8px; }")
+        .arg(GH_CARD).arg(GH_BORDER));
+
+    auto *cardLayout = new QVBoxLayout(card);
+    cardLayout->setContentsMargins(24, 24, 24, 24);
+    cardLayout->setSpacing(14);
+
+    // Заголовок
+    auto *title = new QLabel(QString::fromUtf8("Вход в аккаунт"), card);
     title->setAlignment(Qt::AlignCenter);
-    layout->addWidget(title);
+    title->setStyleSheet(QString(
+        "QLabel { color: %1; font-size: %2pt; font-weight: bold; border: none; background: transparent; }")
+        .arg(GH_TEXT).arg(FONT_SIZE_TITLE));
+    cardLayout->addWidget(title);
 
-    loginEdit = new QLineEdit(this);
-    loginEdit->setPlaceholderText(QString::fromUtf8("\u041b\u043e\u0433\u0438\u043d"));
-    loginEdit->setObjectName("authLogin");
-    layout->addWidget(loginEdit);
+    // Разделитель
+    auto *sep = new QFrame(card);
+    sep->setFrameShape(QFrame::HLine);
+    sep->setStyleSheet(QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
+    cardLayout->addWidget(sep);
+
+    // Логин
+    auto *loginLabel = new QLabel(QString::fromUtf8("Логин"), card);
+    loginLabel->setStyleSheet(s_hintLabel());
+    cardLayout->addWidget(loginLabel);
+
+    loginEdit = new QLineEdit(card);
+    loginEdit->setPlaceholderText(QString::fromUtf8("Введите логин"));
+    loginEdit->setStyleSheet(s_input());
+    cardLayout->addWidget(loginEdit);
+
+    // Пароль
+    auto *passLabel = new QLabel(QString::fromUtf8("Пароль"), card);
+    passLabel->setStyleSheet(s_hintLabel());
+    cardLayout->addWidget(passLabel);
 
     auto *passRow = new QHBoxLayout;
-    passwordEdit = new QLineEdit(this);
-    passwordEdit->setPlaceholderText(QString::fromUtf8("\u041f\u0430\u0440\u043e\u043b\u044c"));
+    passRow->setSpacing(6);
+    passwordEdit = new QLineEdit(card);
+    passwordEdit->setPlaceholderText(QString::fromUtf8("Введите пароль"));
     passwordEdit->setEchoMode(QLineEdit::Password);
-    passwordEdit->setObjectName("authPassword");
-    togglePasswordBtn = new QPushButton(QString::fromUtf8("\U0001f441"), this);
-    togglePasswordBtn->setFixedWidth(36);
-    connect(togglePasswordBtn, &QPushButton::clicked, this, &AuthWidget::onTogglePassword);
-    passRow->addWidget(passwordEdit);
-    passRow->addWidget(togglePasswordBtn);
-    layout->addLayout(passRow);
+    passwordEdit->setStyleSheet(s_input());
 
-    statusLabel = new QLabel(this);
-    statusLabel->setObjectName("statusLabel");
+    togglePasswordBtn = new QPushButton(QString::fromUtf8("👁"), card);
+    togglePasswordBtn->setFixedSize(34, 34);
+    togglePasswordBtn->setStyleSheet(s_ghostBtn());
+    togglePasswordBtn->setToolTip(QString::fromUtf8("Показать/скрыть пароль"));
+    connect(togglePasswordBtn, &QPushButton::clicked, this, &AuthWidget::onTogglePassword);
+
+    passRow->addWidget(passwordEdit, 1);
+    passRow->addWidget(togglePasswordBtn);
+    cardLayout->addLayout(passRow);
+
+    // Статус / ошибки
+    statusLabel = new QLabel(card);
     statusLabel->setAlignment(Qt::AlignCenter);
     statusLabel->setWordWrap(true);
+    statusLabel->setStyleSheet(s_errorLabel());
     statusLabel->hide();
-    layout->addWidget(statusLabel);
+    cardLayout->addWidget(statusLabel);
 
-    attemptsLabel = new QLabel(this);
-    attemptsLabel->setObjectName("attemptsLabel");
+    attemptsLabel = new QLabel(card);
     attemptsLabel->setAlignment(Qt::AlignCenter);
+    attemptsLabel->setStyleSheet(s_hintLabel());
     attemptsLabel->hide();
-    layout->addWidget(attemptsLabel);
+    cardLayout->addWidget(attemptsLabel);
 
-    loginBtn = new QPushButton(QString::fromUtf8("\u0412\u043e\u0439\u0442\u0438"), this);
-    loginBtn->setObjectName("primaryBtn");
+    // Кнопка войти
+    loginBtn = new QPushButton(QString::fromUtf8("Войти"), card);
+    loginBtn->setStyleSheet(s_primaryBtn());
     connect(loginBtn, &QPushButton::clicked, this, &AuthWidget::onLoginClicked);
-    layout->addWidget(loginBtn);
+    cardLayout->addWidget(loginBtn);
 
+    // Нижняя строка: Регистрация | Забыл пароль
     auto *bottomRow = new QHBoxLayout;
-    registerBtn = new QPushButton(QString::fromUtf8("\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f"), this);
-    registerBtn->setObjectName("linkBtn");
+    bottomRow->setSpacing(8);
+
+    registerBtn = new QPushButton(QString::fromUtf8("Регистрация"), card);
+    registerBtn->setStyleSheet(s_linkBtn());
     connect(registerBtn, &QPushButton::clicked, this, &AuthWidget::onRegisterClicked);
 
-    forgotBtn = new QPushButton(QString::fromUtf8("\u0417\u0430\u0431\u044b\u043b \u043f\u0430\u0440\u043e\u043b\u044c"), this);
-    forgotBtn->setObjectName("linkBtn");
+    forgotBtn = new QPushButton(QString::fromUtf8("Забыл пароль"), card);
+    forgotBtn->setStyleSheet(s_linkBtn());
     connect(forgotBtn, &QPushButton::clicked, this, &AuthWidget::onForgotClicked);
 
     bottomRow->addWidget(registerBtn);
     bottomRow->addStretch();
     bottomRow->addWidget(forgotBtn);
-    layout->addLayout(bottomRow);
+    cardLayout->addLayout(bottomRow);
+
+    // Центрируем карточку по горизонтали
+    auto *hCenter = new QHBoxLayout;
+    hCenter->addStretch(1);
+    hCenter->addWidget(card);
+    hCenter->addStretch(1);
+    outerLayout->addLayout(hCenter);
+    outerLayout->addStretch(1);
 }
 
+// ── clearFields ─────────────────────────────────────────────────────────────────
 void AuthWidget::clearFields()
 {
     loginEdit->clear();
@@ -100,14 +242,15 @@ void AuthWidget::clearFields()
     m_pendingCodeHash.clear();
 }
 
+// ── Slots ─────────────────────────────────────────────────────────────────────
 void AuthWidget::onTogglePassword()
 {
     if (passwordEdit->echoMode() == QLineEdit::Password) {
         passwordEdit->setEchoMode(QLineEdit::Normal);
-        togglePasswordBtn->setText(QString::fromUtf8("\U0001f6ab"));
+        togglePasswordBtn->setText(QString::fromUtf8("🚫"));
     } else {
         passwordEdit->setEchoMode(QLineEdit::Password);
-        togglePasswordBtn->setText(QString::fromUtf8("\U0001f441"));
+        togglePasswordBtn->setText(QString::fromUtf8("👁"));
     }
 }
 
@@ -118,27 +261,27 @@ void AuthWidget::onLoginClicked()
     QString login = loginEdit->text().trimmed();
     QString pass  = passwordEdit->text();
     if (login.isEmpty() || pass.isEmpty()) {
-        statusLabel->setText(QString::fromUtf8("\u0417\u0430\u043f\u043e\u043b\u043d\u0438\u0442\u0435 \u0432\u0441\u0435 \u043f\u043e\u043b\u044f."));
+        statusLabel->setText(QString::fromUtf8("Заполните все поля."));
         statusLabel->show();
         return;
     }
 
-    // Hash password SHA-256
     QString passHash = QString::fromLatin1(
         QCryptographicHash::hash(pass.toUtf8(), QCryptographicHash::Sha256).toHex());
 
     m_pendingLogin   = login;
     m_waitingForAuth = true;
     loginBtn->setEnabled(false);
-    statusLabel->setText(QString::fromUtf8("\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430..."));
+    statusLabel->setText(QString::fromUtf8("Проверка..."));
+    statusLabel->setStyleSheet(s_hintLabel());
     statusLabel->show();
 
     ClientSingleton::instance().sendRequestAsync(
         QString("auth||%1||%2").arg(login, passHash));
 }
 
-void AuthWidget::onRegisterClicked()  { emit showRegister(); }
-void AuthWidget::onForgotClicked()    { emit showReset(); }
+void AuthWidget::onRegisterClicked() { emit showRegister(); }
+void AuthWidget::onForgotClicked()   { emit showReset(); }
 
 void AuthWidget::onAuthResponseReceived(const QString &response)
 {
@@ -147,10 +290,8 @@ void AuthWidget::onAuthResponseReceived(const QString &response)
     loginBtn->setEnabled(true);
 
     if (response.startsWith("auth_code_sent")) {
-        // Parse hash: "auth_code_sent||<sha256hex>"
         QStringList parts = response.split("||");
         m_pendingCodeHash = (parts.size() >= 2) ? parts[1].trimmed() : QString();
-
         statusLabel->hide();
         attemptsLabel->hide();
         emit showVerifyAuth(m_pendingLogin, m_pendingCodeHash);
@@ -163,18 +304,19 @@ void AuthWidget::onAuthResponseReceived(const QString &response)
             failedAttempts = 0;
             lockLevel++;
             int sec = (lockLevel == 1) ? 30 : (lockLevel == 2 ? 300 : 1800);
-            applyLock(sec, QString::fromUtf8("\u041f\u0440\u0435\u0432\u044b\u0448\u0435\u043d \u043b\u0438\u043c\u0438\u0442 \u043f\u043e\u043f\u044b\u0442\u043e\u043a. \u0411\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0430 \u043d\u0430 %1 \u0441\u0435\u043a.").arg(sec));
+            applyLock(sec, QString::fromUtf8("Превышен лимит попыток. Блокировка на %1 сек.").arg(sec));
         } else {
-            statusLabel->setText(QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043b\u043e\u0433\u0438\u043d \u0438\u043b\u0438 \u043f\u0430\u0440\u043e\u043b\u044c."));
+            statusLabel->setStyleSheet(s_errorLabel());
+            statusLabel->setText(QString::fromUtf8("Неверный логин или пароль."));
             statusLabel->show();
-            attemptsLabel->setText(QString::fromUtf8("\u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u043f\u044b\u0442\u043e\u043a: %1").arg(4 - failedAttempts));
+            attemptsLabel->setText(QString::fromUtf8("Осталось попыток: %1").arg(4 - failedAttempts));
             attemptsLabel->show();
         }
         return;
     }
 
-    // Unknown / connection error
-    statusLabel->setText(QString::fromUtf8("\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u043e\u0435\u0434\u0438\u043d\u0435\u043d\u0438\u044f \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u043e\u043c."));
+    statusLabel->setStyleSheet(s_errorLabel());
+    statusLabel->setText(QString::fromUtf8("Ошибка соединения с сервером."));
     statusLabel->show();
 }
 
@@ -182,6 +324,7 @@ void AuthWidget::applyLock(int durationSec, const QString &message)
 {
     isLocked = true;
     loginBtn->setEnabled(false);
+    statusLabel->setStyleSheet(s_errorLabel());
     statusLabel->setText(message);
     statusLabel->show();
     attemptsLabel->hide();
