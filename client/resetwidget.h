@@ -123,7 +123,9 @@ private:
     bool    m_waitingForReset;   ///< Флаг ожидания ответа сервера (смена пароля).
     bool    m_waitingForCode;    ///< Флаг ожидания ответа на отправку кода.
     bool    m_waitingForResponse;///< Общий флаг ожидания ответа сервера.
-    QString currentEmail;        ///< Email, введённый на шаге 1.
+    QString currentEmail;        ///< Email, введённый на шаге 1 (устар., см. m_email).
+    QString m_email;             ///< Email пользователя, сохранённый для передачи на шаги 2/3.
+    QString m_code;              ///< Код подтверждения, сохранённый для передачи на шаг 3.
 
     /** @brief Инициализирует и компонует элементы интерфейса. */
     void setupUI();
@@ -152,7 +154,7 @@ private:
     void applyCodeLock(int minutes, const QString &message);
 
     /**
-     * @brief Устаревший псевдоним applyCodeLock, используемый в cpp.
+     * @brief Псевдоним applyCodeLock, используемый в cpp.
      * @param minutes Длительность блокировки.
      * @param message Сообщение.
      */
