@@ -1,6 +1,6 @@
 #include "functionsforserver.h"
 #include "database.h"
-#include "emailsender.h"
+#include "smtpclient.h"
 
 #include <QRandomGenerator>
 #include <QCryptographicHash>
@@ -40,7 +40,7 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
         return "auth-";
 
     // Generate 6-digit code, store its hash
-    QString code    = generateCode();
+    QString code     = generateCode();
     QString codeHash = sha256(code);
 
     {
@@ -51,7 +51,7 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
     // Send email asynchronously
     QString email = Database::instance().getUserEmail(login);
     QtConcurrent::run([email, code]() {
-        EmailSender::sendVerificationCode(email, code);
+        SmtpClient::sendVerificationCode(email, code);
     });
 
     return QString("auth_code_sent||%1").arg(codeHash);
@@ -89,14 +89,13 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
 
     {
         QMutexLocker locker(&pendingMutex);
-        // Store composite key: "reg:<login>" so it doesn't clash with auth codes
-        pendingCodes["reg:" + login] = codeHash;
-        // Also stash login+pass+email so we can create the user on confirm
+        // Composite key so reg codes don’t clash with auth codes
+        pendingCodes["reg:" + login]      = codeHash;
         pendingCodes["reg_data:" + login] = passHash + "||" + email;
     }
 
     QtConcurrent::run([email, code]() {
-        EmailSender::sendVerificationCode(email, code);
+        SmtpClient::sendVerificationCode(email, code);
     });
 
     return QString("reg_code_sent||%1").arg(codeHash);
@@ -141,6 +140,7 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
     if (!Database::instance().emailExists(email))
         return "reset-";
 
+    QString login    = Database::instance().getLoginByEmail(email);
     QString code     = generateCode();
     QString codeHash = sha256(code);
 
@@ -149,8 +149,8 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
         pendingCodes["reset:" + email] = codeHash;
     }
 
-    QtConcurrent::run([email, code]() {
-        EmailSender::sendVerificationCode(email, code);
+    QtConcurrent::run([email, login, code]() {
+        SmtpClient::sendPasswordResetCode(email, login, code);
     });
 
     return QString("reset_code_sent||%1").arg(codeHash);
@@ -163,10 +163,9 @@ QString FunctionsForServer::handleSetNewPassword(const QStringList &parts)
     if (parts.size() < 3)
         return "set_password-";
 
-    const QString &email    = parts[1];
+    const QString &email        = parts[1];
     const QString &passwordHash = parts[2];
 
-    // Use correct method name from Database API
     bool ok = Database::instance().updatePasswordByEmail(email, passwordHash);
     return ok ? "set_password+" : "set_password-";
 }
