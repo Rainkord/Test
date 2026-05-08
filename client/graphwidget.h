@@ -35,8 +35,6 @@ signals:
     void logout();
 
 private slots:
-    void onParamChanged();
-    void onExportClicked();
     void onLogoutClicked();
 
     void onSliderAChanged(int v);
