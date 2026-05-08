@@ -16,9 +16,10 @@
  * @class ResetWidget
  * @brief Экран восстановления забытого пароля.
  *
- * Реализует двухшаговый процесс сброса пароля:
- * - Шаг 1: ввод email для получения кода;
- * - Шаг 2: ввод кода и нового пароля.
+ * Реализует трёхшаговый процесс сброса пароля:
+ * - Шаг 1: ввод email и запрос кода;
+ * - Шаг 2: ввод кода подтверждения;
+ * - Шаг 3: ввод нового пароля.
  *
  * Поддерживает валидацию полей и прогрессивную блокировку
  * при многократном вводе неверного кода.
@@ -45,23 +46,35 @@ signals:
     void backToAuth();
 
 private slots:
-    /** @brief Валидирует поле email и активирует кнопку «Далее». @param text Текущее значение. */
+    /** @brief Валидирует поле email и активирует кнопку «Далее». */
     void onEmailTextChanged(const QString &text);
 
-    /** @brief Отправляет запрос на отправку кода восстановления. */
-    void onSendCodeClicked();
+    /** @brief Отправляет запрос на получение кода на email (шаг 1 → шаг 2). */
+    void onContinueClicked();
+
+    /** @brief Валидирует код по мере ввода. */
+    void onCodeTextChanged(const QString &text);
+
+    /** @brief Отправляет запрос верификации кода (шаг 2 → шаг 3). */
+    void onVerifyCodeClicked();
+
+    /** @brief Валидирует поле нового пароля. */
+    void onNewPasswordTextChanged(const QString &text);
+
+    /** @brief Валидирует поле подтверждения пароля. */
+    void onConfirmPasswordTextChanged(const QString &text);
+
+    /** @brief Переключает видимость нового пароля. */
+    void onTogglePassword1();
+
+    /** @brief Переключает видимость подтверждения пароля. */
+    void onTogglePassword2();
+
+    /** @brief Отправляет запрос сохранения нового пароля. */
+    void onSavePasswordClicked();
 
     /** @brief Возвращает на экран авторизации. */
     void onBackClicked();
-
-    /** @brief Валидирует поля кода и нового пароля. @param text Текущее значение. */
-    void onCodeOrPasswordChanged(const QString &text);
-
-    /** @brief Отправляет запрос сброса пароля с кодом и новым паролем. */
-    void onResetClicked();
-
-    /** @brief Возвращает пользователя с шага 2 на шаг 1. */
-    void onBackToEmailClicked();
 
     /** @brief Вызывается по истечении таймера блокировки. */
     void onLockTimerFired();
@@ -73,38 +86,56 @@ private slots:
     void onResetResponseReceived(const QString &response);
 
 private:
+    /** @brief Шаги экрана восстановления. */
+    enum Step { StepEmail, StepCode, StepPassword };
+
     // ── Шаг 1: email ───────────────────────────────────────────────────────
     QWidget     *step1Widget;      ///< Контейнер элементов шага 1.
     QLineEdit   *emailEdit;        ///< Поле ввода email.
     QLabel      *emailErrorLabel;  ///< Ошибка валидации email.
-    QPushButton *sendCodeBtn;      ///< Кнопка «Отправить код».
+    QPushButton *continueBtn;      ///< Кнопка «Продолжить».
     QPushButton *backBtn;          ///< Кнопка «Назад».
 
-    // ── Шаг 2: код + новый пароль ──────────────────────────────────────────
-    QWidget     *step2Widget;         ///< Контейнер элементов шага 2.
-    QLineEdit   *codeEdit;            ///< Поле ввода кода (6 символов).
-    QLineEdit   *newPasswordEdit;     ///< Поле нового пароля.
-    QLineEdit   *confirmPasswordEdit; ///< Поле подтверждения нового пароля.
-    QLabel      *codeErrorLabel;      ///< Ошибка кода/блокировки.
-    QLabel      *codeStatusLabel;     ///< Статус проверки кода.
-    QPushButton *resetBtn;            ///< Кнопка «Сменить пароль».
-    QPushButton *backToEmailBtn;      ///< Кнопка «← Изменить email».
+    // ── Шаг 2: код ─────────────────────────────────────────────────────────
+    QWidget     *step2Widget;      ///< Контейнер элементов шага 2.
+    QLineEdit   *codeEdit;         ///< Поле ввода кода.
+    QLabel      *codeErrorLabel;   ///< Ошибка кода / сообщение блокировки.
+    QLabel      *codeStatusLabel;  ///< Статус проверки кода.
+    QPushButton *verifyCodeBtn;    ///< Кнопка «Подтвердить код».
+    QPushButton *sendCodeBtn;      ///< Кнопка повторной отправки кода.
 
-    int     lockLevel;          ///< Уровень блокировки.
-    QTimer  *lockTimer;         ///< Таймер снятия блокировки.
-    bool    isLocked;           ///< Флаг активной блокировки.
-    bool    m_waitingForReset;  ///< Флаг ожидания ответа сервера.
-    bool    m_waitingForCode;   ///< Флаг ожидания ответа на отправку кода.
-    QString currentEmail;       ///< Email, введённый на шаге 1.
+    // ── Шаг 3: новый пароль ────────────────────────────────────────────────
+    QWidget     *step3Widget;           ///< Контейнер элементов шага 3.
+    QLineEdit   *newPasswordEdit;       ///< Поле нового пароля.
+    QLineEdit   *confirmPasswordEdit;   ///< Поле подтверждения пароля.
+    QLabel      *newPasswordErrorLabel; ///< Ошибка нового пароля.
+    QLabel      *confirmErrorLabel;     ///< Ошибка подтверждения пароля.
+    QPushButton *togglePassBtn1;        ///< Кнопка показа нового пароля.
+    QPushButton *togglePassBtn2;        ///< Кнопка показа подтверждения.
+    QPushButton *saveBtn;               ///< Кнопка «Сохранить пароль».
+
+    // ── Состояние ──────────────────────────────────────────────────────────
+    Step    m_currentStep;       ///< Текущий активный шаг.
+    int     failedAttempts;      ///< Счётчик неверных попыток ввода кода.
+    int     lockLevel;           ///< Уровень блокировки.
+    QTimer *lockTimer;           ///< Таймер снятия блокировки.
+    bool    isLocked;            ///< Флаг активной блокировки.
+    bool    m_waitingForReset;   ///< Флаг ожидания ответа сервера (смена пароля).
+    bool    m_waitingForCode;    ///< Флаг ожидания ответа на отправку кода.
+    bool    m_waitingForResponse;///< Общий флаг ожидания ответа сервера.
+    QString currentEmail;        ///< Email, введённый на шаге 1.
 
     /** @brief Инициализирует и компонует элементы интерфейса. */
     void setupUI();
 
     /**
      * @brief Показывает нужный шаг и скрывает остальные.
-     * @param step Номер шага (1 или 2).
+     * @param step Шаг для отображения.
      */
-    void showStep(int step);
+    void showStep(Step step);
+
+    /** @brief Проверяет совпадение и сложность паролей, активирует saveBtn. */
+    void validatePasswords();
 
     /**
      * @brief Проверяет корректность формата email.
@@ -119,6 +150,13 @@ private:
      * @param message Сообщение для отображения.
      */
     void applyCodeLock(int minutes, const QString &message);
+
+    /**
+     * @brief Устаревший псевдоним applyCodeLock, используемый в cpp.
+     * @param minutes Длительность блокировки.
+     * @param message Сообщение.
+     */
+    void applyLock(int minutes, const QString &message);
 };
 
 #endif // RESETWIDGET_H
