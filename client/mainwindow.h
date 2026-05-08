@@ -1,20 +1,33 @@
 /**
  * @file mainwindow.h
- * @brief Главное окно приложения: навигация между экранами.
+ * @brief Главное окно приложения.
  */
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStackedWidget>
+#include <QPushButton>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
-class QStackedWidget;
-class AuthWidget;
-class RegWidget;
-class VerifyWidget;
-class ResetWidget;
-class MainAppWidget;
+#include "authwidget.h"
+#include "regwidget.h"
+#include "verifywidget.h"
+#include "resetwidget.h"
+#include "graphwidget.h"
 
+/**
+ * @class MainWindow
+ * @brief Главное окно приложения, управляющее навигацией между экранами.
+ *
+ * Содержит верхнюю панель с кнопками «Задание» и «Схема»,
+ * а также QStackedWidget для переключения между виджетами:
+ * авторизации, регистрации, подтверждения входа,
+ * восстановления пароля и графика функции.
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -24,24 +37,47 @@ public:
     ~MainWindow();
 
 private slots:
-    void onShowAuth();
     void onShowRegister();
+    void onShowAuth();
+
+    /** @brief Переходит на экран подтверждения: login + SHA-256 хэш кода. */
     void onShowVerifyAuth(const QString &login, const QString &codeHash);
-    void onAuthSuccess(const QString &login);
+
+    void onVerificationSuccess(const QString &login);
+    void onBackToAuth();
+    void onRegistrationSuccess(const QString &login);
+    void onLogout();
     void onShowReset();
     void onResetSuccess();
-    void onShowMain(const QString &login);
-    void onLogout();
+
+    void onTaskBtnClicked();
+    void onSchemaBtnClicked();
 
 private:
-    void setupConnections();
+    QWidget        *centralWidget;
+    QVBoxLayout    *mainVLayout;
+    QHBoxLayout    *topBarLayout;
 
-    QStackedWidget *stack;
+    QPushButton    *taskBtn;
+    QPushButton    *schemaBtn;
+    QLabel         *appTitleLabel;
+
+    QStackedWidget *stackedWidget;
+
     AuthWidget     *authWidget;
     RegWidget      *regWidget;
     VerifyWidget   *verifyWidget;
     ResetWidget    *resetWidget;
-    MainAppWidget  *mainAppWidget;
+    GraphWidget    *graphWidget;
+
+    void setupUI();
+    void connectSignals();
+
+    static const int IDX_AUTH   = 0;
+    static const int IDX_REG    = 1;
+    static const int IDX_VERIFY = 2;
+    static const int IDX_GRAPH  = 3;
+    static const int IDX_RESET  = 4;
 };
 
 #endif // MAINWINDOW_H
