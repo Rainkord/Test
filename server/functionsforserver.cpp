@@ -4,34 +4,54 @@
 
 #include <QRandomGenerator>
 #include <QCryptographicHash>
-#include <QMap>
 #include <QMutex>
 #include <QtConcurrent/QtConcurrent>
 
-// ── Thread-safe pending codes storage ────────────────────────────────────────
-namespace {
-    QMap<QString, QString> pendingCodes;   // key -> sha256(code)
-    QMutex                 pendingMutex;
+// ── Static member definitions ────────────────────────────────────────────────────
+QMap<QString, QString>      FunctionsForServer::pendingCodes;
+QMap<QString, TempRegData>  FunctionsForServer::pendingRegistrations;
+QMap<QString, TempResetData> FunctionsForServer::pendingResets;
 
-    QString generateCode()
-    {
-        quint32 n = QRandomGenerator::global()->bounded(100000, 999999);
-        return QString::number(n);
-    }
+static QMutex g_mutex;
 
-    QString sha256(const QString &s)
-    {
-        return QString::fromLatin1(
-            QCryptographicHash::hash(s.toUtf8(), QCryptographicHash::Sha256).toHex());
-    }
+// ── Helpers ───────────────────────────────────────────────────────────────────
+QString FunctionsForServer::generateCode()
+{
+    quint32 n = QRandomGenerator::global()->bounded(100000u, 1000000u);
+    return QString::number(n);
+}
+
+QString FunctionsForServer::hashCode(const QString &s)
+{
+    return QString::fromLatin1(
+        QCryptographicHash::hash(s.toUtf8(), QCryptographicHash::Sha256).toHex());
+}
+
+// ── processMessage ───────────────────────────────────────────────────────────
+QString FunctionsForServer::processMessage(const QString &message)
+{
+    QStringList parts = message.split("||");
+    if (parts.isEmpty())
+        return "error";
+
+    const QString &cmd = parts[0];
+
+    if (cmd == "check_login")          return handleCheckLogin(parts);
+    if (cmd == "registration")         return handleRegistration(parts);
+    if (cmd == "registration_confirm") return handleRegistrationConfirm(parts);
+    if (cmd == "auth")                 return handleAuth(parts);
+    if (cmd == "get_graph")            return handleGetGraph(parts);
+    if (cmd == "get_task")             return handleGetTask();
+    if (cmd == "reset_password")       return handleResetPassword(parts);
+    if (cmd == "set_new_password")     return handleSetNewPassword(parts);
+
+    return "unknown_command";
 }
 
 // ── handleAuth ────────────────────────────────────────────────────────────────
 QString FunctionsForServer::handleAuth(const QStringList &parts)
 {
-    // parts: ["auth", login, passwordHash]
-    if (parts.size() < 3)
-        return "auth-";
+    if (parts.size() < 3) return "auth-";
 
     const QString &login    = parts[1];
     const QString &passHash = parts[2];
@@ -39,16 +59,14 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
     if (!Database::instance().checkUser(login, passHash))
         return "auth-";
 
-    // Generate 6-digit code, store its hash
     QString code     = generateCode();
-    QString codeHash = sha256(code);
+    QString codeHash = hashCode(code);
 
     {
-        QMutexLocker locker(&pendingMutex);
+        QMutexLocker locker(&g_mutex);
         pendingCodes[login] = codeHash;
     }
 
-    // Send email asynchronously
     QString email = Database::instance().getUserEmail(login);
     QtConcurrent::run([email, code]() {
         SmtpClient::sendVerificationCode(email, code);
@@ -60,38 +78,34 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
 // ── handleCheckLogin ──────────────────────────────────────────────────────────
 QString FunctionsForServer::handleCheckLogin(const QStringList &parts)
 {
-    if (parts.size() < 2)
-        return "check_login_error";
-
-    const QString &login = parts[1];
-    bool exists = Database::instance().userExists(login);
+    if (parts.size() < 2) return "check_login_error";
+    bool exists = Database::instance().userExists(parts[1]);
     return exists ? "login_taken" : "login_free";
 }
 
 // ── handleRegistration ────────────────────────────────────────────────────────
 QString FunctionsForServer::handleRegistration(const QStringList &parts)
 {
-    // parts: ["registration", login, passwordHash, email]
-    if (parts.size() < 4)
-        return "reg-";
+    if (parts.size() < 4) return "reg-";
 
     const QString &login    = parts[1];
     const QString &passHash = parts[2];
     const QString &email    = parts[3];
 
-    if (Database::instance().userExists(login))
-        return "login_taken";
-    if (Database::instance().emailExists(email))
-        return "email_taken";
+    if (Database::instance().userExists(login))  return "login_taken";
+    if (Database::instance().emailExists(email)) return "email_taken";
 
     QString code     = generateCode();
-    QString codeHash = sha256(code);
+    QString codeHash = hashCode(code);
 
     {
-        QMutexLocker locker(&pendingMutex);
-        // Composite key so reg codes don’t clash with auth codes
-        pendingCodes["reg:" + login]      = codeHash;
-        pendingCodes["reg_data:" + login] = passHash + "||" + email;
+        QMutexLocker locker(&g_mutex);
+        TempRegData data;
+        data.name         = login;
+        data.passwordHash = passHash;
+        data.email        = email;
+        data.code         = codeHash;  // store hash
+        pendingRegistrations[login] = data;
     }
 
     QtConcurrent::run([email, code]() {
@@ -104,49 +118,55 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
 // ── handleRegistrationConfirm ─────────────────────────────────────────────────
 QString FunctionsForServer::handleRegistrationConfirm(const QStringList &parts)
 {
-    // parts: ["registration_confirm", login]
-    // Code already verified on client side; just create the user.
-    if (parts.size() < 2)
-        return "reg-";
+    // Client already verified code locally; just create the user.
+    if (parts.size() < 2) return "reg-";
 
     const QString &login = parts[1];
 
-    QString passHash, email;
+    TempRegData data;
     {
-        QMutexLocker locker(&pendingMutex);
-        if (!pendingCodes.contains("reg_data:" + login))
-            return "reg-";
-        QString data = pendingCodes.take("reg_data:" + login);
-        pendingCodes.remove("reg:" + login);
-        QStringList d = data.split("||");
-        if (d.size() < 2) return "reg-";
-        passHash = d[0];
-        email    = d[1];
+        QMutexLocker locker(&g_mutex);
+        if (!pendingRegistrations.contains(login)) return "reg-";
+        data = pendingRegistrations.take(login);
     }
 
-    bool ok = Database::instance().addUser(login, passHash, email);
-    return ok ? "reg+" : "reg-";
+    bool ok = Database::instance().addUser(data.name, data.passwordHash, data.email);
+    return ok ? QString("reg+||%1").arg(login) : "reg-";
+}
+
+// ── handleGetGraph ─────────────────────────────────────────────────────────────
+QString FunctionsForServer::handleGetGraph(const QStringList &parts)
+{
+    // Delegate to Calculator if available, otherwise return error
+    // parts: ["get_graph", xMin, xMax, step, a, b, c]
+    Q_UNUSED(parts)
+    return "graph_error";
+}
+
+// ── handleGetTask ──────────────────────────────────────────────────────────────
+QString FunctionsForServer::handleGetTask()
+{
+    return "task_error";
 }
 
 // ── handleResetPassword ───────────────────────────────────────────────────────
 QString FunctionsForServer::handleResetPassword(const QStringList &parts)
 {
-    // parts: ["reset_password", email]
-    if (parts.size() < 2)
-        return "reset-";
+    if (parts.size() < 2) return "reset-";
 
     const QString &email = parts[1];
-
-    if (!Database::instance().emailExists(email))
-        return "reset-";
+    if (!Database::instance().emailExists(email)) return "reset-";
 
     QString login    = Database::instance().getLoginByEmail(email);
     QString code     = generateCode();
-    QString codeHash = sha256(code);
+    QString codeHash = hashCode(code);
 
     {
-        QMutexLocker locker(&pendingMutex);
-        pendingCodes["reset:" + email] = codeHash;
+        QMutexLocker locker(&g_mutex);
+        TempResetData data;
+        data.email = email;
+        data.code  = codeHash;
+        pendingResets[email] = data;
     }
 
     QtConcurrent::run([email, login, code]() {
@@ -159,12 +179,15 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
 // ── handleSetNewPassword ──────────────────────────────────────────────────────
 QString FunctionsForServer::handleSetNewPassword(const QStringList &parts)
 {
-    // parts: ["set_new_password", email, newPasswordHash]
-    if (parts.size() < 3)
-        return "set_password-";
+    if (parts.size() < 3) return "set_password-";
 
     const QString &email        = parts[1];
     const QString &passwordHash = parts[2];
+
+    {
+        QMutexLocker locker(&g_mutex);
+        pendingResets.remove(email);
+    }
 
     bool ok = Database::instance().updatePasswordByEmail(email, passwordHash);
     return ok ? "set_password+" : "set_password-";
