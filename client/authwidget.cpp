@@ -11,30 +11,29 @@
 #include <QFont>
 #include <climits>
 
-#define GH_BG         "#0d1117"
-#define GH_CARD       "#161b22"
-#define GH_BORDER     "#30363d"
-#define GH_TEXT       "#e6edf3"
-#define GH_MUTED      "#8b949e"
-#define GH_GREEN      "#238636"
-#define GH_GREEN_H    "#2ea043"
-#define GH_BLUE       "#388bfd"
-#define GH_BLUE_H     "#58a6ff"
-#define GH_RED        "#f85149"
-#define GH_INPUT_BG   "#0d1117"
-#define GH_BTN_GHOST  "#21262d"
+#define GH_BG          "#0d1117"
+#define GH_CARD        "#161b22"
+#define GH_BORDER      "#30363d"
+#define GH_TEXT        "#e6edf3"
+#define GH_MUTED       "#8b949e"
+#define GH_GREEN       "#238636"
+#define GH_GREEN_H     "#2ea043"
+#define GH_BLUE        "#388bfd"
+#define GH_BLUE_H      "#58a6ff"
+#define GH_RED         "#f85149"
+#define GH_INPUT_BG    "#0d1117"
+#define GH_BTN_GHOST   "#21262d"
 #define GH_BTN_GHOST_H "#30363d"
 
-#define FONT_FAMILY   "Segoe UI"
+#define FONT_FAMILY     "Segoe UI"
 #define FONT_SIZE_TITLE 16
 #define FONT_SIZE_BTN   11
 #define FONT_SIZE_INPUT 11
 #define FONT_SIZE_SMALL 9
 
-// Scheme: 3 wrong attempts → 30s ban, then 5min, then 10min, then permanent
-static const int LOCK_THRESHOLDS[] = {3, 3, 3, 3}; // attempts per level (always 3)
-static const int LOCK_DURATIONS_SEC[] = {30, 5*60, 10*60, INT_MAX}; // ban durations
-static const int LOCK_LEVELS_COUNT = 4;
+// 3 wrong attempts -> 30s -> 5min -> 10min -> permanent
+static const int LOCK_DURATIONS_SEC[] = {30, 5*60, 10*60, INT_MAX};
+static const int LOCK_LEVELS_COUNT    = 4;
 
 AuthWidget::AuthWidget(QWidget *parent)
     : QWidget(parent),
@@ -47,6 +46,8 @@ AuthWidget::AuthWidget(QWidget *parent)
     lockTimer->setSingleShot(true);
     connect(lockTimer, &QTimer::timeout, this, &AuthWidget::onLockTimerFired);
 
+    // We only subscribe to catch ERROR responses (wrong password / locked).
+    // On success we navigate away immediately without waiting.
     connect(&ClientSingleton::instance(), &ClientSingleton::responseReceived,
             this, &AuthWidget::onAuthResponseReceived);
 
@@ -141,7 +142,8 @@ void AuthWidget::setupUI()
     cardLayout->setContentsMargins(28, 28, 28, 28);
     cardLayout->setSpacing(10);
 
-    QLabel *titleLabel = new QLabel(QString::fromUtf8("\xd0\x90\xd0\xb2\xd1\x82\xd0\xbe\xd1\x80\xd0\xb8\xd0\xb7\xd0\xb0\xd1\x86\xd0\xb8\xd1\x8f"), card);
+    QLabel *titleLabel = new QLabel(
+        QString::fromUtf8("\xd0\x90\xd0\xb2\xd1\x82\xd0\xbe\xd1\x80\xd0\xb8\xd0\xb7\xd0\xb0\xd1\x86\xd0\xb8\xd1\x8f"), card);
     QFont titleFont(FONT_FAMILY, FONT_SIZE_TITLE, QFont::Bold);
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
@@ -166,7 +168,8 @@ void AuthWidget::setupUI()
 
     togglePasswordBtn = new QPushButton("\U0001f441", card);
     togglePasswordBtn->setFixedSize(38, 38);
-    togglePasswordBtn->setToolTip(QString::fromUtf8("\xd0\x9f\xd0\xbe\xd0\xba\xd0\xb0\xd0\xb7\xd0\xb0\xd1\x82\xd1\x8c/\xd1\x81\xd0\xba\xd1\x80\xd1\x8b\xd1\x82\xd1\x8c \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c"));
+    togglePasswordBtn->setToolTip(
+        QString::fromUtf8("\xd0\x9f\xd0\xbe\xd0\xba\xd0\xb0\xd0\xb7\xd0\xb0\xd1\x82\xd1\x8c/\xd1\x81\xd0\xba\xd1\x80\xd1\x8b\xd1\x82\xd1\x8c \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c"));
     togglePasswordBtn->setStyleSheet(ghostBtnStyle());
     connect(togglePasswordBtn, &QPushButton::clicked, this, &AuthWidget::onTogglePassword);
     passRow->addWidget(togglePasswordBtn);
@@ -189,28 +192,32 @@ void AuthWidget::setupUI()
 
     cardLayout->addSpacing(4);
 
-    loginBtn = new QPushButton(QString::fromUtf8("\xd0\x92\xd0\xbe\xd0\xb9\xd1\x82\xd0\xb8"), card);
+    loginBtn = new QPushButton(
+        QString::fromUtf8("\xd0\x92\xd0\xbe\xd0\xb9\xd1\x82\xd0\xb8"), card);
     loginBtn->setMinimumHeight(38);
     loginBtn->setDefault(true);
     loginBtn->setAutoDefault(true);
     loginBtn->setStyleSheet(primaryBtnStyle());
-    connect(loginBtn,    &QPushButton::clicked,      this, &AuthWidget::onLoginClicked);
-    connect(loginEdit,   &QLineEdit::returnPressed,  loginBtn, &QPushButton::click);
-    connect(passwordEdit,&QLineEdit::returnPressed,  loginBtn, &QPushButton::click);
+    connect(loginBtn,     &QPushButton::clicked,     this, &AuthWidget::onLoginClicked);
+    connect(loginEdit,    &QLineEdit::returnPressed,  loginBtn, &QPushButton::click);
+    connect(passwordEdit, &QLineEdit::returnPressed,  loginBtn, &QPushButton::click);
     cardLayout->addWidget(loginBtn);
 
     QFrame *line = new QFrame(card);
     line->setFrameShape(QFrame::HLine);
-    line->setStyleSheet(QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
+    line->setStyleSheet(
+        QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
     cardLayout->addWidget(line);
 
-    registerBtn = new QPushButton(QString::fromUtf8("\xd0\xa0\xd0\xb5\xd0\xb3\xd0\xb8\xd1\x81\xd1\x82\xd1\x80\xd0\xb0\xd1\x86\xd0\xb8\xd1\x8f"), card);
+    registerBtn = new QPushButton(
+        QString::fromUtf8("\xd0\xa0\xd0\xb5\xd0\xb3\xd0\xb8\xd1\x81\xd1\x82\xd1\x80\xd0\xb0\xd1\x86\xd0\xb8\xd1\x8f"), card);
     registerBtn->setFlat(true);
     registerBtn->setStyleSheet(linkBtnStyle());
     connect(registerBtn, &QPushButton::clicked, this, &AuthWidget::onRegisterClicked);
     cardLayout->addWidget(registerBtn, 0, Qt::AlignCenter);
 
-    forgotBtn = new QPushButton(QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb1\xd1\x8b\xd0\xbb\xd0\xb8 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c?"), card);
+    forgotBtn = new QPushButton(
+        QString::fromUtf8("\xd0\x97\xd0\xb1\xd1\x8b\xd0\xbb\xd0\xb8 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c?"), card);
     forgotBtn->setFlat(true);
     forgotBtn->setStyleSheet(linkBtnStyle());
     connect(forgotBtn, &QPushButton::clicked, this, &AuthWidget::onForgotClicked);
@@ -226,8 +233,9 @@ void AuthWidget::setupUI()
 void AuthWidget::onTogglePassword()
 {
     passwordEdit->setEchoMode(
-        passwordEdit->echoMode() == QLineEdit::Password ? QLineEdit::Normal : QLineEdit::Password
-    );
+        passwordEdit->echoMode() == QLineEdit::Password
+            ? QLineEdit::Normal
+            : QLineEdit::Password);
 }
 
 void AuthWidget::applyLock(int durationSec, const QString &message)
@@ -235,38 +243,50 @@ void AuthWidget::applyLock(int durationSec, const QString &message)
     isLocked = true;
     loginBtn->setEnabled(false);
     statusLabel->setText(message);
-    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
+    statusLabel->setStyleSheet(
+        QString("QLabel { color: %1; border: none; font-size: %2pt; }")
+        .arg(GH_RED).arg(FONT_SIZE_SMALL));
     statusLabel->show();
     attemptsLabel->hide();
-    if (durationSec == INT_MAX) {
-        // Permanent ban — don't start timer
-        return;
-    }
-    lockTimer->start(durationSec * 1000);
+    if (durationSec != INT_MAX)
+        lockTimer->start(durationSec * 1000);
+    // INT_MAX == permanent: no timer started
 }
 
 void AuthWidget::onLockTimerFired()
 {
-    isLocked = false;
+    isLocked       = false;
     failedAttempts = 0;
     loginBtn->setEnabled(true);
     statusLabel->hide();
     attemptsLabel->hide();
 }
 
+// ── onLoginClicked ───────────────────────────────────────────────────────
+//
+// Strategy: FIRE AND FORGET.
+//   1. Validate fields locally.
+//   2. Send auth request to server.
+//   3. IMMEDIATELY navigate to VerifyWidget -- do NOT wait for server reply.
+//   4. The server will (or will not) send the email in the background.
+//      VerifyWidget handles verify_auth responses independently.
+//
+// The onAuthResponseReceived slot is only kept to handle the case where
+// the server replies BEFORE we navigate away (race window), specifically
+// to display wrong-password / locked errors when the user returns to this
+// screen via the Back button on VerifyWidget.
 void AuthWidget::onLoginClicked()
 {
     if (isLocked) {
-        if (lockTimer->isActive()) {
-            int remainingSec    = lockTimer->remainingTime() / 1000;
-            int remainingMin    = remainingSec / 60;
-            int remainingSecMod = remainingSec % 60;
-            statusLabel->setText(remainingMin > 0
-                ? QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd\xd0\xbe. \xd0\x9e\xd1\x81\xd1\x82\xd0\xb0\xd0\xbb\xd0\xbe\xd1\x81\xd1\x8c %1 \xd0\xbc\xd0\xb8\xd0\xbd %2 \xd1\x81\xd0\xb5\xd0\xba.").arg(remainingMin).arg(remainingSecMod)
-                : QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd\xd0\xbe. \xd0\x9e\xd1\x81\xd1\x82\xd0\xb0\xd0\xbb\xd0\xbe\xd1\x81\xd1\x8c %1 \xd1\x81\xd0\xb5\xd0\xba.").arg(remainingSec));
+        int rem = lockTimer->isActive() ? lockTimer->remainingTime() / 1000 : 0;
+        int m   = rem / 60, s = rem % 60;
+        if (rem == 0 && lockTimer->isActive() == false && lockLevel >= LOCK_LEVELS_COUNT) {
+            statusLabel->setText(
+                QString::fromUtf8("\xd0\x90\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82 \xd0\xb7\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd \xd0\xbd\xd0\xb0\xd0\xb2\xd1\x81\xd0\xb5\xd0\xb3\xd0\xb4\xd0\xb0."));
         } else {
-            // Permanent ban
-            statusLabel->setText(QString::fromUtf8("\xd0\x90\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82 \xd0\xb7\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd \xd0\xbd\xd0\xb0\xd0\xb2\xd1\x81\xd0\xb5\xd0\xb3\xd0\xb4\xd0\xb0."));
+            statusLabel->setText(m > 0
+                ? QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd\xd0\xbe. \xd0\x9e\xd1\x81\xd1\x82\xd0\xb0\xd0\xbb\xd0\xbe\xd1\x81\xd1\x8c %1 \xd0\xbc\xd0\xb8\xd0\xbd %2 \xd1\x81\xd0\xb5\xd0\xba.").arg(m).arg(s)
+                : QString::fromUtf8("\xd0\x97\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd\xd0\xbe. \xd0\x9e\xd1\x81\xd1\x82\xd0\xb0\xd0\xbb\xd0\xbe\xd1\x81\xd1\x8c %1 \xd1\x81\xd0\xb5\xd0\xba.").arg(rem));
         }
         statusLabel->show();
         return;
@@ -274,105 +294,100 @@ void AuthWidget::onLoginClicked()
 
     if (m_waitingForAuth) return;
 
-    QString login    = loginEdit->text().trimmed();
-    QString password = passwordEdit->text();
+    const QString login    = loginEdit->text().trimmed().remove("||");
+    const QString password = passwordEdit->text();
 
     if (login.isEmpty() || password.isEmpty()) {
-        statusLabel->setText(QString::fromUtf8("\xd0\x92\xd0\xb2\xd0\xb5\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5 \xd0\xbb\xd0\xbe\xd0\xb3\xd0\xb8\xd0\xbd \xd0\xb8 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c."));
-        statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
+        statusLabel->setText(
+            QString::fromUtf8("\xd0\x92\xd0\xb2\xd0\xb5\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5 \xd0\xbb\xd0\xbe\xd0\xb3\xd0\xb8\xd0\xbd \xd0\xb8 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c."));
+        statusLabel->setStyleSheet(
+            QString("QLabel { color: %1; border: none; font-size: %2pt; }")
+            .arg(GH_RED).arg(FONT_SIZE_SMALL));
         statusLabel->show();
         return;
     }
 
-    // Sanitise input against protocol injection (|| is our delimiter)
-    QString safeLogin    = login.remove("||");
-    QString passwordHash = QString::fromLatin1(
-        QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256).toHex()
-    );
+    const QString passwordHash = QString::fromLatin1(
+        QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256).toHex());
 
     m_waitingForAuth = true;
-    m_pendingLogin   = safeLogin;
-    loginBtn->setEnabled(false);
-    statusLabel->setText(QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb5\xd1\x80\xd1\x8f\xd0\xb5\xd0\xbc..."));
-    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_MUTED).arg(FONT_SIZE_SMALL));
-    statusLabel->show();
-    attemptsLabel->hide();
+    m_pendingLogin   = login;
 
+    // Send request -- fire and forget, do NOT disable button or show spinner.
     ClientSingleton::instance().sendRequestAsync(
-        QString("auth||%1||%2").arg(safeLogin, passwordHash));
+        QString("auth||%1||%2").arg(login, passwordHash));
+
+    // Navigate to code-entry screen IMMEDIATELY.
+    // The server sends the email in the background; we don't wait for it.
+    m_waitingForAuth = false;
+    emit showVerifyAuth(m_pendingLogin);
 }
 
 void AuthWidget::onRegisterClicked() { emit showRegister(); }
 void AuthWidget::onForgotClicked()   { emit showReset(); }
 
-// ── onAuthResponseReceived ──────────────────────────────────────────────────
-// Server responses for auth||login||hash:
-//   auth_code_sent         — credentials OK, email sent (or not — doesn't matter)
-//   auth-                  — wrong login or wrong password
-//   locked||<sec>          — account locked server-side
-//   error||...             — server error
+// ── onAuthResponseReceived ────────────────────────────────────────────────
+// This slot fires if the server replies while we are still on the auth screen
+// (should not normally happen after the navigate-away, but we keep it to handle
+// the "wrong password" case: user is sent to VerifyWidget, VerifyWidget calls
+// backToAuth, user is back here -- at that point a stale "auth-" might arrive).
+//
+// NOTE: m_waitingForAuth is always false by the time this slot fires because
+// we set it to false and emit showVerifyAuth() synchronously in onLoginClicked.
+// This slot is therefore effectively a no-op in the happy path and only
+// activates for stale / out-of-order responses.
 void AuthWidget::onAuthResponseReceived(const QString &response)
 {
+    // We navigated away immediately -- only process if somehow still on this screen.
     if (!m_waitingForAuth) return;
 
-    QString r = response.trimmed();
+    const QString r = response.trimmed();
     if (r.isEmpty()) return;
 
     m_waitingForAuth = false;
     statusLabel->hide();
 
-    // ── Credentials OK: server is sending the email code in background.
-    // We immediately switch to VerifyWidget — we don't wait for email delivery.
     if (r == "auth_code_sent") {
-        loginBtn->setEnabled(true);
         emit showVerifyAuth(m_pendingLogin);
         return;
     }
 
-    // ── Wrong credentials (server returns "auth-" for both bad login and bad password)
     if (r == "auth-" || r.startsWith("auth-||")) {
         failedAttempts++;
-        int left = 3 - failedAttempts;
-
+        const int left = 3 - failedAttempts;
         if (failedAttempts >= 3) {
-            // Determine ban duration based on lock level
-            int durSec = (lockLevel < LOCK_LEVELS_COUNT)
-                         ? LOCK_DURATIONS_SEC[lockLevel]
-                         : INT_MAX;
+            const int idx    = qMin(lockLevel, LOCK_LEVELS_COUNT - 1);
+            const int durSec = LOCK_DURATIONS_SEC[idx];
             lockLevel++;
             failedAttempts = 0;
-
-            QString lockMsg;
-            if (durSec == INT_MAX) {
-                lockMsg = QString::fromUtf8("\xd0\x90\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82 \xd0\xb7\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd \xd0\xbd\xd0\xb0\xd0\xb2\xd1\x81\xd0\xb5\xd0\xb3\xd0\xb4\xd0\xb0.");
-            } else if (durSec < 60) {
-                lockMsg = QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xb5\xd0\xb2\xd1\x8b\xd1\x88\xd0\xb5\xd0\xbd \xd0\xbb\xd0\xb8\xd0\xbc\xd0\xb8\xd1\x82. \xd0\x91\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xba\xd0\xb0 \xd0\xbd\xd0\xb0 30 \xd1\x81\xd0\xb5\xd0\xba.");
-            } else {
-                lockMsg = QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xb5\xd0\xb2\xd1\x8b\xd1\x88\xd0\xb5\xd0\xbd \xd0\xbb\xd0\xb8\xd0\xbc\xd0\xb8\xd1\x82. \xd0\x91\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xba\xd0\xb0 \xd0\xbd\xd0\xb0 %1 \xd0\xbc\xd0\xb8\xd0\xbd.").arg(durSec / 60);
-            }
-            applyLock(durSec, lockMsg);
+            QString msg;
+            if (durSec == INT_MAX)
+                msg = QString::fromUtf8("\xd0\x90\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82 \xd0\xb7\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd \xd0\xbd\xd0\xb0\xd0\xb2\xd1\x81\xd0\xb5\xd0\xb3\xd0\xb4\xd0\xb0.");
+            else if (durSec < 60)
+                msg = QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xb5\xd0\xb2\xd1\x8b\xd1\x88\xd0\xb5\xd0\xbd \xd0\xbb\xd0\xb8\xd0\xbc\xd0\xb8\xd1\x82. \xd0\x91\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xba\xd0\xb0 \xd0\xbd\xd0\xb0 30 \xd1\x81\xd0\xb5\xd0\xba.");
+            else
+                msg = QString::fromUtf8("\xd0\x9f\xd1\x80\xd0\xb5\xd0\xb2\xd1\x8b\xd1\x88\xd0\xb5\xd0\xbd \xd0\xbb\xd0\xb8\xd0\xbc\xd0\xb8\xd1\x82. \xd0\x91\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xba\xd0\xb0 \xd0\xbd\xd0\xb0 %1 \xd0\xbc\xd0\xb8\xd0\xbd.").arg(durSec / 60);
+            applyLock(durSec, msg);
         } else {
             statusLabel->setText(
-                QString::fromUtf8("\xd0\x9d\xd0\xb5\xd0\xb2\xd0\xb5\xd1\x80\xd0\xbd\xd1\x8b\xd0\xb9 \xd0\xbb\xd0\xbe\xd0\xb3\xd0\xb8\xd0\xbd \xd0\xb8\xd0\xbb\xd0\xb8 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c. \xd0\x9e\xd1\x81\xd1\x82\xd0\xb0\xd0\xbb\xd0\xbe\xd1\x81\xd1\x8c \xd0\xbf\xd0\xbe\xd0\xbf\xd1\x8b\xd1\x82\xd0\xbe\xd0\xba: %1").arg(left)
-            );
-            statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
+                QString::fromUtf8("\xd0\x9d\xd0\xb5\xd0\xb2\xd0\xb5\xd1\x80\xd0\xbd\xd1\x8b\xd0\xb9 \xd0\xbb\xd0\xbe\xd0\xb3\xd0\xb8\xd0\xbd \xd0\xb8\xd0\xbb\xd0\xb8 \xd0\xbf\xd0\xb0\xd1\x80\xd0\xbe\xd0\xbb\xd1\x8c. \xd0\x9e\xd1\x81\xd1\x82\xd0\xb0\xd0\xbb\xd0\xbe\xd1\x81\xd1\x8c \xd0\xbf\xd0\xbf\xd1\x8b\xd1\x82\xd0\xbe\xd0\xba: %1").arg(left));
+            statusLabel->setStyleSheet(
+                QString("QLabel { color: %1; border: none; font-size: %2pt; }")
+                .arg(GH_RED).arg(FONT_SIZE_SMALL));
             statusLabel->show();
             loginBtn->setEnabled(true);
         }
         return;
     }
 
-    // ── Server-side lockout
     if (r.startsWith("locked")) {
-        QStringList parts = r.split("||");
-        int sec = parts.size() >= 2 ? parts[1].toInt() : 30;
-        applyLock(sec, QString::fromUtf8("\xd0\x90\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82 \xd0\xb7\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd. \xd0\x9f\xd0\xbe\xd0\xb4\xd0\xbe\xd0\xb6\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5."));
+        const QStringList p = r.split("||");
+        const int sec = p.size() >= 2 ? p[1].toInt() : 30;
+        applyLock(sec, QString::fromUtf8(
+            "\xd0\x90\xd0\xba\xd0\xba\xd0\xb0\xd1\x83\xd0\xbd\xd1\x82 \xd0\xb7\xd0\xb0\xd0\xb1\xd0\xbb\xd0\xbe\xd0\xba\xd0\xb8\xd1\x80\xd0\xbe\xd0\xb2\xd0\xb0\xd0\xbd. \xd0\x9f\xd0\xbe\xd0\xb4\xd0\xbe\xd0\xb6\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5."));
         return;
     }
 
-    // ── Unknown / error response
-    statusLabel->setText(QString::fromUtf8("\xd0\x9e\xd1\x88\xd0\xb8\xd0\xb1\xd0\xba\xd0\xb0 \xd1\x81\xd0\xb5\xd1\x80\xd0\xb2\xd0\xb5\xd1\x80\xd0\xb0. \xd0\x9f\xd0\xbe\xd0\xbf\xd1\x80\xd0\xbe\xd0\xb1\xd1\x83\xd0\xb9\xd1\x82\xd0\xb5 \xd1\x81\xd0\xbd\xd0\xbe\xd0\xb2\xd0\xb0."));
-    statusLabel->setStyleSheet(QString("QLabel { color: %1; border: none; font-size: %2pt; }").arg(GH_RED).arg(FONT_SIZE_SMALL));
-    statusLabel->show();
+    // Unknown/error response -- just re-enable the button silently
     loginBtn->setEnabled(true);
 }
