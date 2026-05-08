@@ -22,10 +22,16 @@ debug/
 release/
 
 # ── Compiled binaries (server / client / tests) ───────────────────────────────
-# Leading slash = only root-level binary, not the source folder
+# server binary (wherever it ends up after qmake)
 /echoServer
+server/echoServer
+build/echoServer
+# client binary
 /client
+build/client
+# tests binary
 /tests
+build/tests
 
 # ── Database ──────────────────────────────────────────────────────────────────
 *.db
