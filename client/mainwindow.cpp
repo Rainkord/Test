@@ -42,7 +42,7 @@ void MainWindow::setupUI()
     mainVLayout->setContentsMargins(0, 0, 0, 0);
     mainVLayout->setSpacing(0);
 
-    // ── Top bar (always visible on all screens) ────────────────────────────
+    // ── Top bar (always visible on all screens) ──────────────────────
     QWidget *topBar = new QWidget(centralWidget);
     topBar->setFixedHeight(48);
     topBar->setStyleSheet(QString(
@@ -83,7 +83,7 @@ void MainWindow::setupUI()
 
     mainVLayout->addWidget(topBar);
 
-    // ── Stacked widget ─────────────────────────────────────────────────────
+    // ── Stacked widget ────────────────────────────────────────────────
     stackedWidget = new QStackedWidget(centralWidget);
     stackedWidget->setStyleSheet("background: transparent;");
     mainVLayout->addWidget(stackedWidget, 1);
@@ -105,13 +105,10 @@ void MainWindow::setupUI()
 
 void MainWindow::connectSignals()
 {
-    connect(authWidget, &AuthWidget::loginSuccess,   this, [this](const QString &login) {
-        graphWidget->setUserLogin(login);
-        graphWidget->updateGraph();
-        stackedWidget->setCurrentIndex(IDX_GRAPH);
-    });
-    connect(authWidget, &AuthWidget::showRegister,   this, &MainWindow::onShowRegister);
+    // AuthWidget: после успешной проверки логина/пароля сервер отвечает auth_ok,
+    // AuthWidget испускает showVerifyAuth — переходим к VerifyWidget.
     connect(authWidget, &AuthWidget::showVerifyAuth, this, &MainWindow::onShowVerifyAuth);
+    connect(authWidget, &AuthWidget::showRegister,   this, &MainWindow::onShowRegister);
     connect(authWidget, &AuthWidget::showReset,      this, &MainWindow::onShowReset);
 
     connect(regWidget,  &RegWidget::registrationSuccess, this, &MainWindow::onRegistrationSuccess);

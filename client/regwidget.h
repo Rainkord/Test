@@ -109,86 +109,58 @@ private slots:
     void onShowAuthClicked();
 
 private:
-    // ── Шаг 1: логин + пароль ──────────────────────────────────────────────
-    QWidget     *step1Widget;          ///< Контейнер элементов шага 1.
-    QLineEdit   *loginEdit;            ///< Поле ввода логина.
-    QLabel      *loginErrorLabel;      ///< Ошибка валидации логина.
-    QLineEdit   *passwordEdit;         ///< Поле ввода пароля.
-    QLabel      *passwordErrorLabel;   ///< Ошибка валидации пароля.
-    QPushButton *togglePassBtn1;       ///< Кнопка показа/скрытия пароля.
-    QLineEdit   *confirmPasswordEdit;  ///< Поле подтверждения пароля.
-    QLabel      *confirmErrorLabel;    ///< Ошибка несовпадения паролей.
-    QPushButton *togglePassBtn2;       ///< Кнопка показа/скрытия пароля подтверждения.
-    QPushButton *continueBtn;          ///< Кнопка «Продолжить».
+    // ═══ Шаг 1: логин + пароль ══════════════════════════════════════
+    QWidget     *step1Widget;
+    QLineEdit   *loginEdit;
+    QLabel      *loginErrorLabel;
+    QLineEdit   *passwordEdit;
+    QLabel      *passwordErrorLabel;
+    QPushButton *togglePassBtn1;
+    QLineEdit   *confirmPasswordEdit;
+    QLabel      *confirmErrorLabel;
+    QPushButton *togglePassBtn2;
+    QPushButton *continueBtn;
 
-    // ── Шаг 2: ввод email ──────────────────────────────────────────────────
-    QWidget     *step2Widget;    ///< Контейнер элементов шага 2.
-    QLineEdit   *emailEdit;      ///< Поле ввода email.
-    QLabel      *emailErrorLabel;///< Ошибка валидации email.
-    QPushButton *emailNextBtn;   ///< Кнопка «Далее →».
-    QPushButton *backToStep1Btn; ///< Кнопка «← Назад».
+    // ═══ Шаг 2: ввод email ════════════════════════════════════
+    QWidget     *step2Widget;
+    QLineEdit   *emailEdit;
+    QLabel      *emailErrorLabel;
+    QPushButton *emailNextBtn;
+    QPushButton *backToStep1Btn;
 
-    // ── Шаг 3: ввод кода ───────────────────────────────────────────────────
-    QWidget     *step3Widget;      ///< Контейнер элементов шага 3.
-    QLabel      *emailHintLabel;   ///< Подсказка «Код отправлен на ...».
-    QLineEdit   *codeEdit;         ///< Поле ввода кода (6 цифр).
-    QLabel      *codeErrorLabel;   ///< Ошибка неверного кода.
-    QLabel      *codeStatusLabel;  ///< Статус проверки кода.
-    QPushButton *verifyCodeBtn;    ///< Кнопка «Подтвердить».
-    QPushButton *backToStep2Btn;   ///< Кнопка «← Изменить почту».
+    // ═══ Шаг 3: ввод кода ═════════════════════════════════════
+    QWidget     *step3Widget;
+    QLabel      *emailHintLabel;
+    QLineEdit   *codeEdit;
+    QLabel      *codeErrorLabel;
+    QLabel      *codeStatusLabel;
+    QPushButton *verifyCodeBtn;
+    QPushButton *backToStep2Btn;
 
-    QPushButton *showAuthBtn; ///< Ссылка «Уже есть аккаунт? Войти».
+    QPushButton *showAuthBtn;
 
     int     codeFailedAttempts; ///< Счётчик неверных попыток ввода кода.
     int     codeLockLevel;      ///< Уровень блокировки кода.
     QTimer  *codeLockTimer;     ///< Таймер снятия блокировки.
     bool    codeIsLocked;       ///< Флаг активной блокировки ввода кода.
-    bool    m_verifyingCode;    ///< Флаг ожидания ответа на verify_code.
     bool    m_checkingLogin;    ///< Флаг ожидания ответа на check_login.
+    bool    m_verifyingCode;    ///< Флаг ожидания ответа на verify_code.
     QString currentLogin;       ///< Логин, прошедший проверку на шаге 1.
     QString currentEmail;       ///< Email, введённый на шаге 2.
 
-    /** @brief Инициализирует и компонует все элементы интерфейса. */
     void setupUI();
-
-    /** @brief Обновляет состояние кнопки «Продолжить» по результатам валидации шага 1. */
     void validateStep1();
-
-    /**
-     * @brief Проверяет корректность формата email.
-     * @param email Строка для проверки.
-     * @return true, если формат валиден.
-     */
     bool isEmailValid(const QString &email) const;
-
-    /**
-     * @brief Блокирует ввод кода на заданное время.
-     * @param minutes Длительность блокировки (0 — 30 секунд).
-     * @param message Сообщение для отображения пользователю.
-     */
     void applyCodeLock(int minutes, const QString &message);
-
-    /**
-     * @brief Показывает нужный шаг и скрывает остальные.
-     * @param step Номер шага (1, 2 или 3).
-     */
     void showStep(int step);
 
-    /** @brief @return CSS-стиль поля ввода. */
     QString primaryBtnStyle() const;
-    /** @brief @return CSS-стиль вторичной кнопки. */
     QString secondaryBtnStyle() const;
-    /** @brief @return CSS-стиль кнопки-призрака. */
     QString ghostBtnStyle() const;
-    /** @brief @return CSS-стиль кнопки-ссылки. */
     QString linkBtnStyle() const;
-    /** @brief @return CSS-стиль поля ввода. */
     QString inputStyle() const;
-    /** @brief @return CSS-стиль метки ошибки. */
     QString errorLabelStyle() const;
-    /** @brief @return CSS-стиль информационной метки. */
     QString infoLabelStyle() const;
-    /** @brief @return CSS-стиль метки успеха. */
     QString successLabelStyle() const;
 };
 
