@@ -16,7 +16,7 @@
 #include <QFont>
 #include <QFrame>
 
-// ── GitHub dark palette ────────────────────────────────────────────────────
+// ── GitHub dark palette ──────────────────────────────────────────────
 #define GH_BG           "#0d1117"
 #define GH_CARD         "#161b22"
 #define GH_BORDER       "#30363d"
@@ -46,6 +46,12 @@ static QString vInputStyle()
         "QLineEdit:focus { border-color: %6; }"
     ).arg(GH_INPUT_BG, GH_TEXT, GH_BORDER, FONT_FAMILY)
      .arg(FONT_SIZE_INPUT).arg(GH_BLUE);
+}
+
+static QString vCodeInputStyle()
+{
+    // Идентичный стиль поля кода в regwidget / resetwidget
+    return vInputStyle() + "QLineEdit { letter-spacing: 4px; }";
 }
 
 static QString vPrimaryBtnStyle(bool enabled)
@@ -95,7 +101,7 @@ static QString vSuccessStyle()
            .arg(GH_GREEN_H, FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
-// ── Constructor ───────────────────────────────────────────────────────────────────
+// ── Constructor ────────────────────────────────────────────────────────────────────────
 VerifyWidget::VerifyWidget(QWidget *parent)
     : QWidget(parent)
     , isLocked(false)
@@ -114,7 +120,7 @@ VerifyWidget::VerifyWidget(QWidget *parent)
 
 VerifyWidget::~VerifyWidget() {}
 
-// ── setupUI ────────────────────────────────────────────────────────────────────
+// ── setupUI ──────────────────────────────────────────────────────────────────────────
 void VerifyWidget::setupUI()
 {
     auto *outerV = new QVBoxLayout(this);
@@ -156,12 +162,13 @@ void VerifyWidget::setupUI()
     hintLabel->setStyleSheet(vHintStyle());
     layout->addWidget(hintLabel);
 
-    // Поле кода
+    // Поле кода — центрирование + letter-spacing, как в reg/reset
     codeEdit = new QLineEdit(card);
-    codeEdit->setPlaceholderText(QString::fromUtf8("Введите 6-значный код"));
+    codeEdit->setPlaceholderText(QString::fromUtf8("Код из письма (6 цифр)"));
     codeEdit->setMaxLength(6);
     codeEdit->setMinimumHeight(38);
-    codeEdit->setStyleSheet(vInputStyle());
+    codeEdit->setAlignment(Qt::AlignCenter);
+    codeEdit->setStyleSheet(vCodeInputStyle());
     connect(codeEdit, &QLineEdit::textChanged, this, &VerifyWidget::onCodeTextChanged);
     connect(codeEdit, &QLineEdit::returnPressed, this, &VerifyWidget::onVerifyClicked);
     layout->addWidget(codeEdit);
