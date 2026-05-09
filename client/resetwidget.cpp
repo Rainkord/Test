@@ -1,6 +1,6 @@
 /**
  * @file resetwidget.cpp
- * @brief \u0412\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u0430\u0440\u043e\u043b\u044f. \u0428\u0430\u0433 2 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u0442 OTP-\u0432\u0432\u043e\u0434 6 \u0431\u043e\u043a\u0441\u043e\u0432. ESC \u2192 \u0448\u0430\u0433 1.
+ * @brief Восстановление пароля. Шаг 2 использует OTP-ввод 6 боксов. ESC → шаг 1.
  */
 
 #include "resetwidget.h"
@@ -153,7 +153,7 @@ void ResetWidget::setupUI()
     mainL->setContentsMargins(28, 28, 28, 28);
     mainL->setSpacing(8);
 
-    auto *titleLbl = new QLabel(QString::fromUtf8("\u0412\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u0430\u0440\u043e\u043b\u044f"), card);
+    auto *titleLbl = new QLabel(QString::fromUtf8("Восстановление пароля"), card);
     QFont tf(FONT_FAMILY, FS_TITLE, QFont::Bold);
     titleLbl->setFont(tf);
     titleLbl->setAlignment(Qt::AlignCenter);
@@ -166,7 +166,7 @@ void ResetWidget::setupUI()
     mainL->addWidget(sep);
     mainL->addSpacing(4);
 
-    // ── \u0428\u0430\u0433 1: email ────────────────────────────────────────────────────────────
+    // ── Шаг 1: email ────────────────────────────────────────────────────────────
     step1Widget = new QWidget(card);
     step1Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     auto *s1 = new QVBoxLayout(step1Widget);
@@ -189,13 +189,13 @@ void ResetWidget::setupUI()
     auto *s1Btns = new QHBoxLayout();
     s1Btns->setSpacing(8);
 
-    backBtn = new QPushButton(QString::fromUtf8("\u2190 \u041d\u0430\u0437\u0430\u0434"), step1Widget);
+    backBtn = new QPushButton(QString::fromUtf8("\u2190 Назад"), step1Widget);
     backBtn->setMinimumHeight(38);
     backBtn->setStyleSheet(secondaryR());
     connect(backBtn, &QPushButton::clicked, this, &ResetWidget::onBackClicked);
     s1Btns->addWidget(backBtn);
 
-    continueBtn = new QPushButton(QString::fromUtf8("\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u043a\u043e\u0434"), step1Widget);
+    continueBtn = new QPushButton(QString::fromUtf8("Отправить код"), step1Widget);
     continueBtn->setMinimumHeight(38);
     continueBtn->setEnabled(false);
     continueBtn->setDefault(true);
@@ -208,7 +208,7 @@ void ResetWidget::setupUI()
     s1->addLayout(s1Btns);
     mainL->addWidget(step1Widget);
 
-    // ── \u0428\u0430\u0433 2: OTP-\u0432\u0432\u043e\u0434 \u043a\u043e\u0434\u0430 ─────────────────────────────────────────────────────
+    // ── Шаг 2: OTP-ввод кода ─────────────────────────────────────────────────────
     step2Widget = new QWidget(card);
     step2Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     auto *s2 = new QVBoxLayout(step2Widget);
@@ -216,7 +216,7 @@ void ResetWidget::setupUI()
     s2->setSpacing(8);
 
     auto *codeHintLbl = new QLabel(
-        QString::fromUtf8("\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043a\u043e\u0434 \u0438\u0437 \u043f\u0438\u0441\u044c\u043c\u0430:"),
+        QString::fromUtf8("Введите код из письма:"),
         step2Widget);
     codeHintLbl->setAlignment(Qt::AlignCenter);
     codeHintLbl->setStyleSheet(infoR());
@@ -240,7 +240,7 @@ void ResetWidget::setupUI()
     s2->addWidget(codeStatusLabel);
     s2->addSpacing(4);
 
-    verifyCodeBtn = new QPushButton(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c"), step2Widget);
+    verifyCodeBtn = new QPushButton(QString::fromUtf8("Подтвердить"), step2Widget);
     verifyCodeBtn->setMinimumHeight(38);
     verifyCodeBtn->setEnabled(false);
     verifyCodeBtn->setDefault(true);
@@ -251,7 +251,7 @@ void ResetWidget::setupUI()
 
     mainL->addWidget(step2Widget);
 
-    // ── \u0428\u0430\u0433 3: \u043d\u043e\u0432\u044b\u0439 \u043f\u0430\u0440\u043e\u043b\u044c ──────────────────────────────────────────────────
+    // ── Шаг 3: новый пароль ──────────────────────────────────────────────────
     step3Widget = new QWidget(card);
     step3Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     auto *s3 = new QVBoxLayout(step3Widget);
@@ -259,7 +259,7 @@ void ResetWidget::setupUI()
     s3->setSpacing(6);
 
     auto *newPassHintLbl = new QLabel(
-        QString::fromUtf8("\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043d\u043e\u0432\u044b\u0439 \u043f\u0430\u0440\u043e\u043b\u044c:"),
+        QString::fromUtf8("Введите новый пароль:"),
         step3Widget);
     newPassHintLbl->setAlignment(Qt::AlignCenter);
     newPassHintLbl->setStyleSheet(infoR());
@@ -268,7 +268,7 @@ void ResetWidget::setupUI()
     auto *np1Row = new QHBoxLayout();
     np1Row->setSpacing(6);
     newPasswordEdit = new QLineEdit(step3Widget);
-    newPasswordEdit->setPlaceholderText(QString::fromUtf8("\u041d\u043e\u0432\u044b\u0439 \u043f\u0430\u0440\u043e\u043b\u044c (\u043c\u0438\u043d. 8 \u0441\u0438\u043c\u0432.)"));
+    newPasswordEdit->setPlaceholderText(QString::fromUtf8("Новый пароль (мин. 8 симв.)"));
     newPasswordEdit->setEchoMode(QLineEdit::Password);
     newPasswordEdit->setMinimumHeight(38);
     newPasswordEdit->setStyleSheet(inputStyleR());
@@ -290,7 +290,7 @@ void ResetWidget::setupUI()
     auto *np2Row = new QHBoxLayout();
     np2Row->setSpacing(6);
     confirmPasswordEdit = new QLineEdit(step3Widget);
-    confirmPasswordEdit->setPlaceholderText(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c"));
+    confirmPasswordEdit->setPlaceholderText(QString::fromUtf8("Подтвердите пароль"));
     confirmPasswordEdit->setEchoMode(QLineEdit::Password);
     confirmPasswordEdit->setMinimumHeight(38);
     confirmPasswordEdit->setStyleSheet(inputStyleR());
@@ -310,7 +310,7 @@ void ResetWidget::setupUI()
     s3->addWidget(confirmErrorLabel);
     s3->addSpacing(4);
 
-    saveBtn = new QPushButton(QString::fromUtf8("\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043f\u0430\u0440\u043e\u043b\u044c"), step3Widget);
+    saveBtn = new QPushButton(QString::fromUtf8("Сохранить пароль"), step3Widget);
     saveBtn->setMinimumHeight(38);
     saveBtn->setEnabled(false);
     saveBtn->setDefault(true);
@@ -376,7 +376,7 @@ void ResetWidget::onEmailTextChanged(const QString &text)
 {
     if (text.isEmpty()) { emailErrorLabel->hide(); continueBtn->setEnabled(false); return; }
     if (!isEmailValid(text)) {
-        emailErrorLabel->setText(QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u0444\u043e\u0440\u043c\u0430\u0442"));
+        emailErrorLabel->setText(QString::fromUtf8("Неверный формат"));
         emailErrorLabel->show();
         continueBtn->setEnabled(false);
     } else {
@@ -390,7 +390,7 @@ void ResetWidget::onContinueClicked()
     if (!continueBtn->isEnabled()) return;
     m_email = emailEdit->text().trimmed();
     continueBtn->setEnabled(false);
-    continueBtn->setText(QString::fromUtf8("\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430..."));
+    continueBtn->setText(QString::fromUtf8("Отправка..."));
     emailErrorLabel->hide();
     m_waitingForCodeHash = true;
     ClientSingleton::instance().sendRequestAsync(
@@ -415,7 +415,7 @@ void ResetWidget::onVerifyCodeClicked()
 
     if (entered == m_pendingCodeHash) {
         codeErrorLabel->hide();
-        codeStatusLabel->setText(QString::fromUtf8("\u041a\u043e\u0434 \u0432\u0435\u0440\u0435\u043d!"));
+        codeStatusLabel->setText(QString::fromUtf8("Код верен!"));
         codeStatusLabel->show();
         newPasswordEdit->clear();
         confirmPasswordEdit->clear();
@@ -429,7 +429,7 @@ void ResetWidget::onVerifyCodeClicked()
     failedAttempts++;
     if (failedAttempts < 4) {
         codeErrorLabel->setText(
-            QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043a\u043e\u0434. \u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c: %1.").arg(4 - failedAttempts));
+            QString::fromUtf8("Неверный код. Осталось: %1.").arg(4 - failedAttempts));
         codeErrorLabel->show();
         codeEdit->clear();
         verifyCodeBtn->setEnabled(false);
@@ -439,21 +439,21 @@ void ResetWidget::onVerifyCodeClicked()
         const int lockMin = (lockLevel == 1) ? 0 : (lockLevel == 2) ? 5 : 30;
         applyLock(lockMin,
             lockMin == 0
-                ? QString::fromUtf8("\u041f\u0440\u0435\u0432\u044b\u0448\u0435\u043d \u043b\u0438\u043c\u0438\u0442. \u0411\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0430 30 \u0441\u0435\u043a.")
-                : QString::fromUtf8("\u041f\u0440\u0435\u0432\u044b\u0448\u0435\u043d \u043b\u0438\u043c\u0438\u0442. \u0411\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0430 %1 \u043c\u0438\u043d.").arg(lockMin));
+                ? QString::fromUtf8("Превышен лимит. Блокировка 30 сек.")
+                : QString::fromUtf8("Превышен лимит. Блокировка %1 мин.").arg(lockMin));
     }
 }
 
 void ResetWidget::onNewPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text.length() < 8) {
-        newPasswordErrorLabel->setText(QString::fromUtf8("\u041c\u0438\u043d\u0438\u043c\u0443\u043c 8 \u0441\u0438\u043c\u0432."));
+        newPasswordErrorLabel->setText(QString::fromUtf8("Минимум 8 симв."));
         newPasswordErrorLabel->show();
     } else {
         newPasswordErrorLabel->hide();
     }
     if (!confirmPasswordEdit->text().isEmpty() && confirmPasswordEdit->text() != text) {
-        confirmErrorLabel->setText(QString::fromUtf8("\u041f\u0430\u0440\u043e\u043b\u0438 \u043d\u0435 \u0441\u043e\u0432\u043f\u0430\u0434\u0430\u044e\u0442"));
+        confirmErrorLabel->setText(QString::fromUtf8("Пароли не совпадают"));
         confirmErrorLabel->show();
     } else {
         confirmErrorLabel->hide();
@@ -464,7 +464,7 @@ void ResetWidget::onNewPasswordTextChanged(const QString &text)
 void ResetWidget::onConfirmPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text != newPasswordEdit->text()) {
-        confirmErrorLabel->setText(QString::fromUtf8("\u041f\u0430\u0440\u043e\u043b\u0438 \u043d\u0435 \u0441\u043e\u0432\u043f\u0430\u0434\u0430\u044e\u0442"));
+        confirmErrorLabel->setText(QString::fromUtf8("Пароли не совпадают"));
         confirmErrorLabel->show();
     } else {
         confirmErrorLabel->hide();
@@ -488,7 +488,7 @@ void ResetWidget::onSavePasswordClicked()
 {
     if (!saveBtn->isEnabled()) return;
     saveBtn->setEnabled(false);
-    saveBtn->setText(QString::fromUtf8("\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435..."));
+    saveBtn->setText(QString::fromUtf8("Сохранение..."));
 
     const QString hash = QString::fromLatin1(
         QCryptographicHash::hash(
@@ -530,7 +530,7 @@ void ResetWidget::onResetResponseReceived(const QString &response)
 
     if (m_waitingForCodeHash) {
         m_waitingForCodeHash = false;
-        continueBtn->setText(QString::fromUtf8("\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u043a\u043e\u0434"));
+        continueBtn->setText(QString::fromUtf8("Отправить код"));
         continueBtn->setEnabled(isEmailValid(emailEdit->text()));
 
         if (r.startsWith("reset_code_sent")) {
@@ -539,11 +539,12 @@ void ResetWidget::onResetResponseReceived(const QString &response)
             failedAttempts = 0;
             isLocked = false;
             showStep(StepCode);
-        } else if (r == "user_not_found" || r == "email_not_found") {
-            emailErrorLabel->setText(QString::fromUtf8("\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u0441 \u0442\u0430\u043a\u0438\u043c email \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d"));
+        } else if (r == "reset-") {
+            // FIX: сервер возвращает "reset-" когда email не найден
+            emailErrorLabel->setText(QString::fromUtf8("Пользователь с таким email не найден"));
             emailErrorLabel->show();
         } else {
-            emailErrorLabel->setText(QString::fromUtf8("\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0430. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0441\u043d\u043e\u0432\u0430."));
+            emailErrorLabel->setText(QString::fromUtf8("Ошибка сервера. Попробуйте снова."));
             emailErrorLabel->show();
         }
         return;
@@ -551,12 +552,13 @@ void ResetWidget::onResetResponseReceived(const QString &response)
 
     if (m_waitingForSave) {
         m_waitingForSave = false;
-        if (r == "password_changed") {
+        // FIX: сервер возвращает "set_password+", а не "password_changed"
+        if (r == "set_password+") {
             emit resetSuccess();
         } else {
             saveBtn->setEnabled(true);
-            saveBtn->setText(QString::fromUtf8("\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043f\u0430\u0440\u043e\u043b\u044c"));
-            confirmErrorLabel->setText(QString::fromUtf8("\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0430. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0441\u043d\u043e\u0432\u0430."));
+            saveBtn->setText(QString::fromUtf8("Сохранить пароль"));
+            confirmErrorLabel->setText(QString::fromUtf8("Ошибка сервера. Попробуйте снова."));
             confirmErrorLabel->show();
         }
     }

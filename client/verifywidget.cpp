@@ -138,6 +138,7 @@ void VerifyWidget::setupUI()
     // OTP-ввод
     otpInput = new OtpInput(card);
     layout->addWidget(otpInput, 0, Qt::AlignCenter);
+    // FIX: только активируем кнопку при заполнении, НЕ вызываем verify автоматически
     connect(otpInput, &OtpInput::completed,  this, &VerifyWidget::onCodeCompleted);
     // ESC из OtpInput → назад
     connect(otpInput, &OtpInput::escPressed, this, &VerifyWidget::onBackClicked);
@@ -176,7 +177,7 @@ void VerifyWidget::setLogin(const QString &login, const QString &codeHash)
     m_codeHash     = codeHash;
     m_attemptsLeft = 3;
     isLocked       = false;
-    otpInput->clear();          // clear() сам сбрасывает setError(false)
+    otpInput->clear();
     otpInput->setEnabled(true);
     updateVerifyBtn();
     statusLabel->hide();
@@ -203,13 +204,14 @@ void VerifyWidget::updateVerifyBtn()
     verifyBtn->setStyleSheet(primaryBtnStyle(ok));
 }
 
+// FIX: убран автоматический вызов onVerifyClicked() при заполнении кода.
+// Это устраняло бесконечную петлю: неверный код → 600мс пауза → clear() →
+// completed() снова → onVerifyClicked() снова → и так до блокировки.
+// Теперь пользователь должен явно нажать кнопку «Подтвердить».
 void VerifyWidget::onCodeCompleted(const QString &)
 {
     otpInput->setError(false);
     updateVerifyBtn();
-    // автоматически нажимаем кнопку при заполнении
-    if (!isLocked)
-        onVerifyClicked();
 }
 
 void VerifyWidget::onVerifyClicked()
@@ -234,7 +236,7 @@ void VerifyWidget::onVerifyClicked()
         return;
     }
 
-    // Неверный код — шейкаем боксы красным
+    // Неверный код
     otpInput->setError(true);
     m_attemptsLeft--;
     if (m_attemptsLeft > 0) {
@@ -242,10 +244,8 @@ void VerifyWidget::onVerifyClicked()
         statusLabel->setText(
             QString::fromUtf8("Неверный код. Осталось попыток: %1.").arg(m_attemptsLeft));
         statusLabel->show();
-        // через короткую паузу очищаем и даём ввести снова
         QTimer::singleShot(600, this, [this]() {
-            otpInput->clear();   // clear() сбрасывает setError внутри
-            // ошибку убираем после очистки, чтобы statusLabel оставался
+            otpInput->clear();
             updateVerifyBtn();
         });
     } else {
@@ -259,8 +259,6 @@ void VerifyWidget::onBackClicked()
     emit backToAuth();
 }
 
-// ESC обрабатывается через OtpInput::escPressed — keyPressEvent не нужен,
-// но оставляем для случаев, когда фокус не в OtpInput.
 void VerifyWidget::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Escape)
