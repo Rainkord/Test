@@ -73,11 +73,14 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
     }
 
     QString email = Database::instance().getUserEmail(login);
-
     Logger::codeSent(login, email, code);
 
     QtConcurrent::run([email, code]() {
-        SmtpClient::sendVerificationCode(email, code);
+        bool ok = SmtpClient::sendVerificationCode(email, code);
+        if (ok)
+            Logger::emailSent(email);
+        else
+            Logger::emailFailed(email);
     });
 
     return QString("auth_code_sent||%1").arg(codeHash);
@@ -119,7 +122,11 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
     Logger::regCode(login, email, code);
 
     QtConcurrent::run([email, code]() {
-        SmtpClient::sendVerificationCode(email, code);
+        bool ok = SmtpClient::sendVerificationCode(email, code);
+        if (ok)
+            Logger::emailSent(email);
+        else
+            Logger::emailFailed(email);
     });
 
     return QString("reg_code_sent||%1").arg(codeHash);
@@ -185,7 +192,11 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
     Logger::resetCode(email, code);
 
     QtConcurrent::run([email, login, code]() {
-        SmtpClient::sendPasswordResetCode(email, login, code);
+        bool ok = SmtpClient::sendPasswordResetCode(email, login, code);
+        if (ok)
+            Logger::emailSent(email);
+        else
+            Logger::emailFailed(email);
     });
 
     return QString("reset_code_sent||%1").arg(codeHash);
