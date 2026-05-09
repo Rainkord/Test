@@ -117,7 +117,8 @@ QString RegWidget::successLabelStyle() const
 RegWidget::RegWidget(QWidget *parent)
     : QWidget(parent),
       codeFailedAttempts(0), codeLockLevel(0),
-      codeIsLocked(false), m_checkingLogin(false), m_verifyingCode(false)
+      codeIsLocked(false), m_checkingLogin(false),
+      m_waitingForRegCode(false), m_verifyingCode(false)
 {
     codeLockTimer = new QTimer(this);
     codeLockTimer->setSingleShot(true);
@@ -158,12 +159,13 @@ void RegWidget::clearFields()
     continueBtn->setEnabled(false);
     continueBtn->setText(QString::fromUtf8("Продолжить"));
     emailNextBtn->setEnabled(false);
-    emailNextBtn->setText(QString::fromUtf8("Далее →"));
+    emailNextBtn->setText(QString::fromUtf8("Далее \u2192"));
 
     codeFailedAttempts = 0;
     codeLockLevel      = 0;
     codeIsLocked       = false;
     m_verifyingCode    = false;
+    m_waitingForRegCode = false;
     m_pendingPassHash.clear();
     m_pendingCodeHash.clear();
     m_checkingLogin    = false;
@@ -195,7 +197,7 @@ void RegWidget::setupUI()
     mainLayout->setContentsMargins(28, 28, 28, 28);
     mainLayout->setSpacing(8);
 
-    QLabel *titleLabel = new QLabel(QString::fromUtf8("Регистрация"), card);
+    QLabel *titleLabel = new QLabel(QString::fromUtf8("\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f"), card);
     QFont titleFont(FONT_FAMILY, FONT_SIZE_TITLE, QFont::Bold);
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
@@ -203,6 +205,7 @@ void RegWidget::setupUI()
     mainLayout->addWidget(titleLabel);
     mainLayout->addSpacing(6);
 
+    // ── Шаг 1: логин + пароль ────────────────────────────────────────────────
     step1Widget = new QWidget(card);
     step1Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s1 = new QVBoxLayout(step1Widget);
@@ -210,7 +213,7 @@ void RegWidget::setupUI()
     s1->setSpacing(6);
 
     loginEdit = new QLineEdit(step1Widget);
-    loginEdit->setPlaceholderText(QString::fromUtf8("Логин (мин. 4 символа)"));
+    loginEdit->setPlaceholderText(QString::fromUtf8("\u041b\u043e\u0433\u0438\u043d (\u043c\u0438\u043d. 4 \u0441\u0438\u043c\u0432\u043e\u043b\u0430)"));
     loginEdit->setMinimumHeight(38);
     loginEdit->setStyleSheet(inputStyle());
     s1->addWidget(loginEdit);
@@ -224,14 +227,14 @@ void RegWidget::setupUI()
     QHBoxLayout *pass1Row = new QHBoxLayout();
     pass1Row->setSpacing(6);
     passwordEdit = new QLineEdit(step1Widget);
-    passwordEdit->setPlaceholderText(QString::fromUtf8("Пароль (мин. 8 символов)"));
+    passwordEdit->setPlaceholderText(QString::fromUtf8("\u041f\u0430\u0440\u043e\u043b\u044c (\u043c\u0438\u043d. 8 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432)"));
     passwordEdit->setEchoMode(QLineEdit::Password);
     passwordEdit->setMinimumHeight(38);
     passwordEdit->setStyleSheet(inputStyle());
     pass1Row->addWidget(passwordEdit);
     connect(passwordEdit, &QLineEdit::textChanged, this, &RegWidget::onPasswordTextChanged);
 
-    togglePassBtn1 = new QPushButton("👁", step1Widget);
+    togglePassBtn1 = new QPushButton("\xF0\x9F\x91\x81", step1Widget);
     togglePassBtn1->setFixedSize(38, 38);
     togglePassBtn1->setStyleSheet(ghostBtnStyle());
     connect(togglePassBtn1, &QPushButton::clicked, this, &RegWidget::onTogglePassword1);
@@ -246,7 +249,7 @@ void RegWidget::setupUI()
     QHBoxLayout *pass2Row = new QHBoxLayout();
     pass2Row->setSpacing(6);
     confirmPasswordEdit = new QLineEdit(step1Widget);
-    confirmPasswordEdit->setPlaceholderText(QString::fromUtf8("Подтвердите пароль"));
+    confirmPasswordEdit->setPlaceholderText(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c"));
     confirmPasswordEdit->setEchoMode(QLineEdit::Password);
     confirmPasswordEdit->setMinimumHeight(38);
     confirmPasswordEdit->setStyleSheet(inputStyle());
@@ -254,7 +257,7 @@ void RegWidget::setupUI()
     connect(confirmPasswordEdit, &QLineEdit::textChanged,
             this, &RegWidget::onConfirmPasswordTextChanged);
 
-    togglePassBtn2 = new QPushButton("👁", step1Widget);
+    togglePassBtn2 = new QPushButton("\xF0\x9F\x91\x81", step1Widget);
     togglePassBtn2->setFixedSize(38, 38);
     togglePassBtn2->setStyleSheet(ghostBtnStyle());
     connect(togglePassBtn2, &QPushButton::clicked, this, &RegWidget::onTogglePassword2);
@@ -267,7 +270,7 @@ void RegWidget::setupUI()
     s1->addWidget(confirmErrorLabel);
     s1->addSpacing(4);
 
-    continueBtn = new QPushButton(QString::fromUtf8("Продолжить"), step1Widget);
+    continueBtn = new QPushButton(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"), step1Widget);
     continueBtn->setMinimumHeight(38);
     continueBtn->setEnabled(false);
     continueBtn->setDefault(true);
@@ -281,6 +284,7 @@ void RegWidget::setupUI()
 
     mainLayout->addWidget(step1Widget);
 
+    // ── Шаг 2: email ─────────────────────────────────────────────────────────
     step2Widget = new QWidget(card);
     step2Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s2 = new QVBoxLayout(step2Widget);
@@ -303,13 +307,13 @@ void RegWidget::setupUI()
     QHBoxLayout *s2Btns = new QHBoxLayout();
     s2Btns->setSpacing(8);
 
-    backToStep1Btn = new QPushButton(QString::fromUtf8("← Назад"), step2Widget);
+    backToStep1Btn = new QPushButton(QString::fromUtf8("\u2190 \u041d\u0430\u0437\u0430\u0434"), step2Widget);
     backToStep1Btn->setMinimumHeight(38);
     backToStep1Btn->setStyleSheet(secondaryBtnStyle());
     connect(backToStep1Btn, &QPushButton::clicked, this, &RegWidget::onBackToStep1Clicked);
     s2Btns->addWidget(backToStep1Btn);
 
-    emailNextBtn = new QPushButton(QString::fromUtf8("Далее →"), step2Widget);
+    emailNextBtn = new QPushButton(QString::fromUtf8("\u0414\u0430\u043b\u0435\u0435 \u2192"), step2Widget);
     emailNextBtn->setMinimumHeight(38);
     emailNextBtn->setEnabled(false);
     emailNextBtn->setDefault(true);
@@ -322,6 +326,7 @@ void RegWidget::setupUI()
     s2->addLayout(s2Btns);
     mainLayout->addWidget(step2Widget);
 
+    // ── Шаг 3: ввод кода ─────────────────────────────────────────────────────
     step3Widget = new QWidget(card);
     step3Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s3 = new QVBoxLayout(step3Widget);
@@ -336,10 +341,11 @@ void RegWidget::setupUI()
     s3->addWidget(emailHintLabel);
 
     codeEdit = new QLineEdit(step3Widget);
-    codeEdit->setPlaceholderText(QString::fromUtf8("Код из письма (6 цифр)"));
+    codeEdit->setPlaceholderText(QString::fromUtf8("\u041a\u043e\u0434 \u0438\u0437 \u043f\u0438\u0441\u044c\u043c\u0430 (6 \u0446\u0438\u0444\u0440)"));
     codeEdit->setMaxLength(6);
     codeEdit->setMinimumHeight(38);
-    codeEdit->setStyleSheet(inputStyle());
+    codeEdit->setAlignment(Qt::AlignCenter);
+    codeEdit->setStyleSheet(inputStyle() + "QLineEdit { letter-spacing: 4px; }");
     s3->addWidget(codeEdit);
     connect(codeEdit, &QLineEdit::textChanged, this, &RegWidget::onCodeTextChanged);
 
@@ -351,6 +357,7 @@ void RegWidget::setupUI()
 
     codeErrorLabel = new QLabel(step3Widget);
     codeErrorLabel->setStyleSheet(errorLabelStyle());
+    codeErrorLabel->setAlignment(Qt::AlignCenter);
     codeErrorLabel->hide();
     s3->addWidget(codeErrorLabel);
     s3->addSpacing(4);
@@ -358,13 +365,13 @@ void RegWidget::setupUI()
     QHBoxLayout *s3Btns = new QHBoxLayout();
     s3Btns->setSpacing(8);
 
-    backToStep2Btn = new QPushButton(QString::fromUtf8("← Изменить почту"), step3Widget);
+    backToStep2Btn = new QPushButton(QString::fromUtf8("\u2190 \u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u043f\u043e\u0447\u0442\u0443"), step3Widget);
     backToStep2Btn->setMinimumHeight(38);
     backToStep2Btn->setStyleSheet(secondaryBtnStyle());
     connect(backToStep2Btn, &QPushButton::clicked, this, &RegWidget::onBackToStep2Clicked);
     s3Btns->addWidget(backToStep2Btn);
 
-    verifyCodeBtn = new QPushButton(QString::fromUtf8("Подтвердить"), step3Widget);
+    verifyCodeBtn = new QPushButton(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c"), step3Widget);
     verifyCodeBtn->setMinimumHeight(38);
     verifyCodeBtn->setEnabled(false);
     verifyCodeBtn->setDefault(true);
@@ -382,7 +389,7 @@ void RegWidget::setupUI()
     line->setStyleSheet(QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
     mainLayout->addWidget(line);
 
-    showAuthBtn = new QPushButton(QString::fromUtf8("Уже есть аккаунт? Войти"), card);
+    showAuthBtn = new QPushButton(QString::fromUtf8("\u0423\u0436\u0435 \u0435\u0441\u0442\u044c \u0430\u043a\u043a\u0430\u0443\u043d\u0442? \u0412\u043e\u0439\u0442\u0438"), card);
     showAuthBtn->setFlat(true);
     showAuthBtn->setStyleSheet(linkBtnStyle());
     connect(showAuthBtn, &QPushButton::clicked, this, &RegWidget::onShowAuthClicked);
@@ -422,7 +429,7 @@ void RegWidget::validateStep1()
 void RegWidget::onLoginTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text.length() < 4) {
-        loginErrorLabel->setText(QString::fromUtf8("Минимум 4 символа"));
+        loginErrorLabel->setText(QString::fromUtf8("\u041c\u0438\u043d\u0438\u043c\u0443\u043c 4 \u0441\u0438\u043c\u0432\u043e\u043b\u0430"));
         loginErrorLabel->show();
     } else {
         loginErrorLabel->hide();
@@ -433,14 +440,14 @@ void RegWidget::onLoginTextChanged(const QString &text)
 void RegWidget::onPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text.length() < 8) {
-        passwordErrorLabel->setText(QString::fromUtf8("Минимум 8 символов"));
+        passwordErrorLabel->setText(QString::fromUtf8("\u041c\u0438\u043d\u0438\u043c\u0443\u043c 8 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432"));
         passwordErrorLabel->show();
     } else {
         passwordErrorLabel->hide();
     }
     if (!confirmPasswordEdit->text().isEmpty()) {
         if (confirmPasswordEdit->text() != text) {
-            confirmErrorLabel->setText(QString::fromUtf8("Пароли не совпадают"));
+            confirmErrorLabel->setText(QString::fromUtf8("\u041f\u0430\u0440\u043e\u043b\u0438 \u043d\u0435 \u0441\u043e\u0432\u043f\u0430\u0434\u0430\u044e\u0442"));
             confirmErrorLabel->show();
         } else confirmErrorLabel->hide();
     }
@@ -450,7 +457,7 @@ void RegWidget::onPasswordTextChanged(const QString &text)
 void RegWidget::onConfirmPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text != passwordEdit->text()) {
-        confirmErrorLabel->setText(QString::fromUtf8("Пароли не совпадают"));
+        confirmErrorLabel->setText(QString::fromUtf8("\u041f\u0430\u0440\u043e\u043b\u0438 \u043d\u0435 \u0441\u043e\u0432\u043f\u0430\u0434\u0430\u044e\u0442"));
         confirmErrorLabel->show();
     } else {
         confirmErrorLabel->hide();
@@ -474,7 +481,7 @@ void RegWidget::onContinueClicked()
 {
     if (!continueBtn->isEnabled()) return;
     continueBtn->setEnabled(false);
-    continueBtn->setText(QString::fromUtf8("Проверяем..."));
+    continueBtn->setText(QString::fromUtf8("\u041f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u043c..."));
     loginErrorLabel->hide();
     m_checkingLogin = true;
     ClientSingleton::instance().sendRequestAsync(
@@ -489,7 +496,7 @@ void RegWidget::onEmailTextChanged(const QString &text)
         return;
     }
     if (!isEmailValid(text)) {
-        emailErrorLabel->setText(QString::fromUtf8("Неверный формат почты"));
+        emailErrorLabel->setText(QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u0444\u043e\u0440\u043c\u0430\u0442 \u043f\u043e\u0447\u0442\u044b"));
         emailErrorLabel->show();
         emailNextBtn->setEnabled(false);
     } else {
@@ -506,21 +513,17 @@ void RegWidget::onEmailNextClicked()
     QString login    = loginEdit->text().trimmed();
     QString password = passwordEdit->text();
     QByteArray hash  = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
-    QString passHash = QString::fromLatin1(hash.toHex());
-    m_pendingPassHash = passHash;
+    m_pendingPassHash = QString::fromLatin1(hash.toHex());
 
+    // Блокируем кнопку и ждём ответа сервера — НЕ переходим на шаг 3 сразу
+    emailNextBtn->setEnabled(false);
+    emailNextBtn->setText(QString::fromUtf8("\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430..."));
+    emailErrorLabel->hide();
+    m_waitingForRegCode = true;
     m_verifyingCode = false;
 
     ClientSingleton::instance().sendRequestAsync(
-        QString("registration||%1||%2||%3").arg(login, passHash, currentEmail));
-
-    emailHintLabel->setText(QString::fromUtf8("Код отправлен на: ") + currentEmail);
-    emailHintLabel->show();
-    codeEdit->clear();
-    codeErrorLabel->hide();
-    codeStatusLabel->hide();
-    verifyCodeBtn->setEnabled(false);
-    showStep(3);
+        QString("registration||%1||%2||%3").arg(login, m_pendingPassHash, currentEmail));
 }
 
 void RegWidget::onBackToStep1Clicked()
@@ -528,10 +531,10 @@ void RegWidget::onBackToStep1Clicked()
     loginEdit->setReadOnly(false);
     passwordEdit->setReadOnly(false);
     confirmPasswordEdit->setReadOnly(false);
-    continueBtn->setText(QString::fromUtf8("Продолжить"));
+    continueBtn->setText(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"));
     validateStep1();
     emailNextBtn->setEnabled(false);
-    emailNextBtn->setText(QString::fromUtf8("Далее →"));
+    emailNextBtn->setText(QString::fromUtf8("\u0414\u0430\u043b\u0435\u0435 \u2192"));
     showStep(1);
 }
 
@@ -543,14 +546,15 @@ void RegWidget::onBackToStep2Clicked()
     emailHintLabel->hide();
     verifyCodeBtn->setEnabled(false);
     emailNextBtn->setEnabled(isEmailValid(emailEdit->text()));
-    emailNextBtn->setText(QString::fromUtf8("Далее →"));
+    emailNextBtn->setText(QString::fromUtf8("\u0414\u0430\u043b\u0435\u0435 \u2192"));
     m_verifyingCode = false;
+    m_waitingForRegCode = false;
     showStep(2);
 }
 
 void RegWidget::onCodeTextChanged(const QString &text)
 {
-    verifyCodeBtn->setEnabled(text.length() == 6 && !codeIsLocked);
+    verifyCodeBtn->setEnabled(text.length() == 6 && !codeIsLocked && !m_pendingCodeHash.isEmpty());
 }
 
 void RegWidget::onVerifyCodeClicked()
@@ -560,7 +564,7 @@ void RegWidget::onVerifyCodeClicked()
 
     const QString code = codeEdit->text().trimmed();
     if (code.length() != 6) {
-        codeErrorLabel->setText(QString::fromUtf8("Введите 6-значный код."));
+        codeErrorLabel->setText(QString::fromUtf8("\u0412\u0432\u0435\u0434\u0438\u0442\u0435 6-\u0437\u043d\u0430\u0447\u043d\u044b\u0439 \u043a\u043e\u0434."));
         codeErrorLabel->show();
         verifyCodeBtn->setEnabled(true);
         return;
@@ -571,7 +575,7 @@ void RegWidget::onVerifyCodeClicked()
 
     if (enteredHash == m_pendingCodeHash) {
         codeErrorLabel->hide();
-        codeStatusLabel->setText(QString::fromUtf8("Подтверждение..."));
+        codeStatusLabel->setText(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u0435..."));
         codeStatusLabel->setStyleSheet(infoLabelStyle());
         codeStatusLabel->show();
         m_verifyingCode = true;
@@ -585,7 +589,7 @@ void RegWidget::onVerifyCodeClicked()
     codeFailedAttempts++;
     if (codeFailedAttempts < 4) {
         codeStatusLabel->hide();
-        codeErrorLabel->setText(QString::fromUtf8("Неверный код. Осталось попыток: %1.").arg(4 - codeFailedAttempts));
+        codeErrorLabel->setText(QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043a\u043e\u0434. \u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u043f\u044b\u0442\u043e\u043a: %1.").arg(4 - codeFailedAttempts));
         codeErrorLabel->show();
     } else {
         codeLockLevel++;
@@ -593,8 +597,8 @@ void RegWidget::onVerifyCodeClicked()
         const int lockMin = (codeLockLevel == 1) ? 0 : (codeLockLevel == 2) ? 5 : 30;
         applyCodeLock(lockMin,
             lockMin == 0
-                ? QString::fromUtf8("Превышен лимит. Блокировка на 30 сек.")
-                : QString::fromUtf8("Превышен лимит. Блокировка на %1 мин.").arg(lockMin));
+                ? QString::fromUtf8("\u041f\u0440\u0435\u0432\u044b\u0448\u0435\u043d \u043b\u0438\u043c\u0438\u0442. \u0411\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0430 \u043d\u0430 30 \u0441\u0435\u043a.")
+                : QString::fromUtf8("\u041f\u0440\u0435\u0432\u044b\u0448\u0435\u043d \u043b\u0438\u043c\u0438\u0442. \u0411\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0430 \u043d\u0430 %1 \u043c\u0438\u043d.").arg(lockMin));
         verifyCodeBtn->setEnabled(false);
     }
 }
@@ -602,7 +606,7 @@ void RegWidget::onVerifyCodeClicked()
 void RegWidget::onCodeLockTimerFired()
 {
     codeIsLocked = false;
-    verifyCodeBtn->setEnabled(codeEdit->text().length() == 6);
+    verifyCodeBtn->setEnabled(codeEdit->text().length() == 6 && !m_pendingCodeHash.isEmpty());
     codeStatusLabel->hide();
     codeErrorLabel->hide();
 }
@@ -624,9 +628,10 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
     QString r = response.trimmed();
     if (r.isEmpty()) return;
 
+    // ── Ответ на check_login ─────────────────────────────────────────────────
     if (m_checkingLogin) {
         m_checkingLogin = false;
-        continueBtn->setText(QString::fromUtf8("Продолжить"));
+        continueBtn->setText(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"));
         if (r == "login_free") {
             loginEdit->setReadOnly(true);
             passwordEdit->setReadOnly(true);
@@ -637,20 +642,60 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             emailNextBtn->setEnabled(false);
             showStep(2);
         } else if (r == "login_taken") {
-            loginErrorLabel->setText(QString::fromUtf8("Логин уже занят"));
+            loginErrorLabel->setText(QString::fromUtf8("\u041b\u043e\u0433\u0438\u043d \u0443\u0436\u0435 \u0437\u0430\u043d\u044f\u0442"));
             loginErrorLabel->show();
             validateStep1();
         } else {
-            loginErrorLabel->setText(QString::fromUtf8("Ошибка соединения с сервером"));
+            loginErrorLabel->setText(QString::fromUtf8("\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u043e\u0435\u0434\u0438\u043d\u0435\u043d\u0438\u044f \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u043e\u043c"));
             loginErrorLabel->show();
             validateStep1();
         }
+        return;
     }
-    else if (m_verifyingCode) {
+
+    // ── Ответ на registration (ждём reg_code_sent или ошибку) ────────────────
+    if (m_waitingForRegCode) {
+        m_waitingForRegCode = false;
+        emailNextBtn->setText(QString::fromUtf8("\u0414\u0430\u043b\u0435\u0435 \u2192"));
+
+        if (r.startsWith("reg_code_sent")) {
+            const QStringList parts = r.split("||");
+            m_pendingCodeHash = (parts.size() >= 2) ? parts[1].trimmed() : QString();
+
+            // Только теперь переходим на шаг 3
+            emailHintLabel->setText(QString::fromUtf8("\u041a\u043e\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u043d\u0430: ") + currentEmail);
+            emailHintLabel->show();
+            codeEdit->clear();
+            codeErrorLabel->hide();
+            codeStatusLabel->hide();
+            verifyCodeBtn->setEnabled(false);
+            showStep(3);
+            return;
+        }
+
+        // Ошибки — остаёмся на шаге 2
+        emailNextBtn->setEnabled(isEmailValid(emailEdit->text()));
+
+        if (r == "email_taken" || r.contains("email_exists") || r.contains("email_taken")) {
+            emailErrorLabel->setText(QString::fromUtf8("\u041d\u0430 \u044d\u0442\u0443 \u043f\u043e\u0447\u0442\u0443 \u0443\u0436\u0435 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d \u0430\u043a\u043a\u0430\u0443\u043d\u0442"));
+            emailErrorLabel->show();
+        } else if (r.startsWith("reg-") && r.contains("user_exists")) {
+            showStep(1);
+            loginErrorLabel->setText(QString::fromUtf8("\u041b\u043e\u0433\u0438\u043d \u0443\u0436\u0435 \u0437\u0430\u043d\u044f\u0442."));
+            loginErrorLabel->show();
+        } else {
+            emailErrorLabel->setText(QString::fromUtf8("\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0430. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0441\u043d\u043e\u0432\u0430."));
+            emailErrorLabel->show();
+        }
+        return;
+    }
+
+    // ── Ответ на registration_confirm ────────────────────────────────────────
+    if (m_verifyingCode) {
         m_verifyingCode = false;
 
         if (r.startsWith("reg+")) {
-            codeStatusLabel->setText(QString::fromUtf8("Регистрация успешна!"));
+            codeStatusLabel->setText(QString::fromUtf8("\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0443\u0441\u043f\u0435\u0448\u043d\u0430!"));
             codeStatusLabel->setStyleSheet(successLabelStyle());
             codeStatusLabel->show();
             codeErrorLabel->hide();
@@ -659,32 +704,8 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             return;
         }
 
-        codeErrorLabel->setText(QString::fromUtf8("Ошибка. Попробуйте снова."));
+        codeErrorLabel->setText(QString::fromUtf8("\u041e\u0448\u0438\u0431\u043a\u0430. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0441\u043d\u043e\u0432\u0430."));
         codeErrorLabel->show();
         verifyCodeBtn->setEnabled(true);
-    }
-    else {
-        if (r.startsWith("reg_code_sent")) {
-            const QStringList parts = r.split("||");
-            m_pendingCodeHash = (parts.size() >= 2) ? parts[1].trimmed() : QString();
-            return;
-        }
-        if (r.startsWith("reg-")) {
-            if (r.contains("user_exists")) {
-                showStep(1);
-                loginErrorLabel->setText(QString::fromUtf8("Логин уже занят."));
-                loginErrorLabel->show();
-            } else if (r.contains("email_exists")) {
-                showStep(2);
-                emailErrorLabel->setText(QString::fromUtf8("Email уже зарегистрирован."));
-                emailErrorLabel->show();
-            }
-            return;
-        }
-        if (r.contains("email_exists")) {
-            emailErrorLabel->setText(QString::fromUtf8("На эту почту уже зарегистрирован аккаунт"));
-            emailErrorLabel->show();
-            showStep(2);
-        }
     }
 }

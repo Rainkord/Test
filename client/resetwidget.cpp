@@ -198,6 +198,9 @@ void ResetWidget::setupUI()
     emailEdit->setStyleSheet(inputStyle());
     s1->addWidget(emailEdit);
     connect(emailEdit, &QLineEdit::textChanged, this, &ResetWidget::onEmailTextChanged);
+    connect(emailEdit, &QLineEdit::returnPressed, this, [this]() {
+        if (continueBtn->isEnabled()) continueBtn->click();
+    });
 
     emailErrorLabel = new QLabel(step1Widget);
     emailErrorLabel->setStyleSheet(errorLabelStyle());
@@ -208,6 +211,8 @@ void ResetWidget::setupUI()
     continueBtn = new QPushButton(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"), step1Widget);
     continueBtn->setMinimumHeight(38);
     continueBtn->setEnabled(false);
+    continueBtn->setDefault(true);
+    continueBtn->setAutoDefault(true);
     continueBtn->setStyleSheet(primaryBtnStyle(false));
     connect(continueBtn, &QPushButton::clicked, this, &ResetWidget::onContinueClicked);
     s1->addWidget(continueBtn);
@@ -221,7 +226,7 @@ void ResetWidget::setupUI()
     s2->setSpacing(6);
 
     codeStatusLabel = new QLabel(step2Widget);
-    codeStatusLabel->setStyleSheet(successLabelStyle());
+    codeStatusLabel->setStyleSheet(hintLabelStyle());
     codeStatusLabel->setAlignment(Qt::AlignCenter);
     codeStatusLabel->hide();
     s2->addWidget(codeStatusLabel);
@@ -234,6 +239,9 @@ void ResetWidget::setupUI()
     codeEdit->setStyleSheet(inputStyle() + "QLineEdit { letter-spacing: 4px; }");
     s2->addWidget(codeEdit);
     connect(codeEdit, &QLineEdit::textChanged, this, &ResetWidget::onCodeTextChanged);
+    connect(codeEdit, &QLineEdit::returnPressed, this, [this]() {
+        if (verifyCodeBtn->isEnabled()) verifyCodeBtn->click();
+    });
 
     codeErrorLabel = new QLabel(step2Widget);
     codeErrorLabel->setStyleSheet(errorLabelStyle());
@@ -245,6 +253,8 @@ void ResetWidget::setupUI()
     verifyCodeBtn = new QPushButton(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c \u043a\u043e\u0434"), step2Widget);
     verifyCodeBtn->setMinimumHeight(38);
     verifyCodeBtn->setEnabled(false);
+    verifyCodeBtn->setDefault(true);
+    verifyCodeBtn->setAutoDefault(true);
     verifyCodeBtn->setStyleSheet(blueBtnStyle(false));
     connect(verifyCodeBtn, &QPushButton::clicked, this, &ResetWidget::onVerifyCodeClicked);
     s2->addWidget(verifyCodeBtn);
@@ -270,6 +280,9 @@ void ResetWidget::setupUI()
     newPasswordEdit->setStyleSheet(inputStyle());
     pass1Row->addWidget(newPasswordEdit);
     connect(newPasswordEdit, &QLineEdit::textChanged, this, &ResetWidget::onNewPasswordTextChanged);
+    connect(newPasswordEdit, &QLineEdit::returnPressed, this, [this]() {
+        if (saveBtn->isEnabled()) saveBtn->click();
+    });
 
     togglePassBtn1 = new QPushButton("\xF0\x9F\x91\x81", step3Widget);
     togglePassBtn1->setFixedSize(38, 38);
@@ -292,6 +305,9 @@ void ResetWidget::setupUI()
     confirmPasswordEdit->setStyleSheet(inputStyle());
     pass2Row->addWidget(confirmPasswordEdit);
     connect(confirmPasswordEdit, &QLineEdit::textChanged, this, &ResetWidget::onConfirmPasswordTextChanged);
+    connect(confirmPasswordEdit, &QLineEdit::returnPressed, this, [this]() {
+        if (saveBtn->isEnabled()) saveBtn->click();
+    });
 
     togglePassBtn2 = new QPushButton("\xF0\x9F\x91\x81", step3Widget);
     togglePassBtn2->setFixedSize(38, 38);
@@ -309,6 +325,8 @@ void ResetWidget::setupUI()
     saveBtn = new QPushButton(QString::fromUtf8("\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043f\u0430\u0440\u043e\u043b\u044c"), step3Widget);
     saveBtn->setMinimumHeight(38);
     saveBtn->setEnabled(false);
+    saveBtn->setDefault(true);
+    saveBtn->setAutoDefault(true);
     saveBtn->setStyleSheet(primaryBtnStyle(false));
     connect(saveBtn, &QPushButton::clicked, this, &ResetWidget::onSavePasswordClicked);
     s3->addWidget(saveBtn);
@@ -393,7 +411,6 @@ void ResetWidget::onEmailTextChanged(const QString &text)
 
 void ResetWidget::onContinueClicked()
 {
-    // Блокируем кнопку на время ожидания ответа сервера
     m_email = emailEdit->text().trimmed();
     m_pendingCodeHash.clear();
     m_waitingForCodeHash = true;
@@ -405,7 +422,6 @@ void ResetWidget::onContinueClicked()
     continueBtn->setStyleSheet(primaryBtnStyle(false));
     emailErrorLabel->hide();
 
-    // reset_password||email → сервер ответит: reset_code_sent||<sha256>
     ClientSingleton::instance().sendRequestAsync(
         QString("reset_password||%1").arg(m_email));
 }
@@ -429,14 +445,12 @@ void ResetWidget::onVerifyCodeClicked()
         return;
     }
 
-    // Локальное сравнение SHA-256 — сетевой запрос не нужен
     const QString enteredHash = QString::fromLatin1(
         QCryptographicHash::hash(code.toUtf8(), QCryptographicHash::Sha256).toHex());
 
     if (enteredHash == m_pendingCodeHash) {
         codeErrorLabel->hide();
         codeStatusLabel->hide();
-        // Код верен — переходим к шагу смены пароля
         newPasswordEdit->clear();
         confirmPasswordEdit->clear();
         newPasswordErrorLabel->hide();
@@ -447,7 +461,6 @@ void ResetWidget::onVerifyCodeClicked()
         return;
     }
 
-    // Неверный код
     failedAttempts++;
     verifyCodeBtn->setEnabled(false);
     verifyCodeBtn->setStyleSheet(blueBtnStyle(false));
@@ -517,8 +530,8 @@ void ResetWidget::onTogglePassword2()
 
 void ResetWidget::onSavePasswordClicked()
 {
-    // Хэшируем новый пароль и отправляем на сервер
-    // Формат: set_new_password||email||newPasswordHash
+    if (m_waitingForSave) return;  // защита от двойного нажатия
+
     const QString passHash = QString::fromLatin1(
         QCryptographicHash::hash(
             newPasswordEdit->text().toUtf8(),
@@ -539,7 +552,7 @@ void ResetWidget::onResetResponseReceived(const QString &response)
     const QString r = response.trimmed();
     if (r.isEmpty()) return;
 
-    // ── Ответ на reset_password: получаем хэш кода ──────────────────────────
+    // ── Ответ на reset_password ──────────────────────────────────────────────
     if (m_waitingForCodeHash) {
         m_waitingForCodeHash = false;
         continueBtn->setText(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"));
@@ -548,7 +561,6 @@ void ResetWidget::onResetResponseReceived(const QString &response)
             const QStringList parts = r.split("||");
             m_pendingCodeHash = (parts.size() >= 2) ? parts[1].trimmed() : QString();
 
-            // Показываем шаг ввода кода
             codeEdit->clear();
             codeErrorLabel->hide();
             codeStatusLabel->setText(
@@ -561,7 +573,6 @@ void ResetWidget::onResetResponseReceived(const QString &response)
             return;
         }
 
-        // email не найден или другая ошибка — остаёмся на шаге email
         continueBtn->setEnabled(true);
         continueBtn->setStyleSheet(primaryBtnStyle(true));
         if (r == "reset_error" || r.startsWith("reset_error")) {
@@ -577,7 +588,8 @@ void ResetWidget::onResetResponseReceived(const QString &response)
     if (m_waitingForSave) {
         m_waitingForSave = false;
 
-        if (r == "password_changed") {
+        // Сервер отвечает "set_password+" при успехе
+        if (r == "set_password+") {
             QTimer::singleShot(500, this, [this]() { emit resetSuccess(); });
             return;
         }
