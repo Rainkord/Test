@@ -138,12 +138,17 @@ void MainWindow::onShowAuth()
 
 void MainWindow::onBackToAuth()
 {
+    // Сбрасываем resetWidget на случай если возврат произошёл из середины
+    // процесса сброса пароля — это гарантирует что флаги m_waitingFor*
+    // не останутся висеть и не перехватят следующий ответ сервера
+    resetWidget->clearFields();
     authWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
 void MainWindow::onLogout()
 {
+    resetWidget->clearFields();
     authWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
@@ -170,6 +175,10 @@ void MainWindow::onRegistrationSuccess(const QString &login)
 
 void MainWindow::onShowReset()
 {
+    // Всегда сбрасываем виджет перед открытием — устраняет зависание
+    // при повторном открытии экрана восстановления пароля, когда
+    // m_waitingForCodeHash или m_waitingForSave остались true
+    resetWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_RESET);
 }
 

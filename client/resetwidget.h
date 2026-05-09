@@ -28,6 +28,9 @@ public:
     explicit ResetWidget(QWidget *parent = nullptr);
     ~ResetWidget();
 
+    /** @brief Сбрасывает все поля и флаги в начальное состояние. */
+    void clearFields();
+
 signals:
     /** @brief Испускается после успешного сброса пароля. */
     void resetSuccess();
@@ -87,7 +90,7 @@ private:
     bool    isLocked;
     QTimer *lockTimer;
     bool    m_waitingForCodeHash; ///< ожидаем ответ reset_code_sent от сервера
-    bool    m_waitingForSave;     ///< ожидаем ответ password_changed от сервера
+    bool    m_waitingForSave;     ///< ожидаем ответ set_password+ от сервера
 
     void setupUI();
     void showStep(Step step);

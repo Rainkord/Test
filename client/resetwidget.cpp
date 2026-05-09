@@ -134,6 +134,56 @@ ResetWidget::ResetWidget(QWidget *parent)
 
 ResetWidget::~ResetWidget() {}
 
+// ── clearFields ───────────────────────────────────────────────────────────────
+// Полный сброс состояния виджета. Вызывается из MainWindow перед каждым
+// открытием экрана сброса пароля и при любом возврате на экран авторизации.
+// Это предотвращает ситуацию, когда зависший флаг m_waitingForCodeHash
+// или m_waitingForSave заставляет onResetResponseReceived обрабатывать
+// следующий ответ сервера (например, от auth) как ответ на сброс пароля.
+void ResetWidget::clearFields()
+{
+    // Сброс флагов ожидания — ПЕРВЫМ ДЕЛОМ, до любых UI-изменений
+    m_waitingForCodeHash = false;
+    m_waitingForSave     = false;
+
+    // Остановить таймер блокировки если запущен
+    if (lockTimer->isActive())
+        lockTimer->stop();
+
+    // Сброс состояния блокировки
+    isLocked       = false;
+    failedAttempts = 0;
+    lockLevel      = 0;
+
+    // Сброс данных
+    m_email.clear();
+    m_pendingCodeHash.clear();
+
+    // Шаг 1: email
+    emailEdit->clear();
+    emailErrorLabel->hide();
+    continueBtn->setEnabled(false);
+    continueBtn->setText(QString::fromUtf8("Отправить код"));
+
+    // Шаг 2: OTP
+    codeEdit->clear();
+    codeEdit->setEnabled(true);
+    codeErrorLabel->hide();
+    codeStatusLabel->hide();
+    verifyCodeBtn->setEnabled(false);
+
+    // Шаг 3: новый пароль
+    newPasswordEdit->clear();
+    confirmPasswordEdit->clear();
+    newPasswordErrorLabel->hide();
+    confirmErrorLabel->hide();
+    saveBtn->setEnabled(false);
+    saveBtn->setText(QString::fromUtf8("Сохранить пароль"));
+
+    // Вернуться на шаг 1
+    showStep(StepEmail);
+}
+
 void ResetWidget::setupUI()
 {
     auto *outerV = new QVBoxLayout(this);
@@ -166,7 +216,7 @@ void ResetWidget::setupUI()
     mainL->addWidget(sep);
     mainL->addSpacing(4);
 
-    // ── Шаг 1: email ────────────────────────────────────────────────────────────
+    // ── Шаг 1: email ────────────────────────────────────────────────────────
     step1Widget = new QWidget(card);
     step1Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     auto *s1 = new QVBoxLayout(step1Widget);
@@ -251,7 +301,7 @@ void ResetWidget::setupUI()
 
     mainL->addWidget(step2Widget);
 
-    // ── Шаг 3: новый пароль ──────────────────────────────────────────────────
+    // ── Шаг 3: новый пароль ──────────────────────────────────────────────
     step3Widget = new QWidget(card);
     step3Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     auto *s3 = new QVBoxLayout(step3Widget);
@@ -501,6 +551,12 @@ void ResetWidget::onSavePasswordClicked()
 
 void ResetWidget::onBackClicked()
 {
+    // Сбрасываем флаги ожидания перед уходом — если сервер ещё не ответил,
+    // его ответ не должен быть обработан как ответ на сброс пароля
+    m_waitingForCodeHash = false;
+    m_waitingForSave     = false;
+    continueBtn->setEnabled(isEmailValid(emailEdit->text()));
+    continueBtn->setText(QString::fromUtf8("Отправить код"));
     emit backToAuth();
 }
 
@@ -540,7 +596,6 @@ void ResetWidget::onResetResponseReceived(const QString &response)
             isLocked = false;
             showStep(StepCode);
         } else if (r == "reset-") {
-            // FIX: сервер возвращает "reset-" когда email не найден
             emailErrorLabel->setText(QString::fromUtf8("Пользователь с таким email не найден"));
             emailErrorLabel->show();
         } else {
@@ -552,7 +607,6 @@ void ResetWidget::onResetResponseReceived(const QString &response)
 
     if (m_waitingForSave) {
         m_waitingForSave = false;
-        // FIX: сервер возвращает "set_password+", а не "password_changed"
         if (r == "set_password+") {
             emit resetSuccess();
         } else {
