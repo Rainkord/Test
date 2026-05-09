@@ -121,12 +121,6 @@ static QString errorLabelStyle()
            .arg(GH_RED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
-static QString successLabelStyle()
-{
-    return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
-           .arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
-}
-
 // ── Constructor ─────────────────────────────────────────────────────────────
 ResetWidget::ResetWidget(QWidget *parent)
     : QWidget(parent),
