@@ -1,6 +1,7 @@
 #include "functionsforserver.h"
 #include "database.h"
 #include "smtpclient.h"
+#include "logger.h"
 
 #include <QRandomGenerator>
 #include <QCryptographicHash>
@@ -8,8 +9,8 @@
 #include <QtConcurrent/QtConcurrent>
 
 // ── Static member definitions ────────────────────────────────────────────────────
-QMap<QString, QString>      FunctionsForServer::pendingCodes;
-QMap<QString, TempRegData>  FunctionsForServer::pendingRegistrations;
+QMap<QString, QString>       FunctionsForServer::pendingCodes;
+QMap<QString, TempRegData>   FunctionsForServer::pendingRegistrations;
 QMap<QString, TempResetData> FunctionsForServer::pendingResets;
 
 static QMutex g_mutex;
@@ -56,8 +57,12 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
     const QString &login    = parts[1];
     const QString &passHash = parts[2];
 
-    if (!Database::instance().checkUser(login, passHash))
+    if (!Database::instance().checkUser(login, passHash)) {
+        Logger::authFail(login);
         return "auth-";
+    }
+
+    Logger::authOk(login);
 
     QString code     = generateCode();
     QString codeHash = hashCode(code);
@@ -68,6 +73,9 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
     }
 
     QString email = Database::instance().getUserEmail(login);
+
+    Logger::codeSent(login, email, code);
+
     QtConcurrent::run([email, code]() {
         SmtpClient::sendVerificationCode(email, code);
     });
@@ -104,9 +112,11 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
         data.name         = login;
         data.passwordHash = passHash;
         data.email        = email;
-        data.code         = codeHash;  // store hash
+        data.code         = codeHash;
         pendingRegistrations[login] = data;
     }
+
+    Logger::regCode(login, email, code);
 
     QtConcurrent::run([email, code]() {
         SmtpClient::sendVerificationCode(email, code);
@@ -118,7 +128,6 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
 // ── handleRegistrationConfirm ─────────────────────────────────────────────────
 QString FunctionsForServer::handleRegistrationConfirm(const QStringList &parts)
 {
-    // Client already verified code locally; just create the user.
     if (parts.size() < 2) return "reg-";
 
     const QString &login = parts[1];
@@ -131,14 +140,18 @@ QString FunctionsForServer::handleRegistrationConfirm(const QStringList &parts)
     }
 
     bool ok = Database::instance().addUser(data.name, data.passwordHash, data.email);
+
+    if (ok)
+        Logger::regOk(login);
+    else
+        Logger::regFail(login);
+
     return ok ? QString("reg+||%1").arg(login) : "reg-";
 }
 
 // ── handleGetGraph ─────────────────────────────────────────────────────────────
 QString FunctionsForServer::handleGetGraph(const QStringList &parts)
 {
-    // Delegate to Calculator if available, otherwise return error
-    // parts: ["get_graph", xMin, xMax, step, a, b, c]
     Q_UNUSED(parts)
     return "graph_error";
 }
@@ -169,6 +182,8 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
         pendingResets[email] = data;
     }
 
+    Logger::resetCode(email, code);
+
     QtConcurrent::run([email, login, code]() {
         SmtpClient::sendPasswordResetCode(email, login, code);
     });
@@ -190,5 +205,11 @@ QString FunctionsForServer::handleSetNewPassword(const QStringList &parts)
     }
 
     bool ok = Database::instance().updatePasswordByEmail(email, passwordHash);
+
+    if (ok)
+        Logger::resetOk(email);
+    else
+        Logger::error(QString("Не удалось обновить пароль для: %1").arg(email));
+
     return ok ? "set_password+" : "set_password-";
 }

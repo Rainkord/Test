@@ -1,7 +1,6 @@
 #include "mytcpserver.h"
 #include "functionsforserver.h"
-
-#include <QDebug>
+#include "logger.h"
 
 #define SERVER_PORT 33333
 
@@ -14,10 +13,10 @@ MyTcpServer::MyTcpServer(QObject *parent)
             this, &MyTcpServer::slotNewConnection);
 
     if (!m_pServer->listen(QHostAddress::Any, SERVER_PORT)) {
-        qDebug() << "[Server] Failed to start:" << m_pServer->errorString();
+        Logger::serverFailed(m_pServer->errorString());
     } else {
         m_serverStatus = true;
-        qDebug() << "[Server] Listening on port" << SERVER_PORT;
+        Logger::serverStarted(SERVER_PORT);
     }
 }
 
@@ -43,10 +42,11 @@ void MyTcpServer::slotNewConnection()
 
         m_clients[socket->socketDescriptor()] = socket;
 
-        qDebug() << "[Server] New connection from"
-                 << socket->peerAddress().toString()
-                 << "port" << socket->peerPort()
-                 << "descriptor" << socket->socketDescriptor();
+        Logger::clientConnected(
+            socket->peerAddress().toString(),
+            socket->peerPort(),
+            socket->socketDescriptor()
+        );
     }
 }
 
@@ -59,12 +59,12 @@ void MyTcpServer::slotServerRead()
         QString message = QString::fromUtf8(socket->readLine()).trimmed();
         if (message.isEmpty()) continue;
 
-        qDebug() << "[Server] Received from"
-                 << socket->peerAddress().toString()
-                 << ":" << message;
+        Logger::request(socket->peerAddress().toString(), message);
 
         QString response = FunctionsForServer::processMessage(message);
-        qDebug() << "[Server] Sending response:" << response;
+
+        Logger::response(response);
+        Logger::divider();
 
         QByteArray data = (response + "\n").toUtf8();
         socket->write(data);
@@ -77,8 +77,8 @@ void MyTcpServer::slotClientDisconnected()
     QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
     if (!socket) return;
 
-    qDebug() << "[Server] Client disconnected:"
-             << socket->peerAddress().toString();
+    Logger::clientDisconnected(socket->peerAddress().toString());
+    Logger::divider();
 
     m_clients.remove(socket->socketDescriptor());
     socket->deleteLater();
