@@ -157,9 +157,9 @@ void RegWidget::clearFields()
     confirmPasswordEdit->setReadOnly(false);
 
     continueBtn->setEnabled(false);
-    continueBtn->setText(QString::fromUtf8("Продолжить"));
+    continueBtn->setText(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"));
     emailNextBtn->setEnabled(false);
-    emailNextBtn->setText(QString::fromUtf8("Далее \u2192"));
+    emailNextBtn->setText(QString::fromUtf8("\u0414\u0430\u043b\u0435\u0435 \u2192"));
 
     codeFailedAttempts = 0;
     codeLockLevel      = 0;
@@ -345,7 +345,7 @@ void RegWidget::setupUI()
     codeEdit->setMaxLength(6);
     codeEdit->setMinimumHeight(38);
     codeEdit->setAlignment(Qt::AlignCenter);
-    codeEdit->setStyleSheet(inputStyle() + "QLineEdit { letter-spacing: 4px; }");
+    codeEdit->setStyleSheet(inputStyle());
     s3->addWidget(codeEdit);
     connect(codeEdit, &QLineEdit::textChanged, this, &RegWidget::onCodeTextChanged);
 
@@ -515,7 +515,6 @@ void RegWidget::onEmailNextClicked()
     QByteArray hash  = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
     m_pendingPassHash = QString::fromLatin1(hash.toHex());
 
-    // Блокируем кнопку и ждём ответа сервера — НЕ переходим на шаг 3 сразу
     emailNextBtn->setEnabled(false);
     emailNextBtn->setText(QString::fromUtf8("\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430..."));
     emailErrorLabel->hide();
@@ -628,7 +627,6 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
     QString r = response.trimmed();
     if (r.isEmpty()) return;
 
-    // ── Ответ на check_login ─────────────────────────────────────────────────
     if (m_checkingLogin) {
         m_checkingLogin = false;
         continueBtn->setText(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"));
@@ -653,7 +651,6 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         return;
     }
 
-    // ── Ответ на registration (ждём reg_code_sent или ошибку) ────────────────
     if (m_waitingForRegCode) {
         m_waitingForRegCode = false;
         emailNextBtn->setText(QString::fromUtf8("\u0414\u0430\u043b\u0435\u0435 \u2192"));
@@ -662,7 +659,6 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             const QStringList parts = r.split("||");
             m_pendingCodeHash = (parts.size() >= 2) ? parts[1].trimmed() : QString();
 
-            // Только теперь переходим на шаг 3
             emailHintLabel->setText(QString::fromUtf8("\u041a\u043e\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u043d\u0430: ") + currentEmail);
             emailHintLabel->show();
             codeEdit->clear();
@@ -673,7 +669,6 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             return;
         }
 
-        // Ошибки — остаёмся на шаге 2
         emailNextBtn->setEnabled(isEmailValid(emailEdit->text()));
 
         if (r == "email_taken" || r.contains("email_exists") || r.contains("email_taken")) {
@@ -690,7 +685,6 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
         return;
     }
 
-    // ── Ответ на registration_confirm ────────────────────────────────────────
     if (m_verifyingCode) {
         m_verifyingCode = false;
 

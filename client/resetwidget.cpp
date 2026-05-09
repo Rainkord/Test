@@ -236,7 +236,7 @@ void ResetWidget::setupUI()
     codeEdit->setMaxLength(6);
     codeEdit->setMinimumHeight(38);
     codeEdit->setAlignment(Qt::AlignCenter);
-    codeEdit->setStyleSheet(inputStyle() + "QLineEdit { letter-spacing: 4px; }");
+    codeEdit->setStyleSheet(inputStyle());
     s2->addWidget(codeEdit);
     connect(codeEdit, &QLineEdit::textChanged, this, &ResetWidget::onCodeTextChanged);
     connect(codeEdit, &QLineEdit::returnPressed, this, [this]() {
@@ -530,7 +530,7 @@ void ResetWidget::onTogglePassword2()
 
 void ResetWidget::onSavePasswordClicked()
 {
-    if (m_waitingForSave) return;  // защита от двойного нажатия
+    if (m_waitingForSave) return;
 
     const QString passHash = QString::fromLatin1(
         QCryptographicHash::hash(
@@ -552,7 +552,6 @@ void ResetWidget::onResetResponseReceived(const QString &response)
     const QString r = response.trimmed();
     if (r.isEmpty()) return;
 
-    // ── Ответ на reset_password ──────────────────────────────────────────────
     if (m_waitingForCodeHash) {
         m_waitingForCodeHash = false;
         continueBtn->setText(QString::fromUtf8("\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c"));
@@ -584,17 +583,14 @@ void ResetWidget::onResetResponseReceived(const QString &response)
         return;
     }
 
-    // ── Ответ на set_new_password ────────────────────────────────────────────
     if (m_waitingForSave) {
         m_waitingForSave = false;
 
-        // Сервер отвечает "set_password+" при успехе
         if (r == "set_password+") {
             QTimer::singleShot(500, this, [this]() { emit resetSuccess(); });
             return;
         }
 
-        // Ошибка сохранения
         saveBtn->setEnabled(true);
         saveBtn->setText(QString::fromUtf8("\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043f\u0430\u0440\u043e\u043b\u044c"));
         saveBtn->setStyleSheet(primaryBtnStyle(true));
