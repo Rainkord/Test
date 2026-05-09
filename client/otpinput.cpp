@@ -11,16 +11,13 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFocusEvent>
-#include <QGraphicsDropShadowEffect>
 
 // ── Palette (GitHub dark) ─────────────────────────────────────────────────
 #define GH_BG         "#0d1117"
 #define GH_CARD       "#161b22"
 #define GH_BORDER     "#30363d"
-#define GH_BORDER_LIT "#484f58"
 #define GH_TEXT       "#e6edf3"
 #define GH_BLUE       "#388bfd"
-#define GH_BLUE_GLOW  "rgba(56,139,253,0.18)"
 #define GH_GREEN      "#2ea043"
 #define GH_GREEN_DIM  "#238636"
 #define GH_GREEN_BG   "rgba(46,160,67,0.10)"
@@ -34,26 +31,23 @@
 // state: 0=empty, 1=focused, 2=filled, 3=error, 4=disabled
 static QString boxStyle(int state)
 {
-    // общая база
-    const char *bg      = GH_CARD;     // чуть светлее фона — бокс виден
-    const char *color   = GH_TEXT;
-    const char *border  = GH_BORDER;
+    const char *bg          = GH_CARD;
+    const char *color       = GH_TEXT;
+    const char *border      = GH_BORDER;
     const char *focusBorder = GH_BLUE;
-    bool        hasFocus = false;
 
     switch (state) {
-    case 1: // focused + пустой
+    case 1: // focused, пустой
         border = GH_BLUE;
-        hasFocus = true;
         break;
     case 2: // filled
-        bg     = GH_GREEN_BG;   // едва заметный зелёный фон
-        border = GH_GREEN_DIM;
+        bg          = GH_GREEN_BG;
+        border      = GH_GREEN_DIM;
         focusBorder = GH_GREEN;
         break;
     case 3: // error
-        bg     = GH_RED_BG;
-        border = GH_RED;
+        bg          = GH_RED_BG;
+        border      = GH_RED;
         focusBorder = GH_RED;
         break;
     case 4: // disabled
@@ -62,10 +56,8 @@ static QString boxStyle(int state)
         border = GH_DISABLED;
         break;
     default: // 0 — empty, no focus
-        border = GH_BORDER;
         break;
     }
-    (void)hasFocus;
 
     return QString(
         "QLineEdit {"
@@ -102,7 +94,7 @@ void OtpInput::setupUI()
         m_boxes[i]->setAlignment(Qt::AlignCenter);
         m_boxes[i]->setStyleSheet(boxStyle(0));
         m_boxes[i]->installEventFilter(this);
-        m_boxes[i]->setContextMenuPolicy(Qt::NoContextMenu); // отключаем стандартное меню
+        m_boxes[i]->setContextMenuPolicy(Qt::NoContextMenu);
 
         connect(m_boxes[i], &QLineEdit::textChanged, this, [this, i](const QString &t) {
             if (!t.isEmpty() && !t[0].isDigit()) {
@@ -115,31 +107,17 @@ void OtpInput::setupUI()
             onDigitChanged(i, t);
         });
 
-        // обновляем стиль при смене фокуса
-        connect(m_boxes[i], &QLineEdit::selectionChanged, this, [this, i]() {
-            updateBoxStyle(i);
-        });
-
         row->addWidget(m_boxes[i]);
     }
-
-    // отслеживаем фокус через eventFilter уже установленный выше
 }
 
 // ── style helpers ─────────────────────────────────────────────────────────
 void OtpInput::updateBoxStyle(int i)
 {
-    if (!m_boxes[i]->isEnabled()) {
-        m_boxes[i]->setStyleSheet(boxStyle(4));
-        return;
-    }
-    if (m_error) {
-        m_boxes[i]->setStyleSheet(boxStyle(3));
-        return;
-    }
+    if (!m_boxes[i]->isEnabled()) { m_boxes[i]->setStyleSheet(boxStyle(4)); return; }
+    if (m_error)                  { m_boxes[i]->setStyleSheet(boxStyle(3)); return; }
     bool filled  = !m_boxes[i]->text().isEmpty();
-    bool focused = m_boxes[i]->hasFocus();
-
+    bool focused =  m_boxes[i]->hasFocus();
     if (filled)  { m_boxes[i]->setStyleSheet(boxStyle(2)); return; }
     if (focused) { m_boxes[i]->setStyleSheet(boxStyle(1)); return; }
     m_boxes[i]->setStyleSheet(boxStyle(0));
@@ -147,8 +125,7 @@ void OtpInput::updateBoxStyle(int i)
 
 void OtpInput::updateAllStyles()
 {
-    for (int i = 0; i < N; ++i)
-        updateBoxStyle(i);
+    for (int i = 0; i < N; ++i) updateBoxStyle(i);
 }
 
 void OtpInput::setError(bool error)
@@ -161,8 +138,7 @@ void OtpInput::setError(bool error)
 QString OtpInput::code() const
 {
     QString s;
-    for (int i = 0; i < N; ++i)
-        s += m_boxes[i]->text();
+    for (int i = 0; i < N; ++i) s += m_boxes[i]->text();
     return s;
 }
 
@@ -175,8 +151,7 @@ void OtpInput::clear()
         m_boxes[i]->blockSignals(false);
         updateBoxStyle(i);
     }
-    if (isEnabled())
-        m_boxes[0]->setFocus();
+    if (isEnabled()) m_boxes[0]->setFocus();
 }
 
 bool OtpInput::isComplete() const
@@ -189,24 +164,20 @@ bool OtpInput::isComplete() const
 void OtpInput::setEnabled(bool enabled)
 {
     QWidget::setEnabled(enabled);
-    for (int i = 0; i < N; ++i)
-        m_boxes[i]->setEnabled(enabled);
+    for (int i = 0; i < N; ++i) m_boxes[i]->setEnabled(enabled);
     updateAllStyles();
-    if (enabled)
-        m_boxes[0]->setFocus();
+    if (enabled) m_boxes[0]->setFocus();
 }
 
 // ── digit logic ───────────────────────────────────────────────────────────
 void OtpInput::onDigitChanged(int index, const QString &text)
 {
     updateBoxStyle(index);
-
     if (text.length() == 1 && index < N - 1) {
         m_boxes[index + 1]->setFocus();
         m_boxes[index + 1]->selectAll();
         updateBoxStyle(index + 1);
     }
-
     if (isComplete()) {
         m_error = false;
         updateAllStyles();
@@ -226,18 +197,17 @@ void OtpInput::fillFromClipboard(const QString &text)
     for (int i = 0; i < N; ++i) {
         m_boxes[i]->blockSignals(true);
         if (i < digits.length())
-            m_boxes[i]->setText(digits[i]);
+            m_boxes[i]->setText(QString(digits[i]));  // QChar → QString явно
         else
             m_boxes[i]->clear();
         m_boxes[i]->blockSignals(false);
         updateBoxStyle(i);
     }
 
-    int focus = qMin((int)digits.length(), N - 1);
+    int focus = qMin(digits.length(), N - 1);
     m_boxes[focus]->setFocus();
 
-    if (isComplete())
-        emit completed(code());
+    if (isComplete()) emit completed(code());
 }
 
 // ── event filter ──────────────────────────────────────────────────────────
@@ -248,22 +218,16 @@ bool OtpInput::eventFilter(QObject *obj, QEvent *ev)
         if (m_boxes[i] == obj) { idx = i; break; }
     if (idx < 0) return QWidget::eventFilter(obj, ev);
 
-    // Обновляем стиль при входе/выходе фокуса
     if (ev->type() == QEvent::FocusIn || ev->type() == QEvent::FocusOut) {
         updateBoxStyle(idx);
-        return false; // не блокируем
+        return false;
     }
 
     if (ev->type() == QEvent::KeyPress) {
         auto *ke = static_cast<QKeyEvent *>(ev);
 
-        // ESC
-        if (ke->key() == Qt::Key_Escape) {
-            emit escPressed();
-            return true;
-        }
+        if (ke->key() == Qt::Key_Escape) { emit escPressed(); return true; }
 
-        // Backspace
         if (ke->key() == Qt::Key_Backspace) {
             if (m_boxes[idx]->text().isEmpty()) {
                 if (idx > 0) {
@@ -282,25 +246,16 @@ bool OtpInput::eventFilter(QObject *obj, QEvent *ev)
             return true;
         }
 
-        // Ctrl+V / Shift+Insert
-        if ((ke->key() == Qt::Key_V && ke->modifiers() & Qt::ControlModifier) ||
-            (ke->key() == Qt::Key_Insert && ke->modifiers() & Qt::ShiftModifier))
+        if ((ke->key() == Qt::Key_V        && ke->modifiers() & Qt::ControlModifier) ||
+            (ke->key() == Qt::Key_Insert   && ke->modifiers() & Qt::ShiftModifier))
         {
             fillFromClipboard(QApplication::clipboard()->text());
             return true;
         }
 
-        // Стрелки
-        if (ke->key() == Qt::Key_Left && idx > 0) {
-            m_boxes[idx - 1]->setFocus();
-            return true;
-        }
-        if (ke->key() == Qt::Key_Right && idx < N - 1) {
-            m_boxes[idx + 1]->setFocus();
-            return true;
-        }
+        if (ke->key() == Qt::Key_Left  && idx > 0)     { m_boxes[idx-1]->setFocus(); return true; }
+        if (ke->key() == Qt::Key_Right && idx < N - 1) { m_boxes[idx+1]->setFocus(); return true; }
 
-        // Ввод цифры в уже заполненный бокс — заменяем и двигаемся вперёд
         if (ke->text().length() == 1 && ke->text()[0].isDigit()) {
             m_boxes[idx]->blockSignals(true);
             m_boxes[idx]->setText(ke->text());
@@ -320,10 +275,9 @@ bool OtpInput::eventFilter(QObject *obj, QEvent *ev)
         }
     }
 
-    // Перехватываем правую кнопку — показываем мини-меню только с "Вставить"
     if (ev->type() == QEvent::ContextMenu) {
         fillFromClipboard(QApplication::clipboard()->text());
-        return true;  // вставка сразу, без меню
+        return true;
     }
 
     return QWidget::eventFilter(obj, ev);
