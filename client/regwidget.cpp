@@ -1,4 +1,5 @@
 #include "regwidget.h"
+#include "otpinput.h"
 #include "clientsingleton.h"
 
 #include <QVBoxLayout>
@@ -142,7 +143,7 @@ void RegWidget::clearFields()
     passwordEdit->clear();
     confirmPasswordEdit->clear();
     emailEdit->clear();
-    codeEdit->clear();
+    otpCode->clear();
 
     loginErrorLabel->hide();
     passwordErrorLabel->hide();
@@ -188,7 +189,7 @@ void RegWidget::setupUI()
     outerH->addStretch(1);
 
     QWidget *card = new QWidget(this);
-    card->setFixedWidth(380);
+    card->setFixedWidth(420);
     card->setStyleSheet(QString(
         "QWidget { background-color: %1; border: 1px solid %2; border-radius: 10px; }"
     ).arg(GH_CARD).arg(GH_BORDER));
@@ -326,12 +327,12 @@ void RegWidget::setupUI()
     s2->addLayout(s2Btns);
     mainLayout->addWidget(step2Widget);
 
-    // ── Шаг 3: ввод кода ─────────────────────────────────────────────────────
+    // ── Шаг 3: OTP-ввод кода ─────────────────────────────────────────────────
     step3Widget = new QWidget(card);
     step3Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s3 = new QVBoxLayout(step3Widget);
     s3->setContentsMargins(0, 0, 0, 0);
-    s3->setSpacing(6);
+    s3->setSpacing(8);
 
     emailHintLabel = new QLabel(step3Widget);
     emailHintLabel->setStyleSheet(infoLabelStyle());
@@ -340,14 +341,10 @@ void RegWidget::setupUI()
     emailHintLabel->hide();
     s3->addWidget(emailHintLabel);
 
-    codeEdit = new QLineEdit(step3Widget);
-    codeEdit->setPlaceholderText(QString::fromUtf8("\u041a\u043e\u0434 \u0438\u0437 \u043f\u0438\u0441\u044c\u043c\u0430 (6 \u0446\u0438\u0444\u0440)"));
-    codeEdit->setMaxLength(6);
-    codeEdit->setMinimumHeight(38);
-    codeEdit->setAlignment(Qt::AlignCenter);
-    codeEdit->setStyleSheet(inputStyle());
-    s3->addWidget(codeEdit);
-    connect(codeEdit, &QLineEdit::textChanged, this, &RegWidget::onCodeTextChanged);
+    otpCode = new OtpInput(step3Widget);
+    s3->addWidget(otpCode, 0, Qt::AlignCenter);
+    connect(otpCode, &OtpInput::completed,  this, &RegWidget::onCodeCompleted);
+    connect(otpCode, &OtpInput::escPressed, this, &RegWidget::onBackToStep2Clicked);
 
     codeStatusLabel = new QLabel(step3Widget);
     codeStatusLabel->setStyleSheet(successLabelStyle());
@@ -378,7 +375,6 @@ void RegWidget::setupUI()
     verifyCodeBtn->setAutoDefault(true);
     verifyCodeBtn->setStyleSheet(primaryBtnStyle());
     connect(verifyCodeBtn, &QPushButton::clicked, this, &RegWidget::onVerifyCodeClicked);
-    connect(codeEdit, &QLineEdit::returnPressed, verifyCodeBtn, &QPushButton::click);
     s3Btns->addWidget(verifyCodeBtn);
 
     s3->addLayout(s3Btns);
@@ -424,6 +420,12 @@ void RegWidget::validateStep1()
            && !confirmPasswordEdit->text().isEmpty()
            && confirmPasswordEdit->text() == passwordEdit->text();
     continueBtn->setEnabled(ok);
+}
+
+void RegWidget::updateVerifyCodeBtn()
+{
+    verifyCodeBtn->setEnabled(
+        otpCode->isComplete() && !codeIsLocked && !m_pendingCodeHash.isEmpty());
 }
 
 void RegWidget::onLoginTextChanged(const QString &text)
@@ -539,7 +541,7 @@ void RegWidget::onBackToStep1Clicked()
 
 void RegWidget::onBackToStep2Clicked()
 {
-    codeEdit->clear();
+    otpCode->clear();
     codeErrorLabel->hide();
     codeStatusLabel->hide();
     emailHintLabel->hide();
@@ -551,9 +553,9 @@ void RegWidget::onBackToStep2Clicked()
     showStep(2);
 }
 
-void RegWidget::onCodeTextChanged(const QString &text)
+void RegWidget::onCodeCompleted(const QString &)
 {
-    verifyCodeBtn->setEnabled(text.length() == 6 && !codeIsLocked && !m_pendingCodeHash.isEmpty());
+    updateVerifyCodeBtn();
 }
 
 void RegWidget::onVerifyCodeClicked()
@@ -561,7 +563,7 @@ void RegWidget::onVerifyCodeClicked()
     if (codeIsLocked || !verifyCodeBtn->isEnabled()) return;
     verifyCodeBtn->setEnabled(false);
 
-    const QString code = codeEdit->text().trimmed();
+    const QString code = otpCode->code();
     if (code.length() != 6) {
         codeErrorLabel->setText(QString::fromUtf8("\u0412\u0432\u0435\u0434\u0438\u0442\u0435 6-\u0437\u043d\u0430\u0447\u043d\u044b\u0439 \u043a\u043e\u0434."));
         codeErrorLabel->show();
@@ -588,8 +590,11 @@ void RegWidget::onVerifyCodeClicked()
     codeFailedAttempts++;
     if (codeFailedAttempts < 4) {
         codeStatusLabel->hide();
-        codeErrorLabel->setText(QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043a\u043e\u0434. \u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u043f\u044b\u0442\u043e\u043a: %1.").arg(4 - codeFailedAttempts));
+        codeErrorLabel->setText(
+            QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043a\u043e\u0434. \u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u043f\u044b\u0442\u043e\u043a: %1.")
+            .arg(4 - codeFailedAttempts));
         codeErrorLabel->show();
+        otpCode->clear();
     } else {
         codeLockLevel++;
         codeFailedAttempts = 0;
@@ -605,7 +610,9 @@ void RegWidget::onVerifyCodeClicked()
 void RegWidget::onCodeLockTimerFired()
 {
     codeIsLocked = false;
-    verifyCodeBtn->setEnabled(codeEdit->text().length() == 6 && !m_pendingCodeHash.isEmpty());
+    otpCode->setEnabled(true);
+    otpCode->clear();
+    updateVerifyCodeBtn();
     codeStatusLabel->hide();
     codeErrorLabel->hide();
 }
@@ -615,6 +622,7 @@ void RegWidget::onShowAuthClicked() { emit showAuth(); }
 void RegWidget::applyCodeLock(int minutes, const QString &message)
 {
     codeIsLocked = true;
+    otpCode->setEnabled(false);
     verifyCodeBtn->setEnabled(false);
     codeErrorLabel->setText(message);
     codeErrorLabel->show();
@@ -659,9 +667,11 @@ void RegWidget::onRegistrationResponseReceived(const QString &response)
             const QStringList parts = r.split("||");
             m_pendingCodeHash = (parts.size() >= 2) ? parts[1].trimmed() : QString();
 
-            emailHintLabel->setText(QString::fromUtf8("\u041a\u043e\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u043d\u0430: ") + currentEmail);
+            emailHintLabel->setText(
+                QString::fromUtf8("\u041a\u043e\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u043d\u0430: ") + currentEmail);
             emailHintLabel->show();
-            codeEdit->clear();
+            otpCode->clear();
+            otpCode->setEnabled(true);
             codeErrorLabel->hide();
             codeStatusLabel->hide();
             verifyCodeBtn->setEnabled(false);
