@@ -120,13 +120,12 @@ AuthWidget::~AuthWidget() {}
 // ── setupUI ────────────────────────────────────────────────────────────────────
 void AuthWidget::setupUI()
 {
-    // Основной layout — всё центрируется по вертикали как в reg/reset
     auto *outerLayout = new QVBoxLayout(this);
     outerLayout->setContentsMargins(0, 0, 0, 0);
     outerLayout->setSpacing(0);
     outerLayout->addStretch(1);
 
-    // ── Карточка ───────────────────────────────────────────────────────────
+    // ── Карточка
     QWidget *card = new QWidget(this);
     card->setFixedWidth(400);
     card->setStyleSheet(QString(
@@ -151,27 +150,21 @@ void AuthWidget::setupUI()
     sep->setStyleSheet(QString("QFrame { background: %1; border: none; max-height: 1px; }").arg(GH_BORDER));
     cardLayout->addWidget(sep);
 
-    // Логин
-    auto *loginLabel = new QLabel(QString::fromUtf8("Логин"), card);
-    loginLabel->setStyleSheet(s_hintLabel());
-    cardLayout->addWidget(loginLabel);
-
+    // Поле логина
     loginEdit = new QLineEdit(card);
     loginEdit->setPlaceholderText(QString::fromUtf8("Введите логин"));
     loginEdit->setStyleSheet(s_input());
+    connect(loginEdit, &QLineEdit::returnPressed, this, &AuthWidget::onLoginClicked);
     cardLayout->addWidget(loginEdit);
 
-    // Пароль
-    auto *passLabel = new QLabel(QString::fromUtf8("Пароль"), card);
-    passLabel->setStyleSheet(s_hintLabel());
-    cardLayout->addWidget(passLabel);
-
+    // Поле пароля
     auto *passRow = new QHBoxLayout;
     passRow->setSpacing(6);
     passwordEdit = new QLineEdit(card);
     passwordEdit->setPlaceholderText(QString::fromUtf8("Введите пароль"));
     passwordEdit->setEchoMode(QLineEdit::Password);
     passwordEdit->setStyleSheet(s_input());
+    connect(passwordEdit, &QLineEdit::returnPressed, this, &AuthWidget::onLoginClicked);
 
     togglePasswordBtn = new QPushButton(QString::fromUtf8("👁"), card);
     togglePasswordBtn->setFixedSize(34, 34);
@@ -199,6 +192,8 @@ void AuthWidget::setupUI()
 
     // Кнопка войти
     loginBtn = new QPushButton(QString::fromUtf8("Войти"), card);
+    loginBtn->setDefault(true);
+    loginBtn->setAutoDefault(true);
     loginBtn->setStyleSheet(s_primaryBtn());
     connect(loginBtn, &QPushButton::clicked, this, &AuthWidget::onLoginClicked);
     cardLayout->addWidget(loginBtn);
@@ -220,7 +215,6 @@ void AuthWidget::setupUI()
     bottomRow->addWidget(forgotBtn);
     cardLayout->addLayout(bottomRow);
 
-    // Центрируем карточку по горизонтали
     auto *hCenter = new QHBoxLayout;
     hCenter->addStretch(1);
     hCenter->addWidget(card);
@@ -272,8 +266,8 @@ void AuthWidget::onLoginClicked()
     m_pendingLogin   = login;
     m_waitingForAuth = true;
     loginBtn->setEnabled(false);
-    statusLabel->setText(QString::fromUtf8("Проверка..."));
     statusLabel->setStyleSheet(s_hintLabel());
+    statusLabel->setText(QString::fromUtf8("Проверка..."));
     statusLabel->show();
 
     ClientSingleton::instance().sendRequestAsync(
