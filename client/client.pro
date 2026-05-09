@@ -16,7 +16,8 @@ SOURCES += \
     taskdialog.cpp \
     schemadialog.cpp \
     resetwidget.cpp \
-    mainappwidget.cpp
+    mainappwidget.cpp \
+    otpinput.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -28,7 +29,8 @@ HEADERS += \
     taskdialog.h \
     schemadialog.h \
     resetwidget.h \
-    mainappwidget.h
+    mainappwidget.h \
+    otpinput.h
 
 RESOURCES += resources.qrc
 
