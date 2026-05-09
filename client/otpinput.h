@@ -1,14 +1,15 @@
 /**
  * @file otpinput.h
- * @brief Виджет ввода одноразового кода: 6 отдельных боксов, как в Supercell.
+ * @brief Виджет OTP-ввода — 6 боксов в стиле Supercell.
  *
- * Особенности:
- * - Автоматический переход к следующему боксу при вводе цифры.
- * - Backspace возвращает фокус на предыдущий бокс.
- * - Вставка из буфера обмена (Ctrl+V / ПКМ→Вставить) заполняет все боксы.
- * - Сигнал completed(QString) испускается, когда введены все 6 цифр.
- * - setEnabled(bool) блокирует/разблокирует весь виджет.
+ * - Авто-переход к следующему боксу при вводе цифры.
+ * - При вводе в заполненный бокс — замена символа и переход дальше.
+ * - Backspace: очищает текущий; если пустой — возвращается назад.
+ * - Ctrl+V / Shift+Insert / ПКМ→Вставить — заполняет все боксы из буфера.
+ * - Стрелки ← / → перемещают фокус.
  * - ESC → сигнал escPressed().
+ * - Визуальные состояния: пустой / в фокусе / заполнен / ошибка / заблокирован.
+ * - setError(bool) окрашивает рамки в красный.
  */
 
 #ifndef OTPINPUT_H
@@ -25,23 +26,14 @@ class OtpInput : public QWidget
 public:
     explicit OtpInput(QWidget *parent = nullptr);
 
-    /** @brief Возвращает введённый код (0–6 символов, только цифры). */
-    QString code() const;
-
-    /** @brief Очищает все боксы и переводит фокус на первый. */
-    void clear();
-
-    /** @brief Возвращает true, если все 6 боксов заполнены. */
-    bool isComplete() const;
-
-    /** @brief Блокирует / разблокирует весь виджет. */
-    void setEnabled(bool enabled);
+    QString code()      const;
+    void    clear();
+    bool    isComplete() const;
+    void    setEnabled(bool enabled);
+    void    setError(bool error);   ///< включает/выключает красное состояние
 
 signals:
-    /** @brief Испускается когда все 6 цифр введены. @param code Шестизначный код. */
     void completed(const QString &code);
-
-    /** @brief Испускается при нажатии ESC в любом из боксов. */
     void escPressed();
 
 private slots:
@@ -49,11 +41,14 @@ private slots:
 
 private:
     void setupUI();
+    void updateBoxStyle(int index);
+    void updateAllStyles();
     bool eventFilter(QObject *obj, QEvent *ev) override;
     void fillFromClipboard(const QString &text);
 
     static const int N = 6;
     QLineEdit *m_boxes[N];
+    bool       m_error = false;
 };
 
 #endif // OTPINPUT_H
