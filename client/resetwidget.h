@@ -16,6 +16,9 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTimer>
+#include <QKeyEvent>
+
+class OtpInput;
 
 class ResetWidget : public QWidget
 {
@@ -30,6 +33,9 @@ signals:
     void resetSuccess();
     /** @brief Испускается при нажатии кнопки «Назад» на шаге 1. */
     void backToAuth();
+
+protected:
+    void keyPressEvent(QKeyEvent *e) override;
 
 private slots:
     void onEmailTextChanged(const QString &text);
@@ -57,7 +63,7 @@ private:
 
     // ── Шаг 2: код ────────────────────────────────────────────────────────
     QWidget     *step2Widget;
-    QLineEdit   *codeEdit;
+    OtpInput    *codeEdit;         ///< 6-боксовый OTP-ввод
     QLabel      *codeErrorLabel;
     QLabel      *codeStatusLabel;
     QPushButton *verifyCodeBtn;

@@ -11,13 +11,14 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTimer>
+#include <QKeyEvent>
 
 class OtpInput;
 
 /**
  * @class RegWidget
  * @brief Трёхшаговая регистрация. На шаге 3 — OTP-ввод 6 боксов.
- * ESC на шаге 3 → переход на шаг 2.
+ * ESC на любом шаге → переход на предыдущий шаг / назад к авторизации.
  */
 class RegWidget : public QWidget
 {
@@ -31,6 +32,9 @@ public:
 signals:
     void registrationSuccess(const QString &login);
     void showAuth();
+
+protected:
+    void keyPressEvent(QKeyEvent *e) override;
 
 private slots:
     void onLoginTextChanged(const QString &text);

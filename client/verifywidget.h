@@ -12,6 +12,7 @@
 #define VERIFYWIDGET_H
 
 #include <QWidget>
+#include <QKeyEvent>
 
 class OtpInput;
 class QPushButton;
@@ -32,6 +33,9 @@ public:
 signals:
     void verificationSuccess(const QString &login);
     void backToAuth();
+
+protected:
+    void keyPressEvent(QKeyEvent *e) override;
 
 private slots:
     void onVerifyClicked();

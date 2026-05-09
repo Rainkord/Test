@@ -115,7 +115,7 @@ void VerifyWidget::setupUI()
     layout->setSpacing(8);
 
     // Заголовок
-    auto *title = new QLabel(QString::fromUtf8("Подтверждение входа"), card);
+    auto *title = new QLabel(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u0435 \u0432\u0445\u043e\u0434\u0430"), card);
     QFont tf(FONT_FAMILY, FS_TITLE, QFont::Bold);
     title->setFont(tf);
     title->setAlignment(Qt::AlignCenter);
@@ -128,7 +128,7 @@ void VerifyWidget::setupUI()
     layout->addWidget(sep);
     layout->addSpacing(4);
 
-    hintLabel = new QLabel(QString::fromUtf8("Введите код из письма:"), card);
+    hintLabel = new QLabel(QString::fromUtf8("\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043a\u043e\u0434 \u0438\u0437 \u043f\u0438\u0441\u044c\u043c\u0430:"), card);
     hintLabel->setAlignment(Qt::AlignCenter);
     hintLabel->setWordWrap(true);
     hintLabel->setStyleSheet(hintStyle());
@@ -138,7 +138,7 @@ void VerifyWidget::setupUI()
     // OTP-ввод
     otpInput = new OtpInput(card);
     layout->addWidget(otpInput, 0, Qt::AlignCenter);
-    connect(otpInput, &OtpInput::completed, this, &VerifyWidget::onCodeCompleted);
+    connect(otpInput, &OtpInput::completed,  this, &VerifyWidget::onCodeCompleted);
     connect(otpInput, &OtpInput::escPressed, this, &VerifyWidget::onBackClicked);
 
     statusLabel = new QLabel(card);
@@ -149,7 +149,7 @@ void VerifyWidget::setupUI()
     layout->addWidget(statusLabel);
     layout->addSpacing(4);
 
-    verifyBtn = new QPushButton(QString::fromUtf8("Подтвердить"), card);
+    verifyBtn = new QPushButton(QString::fromUtf8("\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c"), card);
     verifyBtn->setEnabled(false);
     verifyBtn->setDefault(true);
     verifyBtn->setAutoDefault(true);
@@ -158,7 +158,7 @@ void VerifyWidget::setupUI()
     connect(verifyBtn, &QPushButton::clicked, this, &VerifyWidget::onVerifyClicked);
     layout->addWidget(verifyBtn);
 
-    backBtn = new QPushButton(QString::fromUtf8("Назад"), card);
+    backBtn = new QPushButton(QString::fromUtf8("\u041d\u0430\u0437\u0430\u0434"), card);
     backBtn->setStyleSheet(linkBtnStyle());
     connect(backBtn, &QPushButton::clicked, this, &VerifyWidget::onBackClicked);
     layout->addWidget(backBtn, 0, Qt::AlignCenter);
@@ -179,7 +179,7 @@ void VerifyWidget::setLogin(const QString &login, const QString &codeHash)
     otpInput->setEnabled(true);
     updateVerifyBtn();
     statusLabel->hide();
-    hintLabel->setText(QString::fromUtf8("Введите код из письма:"));
+    hintLabel->setText(QString::fromUtf8("\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043a\u043e\u0434 \u0438\u0437 \u043f\u0438\u0441\u044c\u043c\u0430:"));
     hintLabel->setStyleSheet(hintStyle());
 }
 
@@ -212,7 +212,7 @@ void VerifyWidget::onVerifyClicked()
     const QString c = otpInput->code();
     if (c.length() != 6) return;
 
-    updateVerifyBtn(); // -> disabled while checking
+    updateVerifyBtn();
     verifyBtn->setEnabled(false);
     verifyBtn->setStyleSheet(primaryBtnStyle(false));
 
@@ -221,7 +221,7 @@ void VerifyWidget::onVerifyClicked()
 
     if (entered == m_codeHash) {
         statusLabel->setStyleSheet(successStyle());
-        statusLabel->setText(QString::fromUtf8("Код верен!"));
+        statusLabel->setText(QString::fromUtf8("\u041a\u043e\u0434 \u0432\u0435\u0440\u0435\u043d!"));
         statusLabel->show();
         otpInput->setEnabled(false);
         emit verificationSuccess(m_login);
@@ -232,12 +232,12 @@ void VerifyWidget::onVerifyClicked()
     if (m_attemptsLeft > 0) {
         statusLabel->setStyleSheet(errorStyle());
         statusLabel->setText(
-            QString::fromUtf8("Неверный код. Осталось попыток: %1.").arg(m_attemptsLeft));
+            QString::fromUtf8("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043a\u043e\u0434. \u041e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u043f\u044b\u0442\u043e\u043a: %1.").arg(m_attemptsLeft));
         statusLabel->show();
         otpInput->clear();
         updateVerifyBtn();
     } else {
-        applyLock(30, QString::fromUtf8("Превышен лимит попыток. Блокировка на 30 сек."));
+        applyLock(30, QString::fromUtf8("\u041f\u0440\u0435\u0432\u044b\u0448\u0435\u043d \u043b\u0438\u043c\u0438\u0442 \u043f\u043e\u043f\u044b\u0442\u043e\u043a. \u0411\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0430 \u043d\u0430 30 \u0441\u0435\u043a."));
     }
 }
 
@@ -245,6 +245,14 @@ void VerifyWidget::onBackClicked()
 {
     clearFields();
     emit backToAuth();
+}
+
+void VerifyWidget::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Escape)
+        onBackClicked();
+    else
+        QWidget::keyPressEvent(e);
 }
 
 void VerifyWidget::applyLock(int seconds, const QString &message)
