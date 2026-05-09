@@ -13,8 +13,9 @@
 #include <QFont>
 #include <QFrame>
 #include <QString>
+#include <QKeyEvent>
 
-// ── GitHub dark palette ───────────────────────────────────────────────────────
+// ── GitHub dark palette ───────────────────────────────────────────────────────────────────
 #define GH_BG           "#0d1117"
 #define GH_CARD         "#161b22"
 #define GH_BORDER       "#30363d"
@@ -179,6 +180,23 @@ void RegWidget::clearFields()
     showStep(1);
 }
 
+void RegWidget::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Escape) {
+        // На каждом шаге ESC возвращаем на предыдущий шаг,
+        // с шага 1 — назад к авторизации.
+        if (step3Widget->isVisible()) {
+            onBackToStep2Clicked();
+        } else if (step2Widget->isVisible()) {
+            onBackToStep1Clicked();
+        } else {
+            emit showAuth();
+        }
+    } else {
+        QWidget::keyPressEvent(e);
+    }
+}
+
 void RegWidget::setupUI()
 {
     QVBoxLayout *outerV = new QVBoxLayout(this);
@@ -206,7 +224,7 @@ void RegWidget::setupUI()
     mainLayout->addWidget(titleLabel);
     mainLayout->addSpacing(6);
 
-    // ── Шаг 1: логин + пароль ────────────────────────────────────────────────
+    // ── Шаг 1: логин + пароль ──────────────────────────────────────────────────────
     step1Widget = new QWidget(card);
     step1Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s1 = new QVBoxLayout(step1Widget);
@@ -285,7 +303,7 @@ void RegWidget::setupUI()
 
     mainLayout->addWidget(step1Widget);
 
-    // ── Шаг 2: email ─────────────────────────────────────────────────────────
+    // ── Шаг 2: email ───────────────────────────────────────────────────────────────
     step2Widget = new QWidget(card);
     step2Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s2 = new QVBoxLayout(step2Widget);
@@ -327,7 +345,7 @@ void RegWidget::setupUI()
     s2->addLayout(s2Btns);
     mainLayout->addWidget(step2Widget);
 
-    // ── Шаг 3: OTP-ввод кода ─────────────────────────────────────────────────
+    // ── Шаг 3: OTP-ввод кода ─────────────────────────────────────────────────────
     step3Widget = new QWidget(card);
     step3Widget->setStyleSheet("QWidget { background: transparent; border: none; }");
     QVBoxLayout *s3 = new QVBoxLayout(step3Widget);
