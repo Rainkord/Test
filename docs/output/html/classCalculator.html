@@ -93,7 +93,7 @@ $(function(){initNavTree('classCalculator.html','','classCalculator-members'); }
 </div><!--header-->
 <div class="contents">
 
-<p>Класс для вычисления значений ветвящейся функции и формирования строки данных графика.  
+<p>Класс калькулятора кусочно-определённой функции  
  <a href="#details">Подробнее...</a></p>
 
 <p><code>#include &lt;<a class="el" href="calculator_8h_source.html">calculator.h</a>&gt;</code></p>
@@ -101,19 +101,15 @@ $(function(){initNavTree('classCalculator.html','','classCalculator-members'); }
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Открытые статические члены</h2></td></tr>
 <tr class="memitem:a37a85197473f98e958c84e52e9ca2515" id="r_a37a85197473f98e958c84e52e9ca2515"><td class="memItemLeft">static double&#160;</td><td class="memItemRight"><a class="el" href="#a37a85197473f98e958c84e52e9ca2515">calculate</a> (double x, double a, double b, double c)</td></tr>
-<tr class="memdesc:a37a85197473f98e958c84e52e9ca2515"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вычисляет значение ветвящейся функции f(x).  <br /></td></tr>
+<tr class="memdesc:a37a85197473f98e958c84e52e9ca2515"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вычисляет значение кусочно-определённой функции  <br /></td></tr>
 <tr class="memitem:a542238a5ba52e0efc9ec4ce38b8d9245" id="r_a542238a5ba52e0efc9ec4ce38b8d9245"><td class="memItemLeft">static QString&#160;</td><td class="memItemRight"><a class="el" href="#a542238a5ba52e0efc9ec4ce38b8d9245">generateGraphData</a> (double xMin, double xMax, double step, double a, double b, double c)</td></tr>
-<tr class="memdesc:a542238a5ba52e0efc9ec4ce38b8d9245"><td class="mdescLeft">&#160;</td><td class="mdescRight">Генерирует строку с точками графика для диапазона [xMin, xMax].  <br /></td></tr>
+<tr class="memdesc:a542238a5ba52e0efc9ec4ce38b8d9245"><td class="mdescLeft">&#160;</td><td class="mdescRight">Генерирует строку данных для построения графика функции  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Класс для вычисления значений ветвящейся функции и формирования строки данных графика. </p>
-<p>Функция задана по трём ветвям:</p><ul>
-<li>f(x) = |x·a| − 2, при x &lt; −2</li>
-<li>f(x) = b·x² + x + 1, при −2 ≤ x &lt; 2</li>
-<li>f(x) = |x − 2| + c, при x ≥ 2 </li>
-</ul>
+<div class="textblock"><p>Класс калькулятора кусочно-определённой функции </p>
+<p>Предоставляет статические методы для вычисления значений кусочно-определённой математической функции и генерации данных для построения графика. </p>
 
-<p class="definition">См. определение в файле <a class="el" href="calculator_8h_source.html">calculator.h</a> строка <a class="el" href="calculator_8h_source.html#l00021">21</a></p>
+<p class="definition">См. определение в файле <a class="el" href="calculator_8h_source.html">calculator.h</a> строка <a class="el" href="calculator_8h_source.html#l00013">13</a></p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Методы</h2>
 <a id="a37a85197473f98e958c84e52e9ca2515" name="a37a85197473f98e958c84e52e9ca2515"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a37a85197473f98e958c84e52e9ca2515">&#9670;&#160;</a></span>calculate()</h2>
@@ -152,19 +148,39 @@ $(function(){initNavTree('classCalculator.html','','classCalculator-members'); }
 </table>
 </div><div class="memdoc">
 
-<p>Вычисляет значение ветвящейся функции f(x). </p>
+<p>Вычисляет значение кусочно-определённой функции </p>
+<p>Функция определена тремя отрезками:</p><ul>
+<li>При x &lt; -2: f(x) = |x·a| − 2</li>
+<li>При −2 ≤ x &lt; 2: f(x) = b·x² + x + 1</li>
+<li>При x ≥ 2: f(x) = |x − 2| + c</li>
+</ul>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Аргумент функции. </td></tr>
-    <tr><td class="paramname">a</td><td>Коэффициент для ветви x &lt; −2. </td></tr>
-    <tr><td class="paramname">b</td><td>Коэффициент для ветви −2 ≤ x &lt; 2. </td></tr>
-    <tr><td class="paramname">c</td><td>Коэффициент для ветви x ≥ 2. </td></tr>
+    <tr><td class="paramname">x</td><td>значение аргумента </td></tr>
+    <tr><td class="paramname">a</td><td>параметр для левого отрезка (x &lt; −2) </td></tr>
+    <tr><td class="paramname">b</td><td>параметр для среднего отрезка (−2 ≤ x &lt; 2) </td></tr>
+    <tr><td class="paramname">c</td><td>параметр для правого отрезка (x ≥ 2) </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>Значение функции f(x) при заданных параметрах. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>вычисленное значение функции f(x)</dd></dl>
+<p>Определяет отрезок по значению x и применяет соответствующую формулу:</p><ul>
+<li>При x &lt; -2: f(x) = |x·a| − 2</li>
+<li>При −2 ≤ x &lt; 2: f(x) = b·x² + x + 1</li>
+<li>При x ≥ 2: f(x) = |x − 2| + c</li>
+</ul>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>значение аргумента </td></tr>
+    <tr><td class="paramname">a</td><td>параметр для левого отрезка (x &lt; −2) </td></tr>
+    <tr><td class="paramname">b</td><td>параметр для среднего отрезка (−2 ≤ x &lt; 2) </td></tr>
+    <tr><td class="paramname">c</td><td>параметр для правого отрезка (x ≥ 2) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>вычисленное значение функции f(x) </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="calculator_8cpp_source.html">calculator.cpp</a> строка <a class="el" href="calculator_8cpp_source.html#l00006">6</a></p>
+<p class="definition">См. определение в файле <a class="el" href="calculator_8cpp_source.html">calculator.cpp</a> строка <a class="el" href="calculator_8cpp_source.html#l00020">20</a></p>
 
 </div>
 </div>
@@ -215,22 +231,35 @@ $(function(){initNavTree('classCalculator.html','','classCalculator-members'); }
 </table>
 </div><div class="memdoc">
 
-<p>Генерирует строку с точками графика для диапазона [xMin, xMax]. </p>
-<p>Формат возвращаемой строки: <code>"graph||x1;y1||x2;y2||..."</code> </p>
+<p>Генерирует строку данных для построения графика функции </p>
+<p>Вычисляет значения функции на заданном диапазоне [xMin, xMax] с указанным шагом. Возвращает строку в формате "graph||x1;y1||x2;y2||...".</p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">xMin</td><td>Левая граница диапазона. </td></tr>
-    <tr><td class="paramname">xMax</td><td>Правая граница диапазона. </td></tr>
-    <tr><td class="paramname">step</td><td>Шаг по оси X (должен быть &gt; 0; при step ≤ 0 подставляется 0.1). </td></tr>
-    <tr><td class="paramname">a</td><td>Коэффициент a. </td></tr>
-    <tr><td class="paramname">b</td><td>Коэффициент b. </td></tr>
-    <tr><td class="paramname">c</td><td>Коэффициент c. </td></tr>
+    <tr><td class="paramname">xMin</td><td>минимальное значение x </td></tr>
+    <tr><td class="paramname">xMax</td><td>максимальное значение x </td></tr>
+    <tr><td class="paramname">step</td><td>шаг изменения x (если ≤ 0, используется 0.1) </td></tr>
+    <tr><td class="paramname">a</td><td>параметр a функции </td></tr>
+    <tr><td class="paramname">b</td><td>параметр b функции </td></tr>
+    <tr><td class="paramname">c</td><td>параметр c функции </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>Строка данных графика в формате протокола. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>строка с данными графика в формате "graph||x;y||..."</dd></dl>
+<p>Последовательно вычисляет значения функции на диапазоне [xMin, xMax] с заданным шагом. Результат формируется как строка "graph||x;y||...", где каждая пара x;y разделена двойными вертикальными чертами. Если шаг ≤ 0, используется значение по умолчанию 0.1.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">xMin</td><td>минимальное значение x </td></tr>
+    <tr><td class="paramname">xMax</td><td>максимальное значение x </td></tr>
+    <tr><td class="paramname">step</td><td>шаг изменения x (если ≤ 0, используется 0.1) </td></tr>
+    <tr><td class="paramname">a</td><td>параметр a функции </td></tr>
+    <tr><td class="paramname">b</td><td>параметр b функции </td></tr>
+    <tr><td class="paramname">c</td><td>параметр c функции </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>строка с данными графика в формате "graph||x;y||..." </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="calculator_8cpp_source.html">calculator.cpp</a> строка <a class="el" href="calculator_8cpp_source.html#l00020">20</a></p>
+<p class="definition">См. определение в файле <a class="el" href="calculator_8cpp_source.html">calculator.cpp</a> строка <a class="el" href="calculator_8cpp_source.html#l00050">50</a></p>
 
 </div>
 </div>

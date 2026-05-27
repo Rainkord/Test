@@ -14,6 +14,13 @@
 #define GH_BLUE_H      "#58a6ff"
 #define FONT_FAMILY    "Segoe UI"
 
+/**
+ * @brief Конструктор диалога задания
+ *
+ * Устанавливает стили и создаёт пользовательский интерфейс.
+ *
+ * @param parent родительский виджет
+ */
 TaskDialog::TaskDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -24,8 +31,15 @@ TaskDialog::TaskDialog(QWidget *parent)
     setupUI();
 }
 
+/// Деструктор диалога задания
 TaskDialog::~TaskDialog() {}
 
+/**
+ * @brief Инициализация пользовательского интерфейса диалога
+ *
+ * Создаёт заголовок, информацию о работе, список участников,
+ * формулу и кнопку закрытия.
+ */
 void TaskDialog::setupUI()
 {
     setWindowTitle("\xd0\x97\xd0\xb0\xd0\xb4\xd0\xb0\xd0\xbd\xd0\xb8\xd0\xb5 \xe2\x80\x94 \xd0\x9f\xd0\xbe\xd0\xb4\xd0\xb3\xd1\x80\xd1\x83\xd0\xbf\xd0\xbf\xd0\xb0 5");

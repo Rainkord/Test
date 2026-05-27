@@ -3,6 +3,20 @@
 #include <cmath>
 #include <QStringList>
 
+/**
+ * @brief Вычисляет значение кусочно-определённой функции
+ *
+ * Определяет отрезок по значению x и применяет соответствующую формулу:
+ * - При x < -2:  f(x) = |x·a| − 2
+ * - При −2 ≤ x < 2:  f(x) = b·x² + x + 1
+ * - При x ≥ 2:  f(x) = |x − 2| + c
+ *
+ * @param x значение аргумента
+ * @param a параметр для левого отрезка (x < −2)
+ * @param b параметр для среднего отрезка (−2 ≤ x < 2)
+ * @param c параметр для правого отрезка (x ≥ 2)
+ * @return вычисленное значение функции f(x)
+ */
 double Calculator::calculate(double x, double a, double b, double c)
 {
     if (x < -2.0) {
@@ -17,6 +31,22 @@ double Calculator::calculate(double x, double a, double b, double c)
     }
 }
 
+/**
+ * @brief Генерирует строку данных для построения графика функции
+ *
+ * Последовательно вычисляет значения функции на диапазоне [xMin, xMax]
+ * с заданным шагом. Результат формируется как строка "graph||x;y||...",
+ * где каждая пара x;y разделена двойными вертикальными чертами.
+ * Если шаг ≤ 0, используется значение по умолчанию 0.1.
+ *
+ * @param xMin минимальное значение x
+ * @param xMax максимальное значение x
+ * @param step шаг изменения x (если ≤ 0, используется 0.1)
+ * @param a параметр a функции
+ * @param b параметр b функции
+ * @param c параметр c функции
+ * @return строка с данными графика в формате "graph||x;y||..."
+ */
 QString Calculator::generateGraphData(double xMin, double xMax, double step,
                                       double a, double b, double c)
 {

@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['taskdialog_0',['TaskDialog',['../classTaskDialog.html',1,'']]],
-  ['tempregdata_1',['TempRegData',['../structTempRegData.html',1,'']]],
-  ['tempresetdata_2',['TempResetData',['../structTempResetData.html',1,'']]]
+  ['regwidget_0',['RegWidget',['../classRegWidget.html',1,'']]],
+  ['resetwidget_1',['ResetWidget',['../classResetWidget.html',1,'']]]
 ];

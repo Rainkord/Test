@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['mainwindow_0',['MainWindow',['../classMainWindow.html',1,'']]],
-  ['mytcpserver_1',['MyTcpServer',['../classMyTcpServer.html',1,'']]]
+  ['logger_0',['Logger',['../classLogger.html',1,'']]]
 ];

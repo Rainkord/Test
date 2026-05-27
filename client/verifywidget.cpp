@@ -1,8 +1,3 @@
-/**
- * @file verifywidget.cpp
- * @brief Локальная верификация SHA-256 хэша кода. OTP-ввод 6 боксов.
- */
-
 #include "verifywidget.h"
 #include "otpinput.h"
 #include "clientsingleton.h"
@@ -31,6 +26,11 @@
 #define FS_BTN      11
 #define FS_SMALL     9
 
+/**
+ * @brief Генерирует стиль CSS для основной кнопки
+ * @param enabled состояние кнопки (включена/выключена)
+ * @return строка со стилем CSS
+ */
 static QString primaryBtnStyle(bool enabled)
 {
     if (enabled)
@@ -51,6 +51,10 @@ static QString primaryBtnStyle(bool enabled)
     ).arg(FONT_FAMILY).arg(FS_BTN);
 }
 
+/**
+ * @brief Генерирует стиль CSS для кнопки-ссылки
+ * @return строка со стилем CSS
+ */
 static QString linkBtnStyle()
 {
     return QString(
@@ -60,18 +64,30 @@ static QString linkBtnStyle()
     ).arg(GH_BLUE, FONT_FAMILY).arg(FS_BTN).arg(GH_BLUE_H);
 }
 
+/**
+ * @brief Генерирует стиль CSS для метки ошибки
+ * @return строка со стилем CSS
+ */
 static QString errorStyle()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_RED, FONT_FAMILY).arg(FS_SMALL);
 }
 
+/**
+ * @brief Генерирует стиль CSS для метки-подсказки
+ * @return строка со стилем CSS
+ */
 static QString hintStyle()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_MUTED, FONT_FAMILY).arg(FS_SMALL);
 }
 
+/**
+ * @brief Генерирует стиль CSS для метки успешного результата
+ * @return строка со стилем CSS
+ */
 static QString successStyle()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
@@ -79,6 +95,13 @@ static QString successStyle()
 }
 
 // ── Constructor ──────────────────────────────────────────────────────────────
+/**
+ * @brief Конструктор виджета верификации
+ *
+ * Устанавливает стили, создаёт интерфейс и таймер блокировки.
+ *
+ * @param parent родительский виджет
+ */
 VerifyWidget::VerifyWidget(QWidget *parent)
     : QWidget(parent), isLocked(false), m_attemptsLeft(3)
 {
@@ -93,8 +116,15 @@ VerifyWidget::VerifyWidget(QWidget *parent)
     connect(lockTimer, &QTimer::timeout, this, &VerifyWidget::onLockTimerFired);
 }
 
+/// Деструктор виджета верификации
 VerifyWidget::~VerifyWidget() {}
 
+/**
+ * @brief Инициализация пользовательского интерфейса
+ *
+ * Создаёт карточку с полем OTP-ввода, кнопками «Подтвердить» и «Назад»,
+ * а также метками статуса и подсказок.
+ */
 void VerifyWidget::setupUI()
 {
     auto *outerV = new QVBoxLayout(this);
@@ -171,6 +201,15 @@ void VerifyWidget::setupUI()
     outerV->addStretch(1);
 }
 
+/**
+ * @brief Устанавливает логин и хэш кода для верификации
+ *
+ * Сбрасывает состояние: очищает OTP-ввод, восстанавливает лимит попыток
+ * и скрывает сообщения об ошибках.
+ *
+ * @param login логин пользователя
+ * @param codeHash SHA-256 хэш ожидаемого OTP-кода
+ */
 void VerifyWidget::setLogin(const QString &login, const QString &codeHash)
 {
     m_login        = login;
@@ -185,6 +224,7 @@ void VerifyWidget::setLogin(const QString &login, const QString &codeHash)
     hintLabel->setStyleSheet(hintStyle());
 }
 
+/// Полностью очищает все поля и сбрасывает внутреннее состояние виджета
 void VerifyWidget::clearFields()
 {
     otpInput->clear();
@@ -197,6 +237,7 @@ void VerifyWidget::clearFields()
     isLocked       = false;
 }
 
+/// Обновляет состояние и стиль кнопки «Подтвердить» в зависимости от заполненности OTP-кода
 void VerifyWidget::updateVerifyBtn()
 {
     const bool ok = !isLocked && otpInput->isComplete();
@@ -208,12 +249,28 @@ void VerifyWidget::updateVerifyBtn()
 // Это устраняло бесконечную петлю: неверный код → 600мс пауза → clear() →
 // completed() снова → onVerifyClicked() снова → и так до блокировки.
 // Теперь пользователь должен явно нажать кнопку «Подтвердить».
+/**
+ * @brief Обработчик завершения ввода OTP-кода
+ *
+ * Сбрасывает флаг ошибки и обновляет состояние кнопки подтверждения.
+ * Автоматическая верификация не вызывается — пользователь должен
+ * явно нажать кнопку.
+ *
+ * @param code введённый шестизначный код (не используется)
+ */
 void VerifyWidget::onCodeCompleted(const QString &)
 {
     otpInput->setError(false);
     updateVerifyBtn();
 }
 
+/**
+ * @brief Обработчик нажатия кнопки «Подтвердить»
+ *
+ * Хэширует введённый код и сравнивает с ожидаемым. При совпадении
+ * испускает сигнал verificationSuccess. При несовпадении уменьшает
+ * счётчик попыток и при достижении нуля блокирует ввод на 30 секунд.
+ */
 void VerifyWidget::onVerifyClicked()
 {
     if (isLocked) return;
@@ -253,12 +310,20 @@ void VerifyWidget::onVerifyClicked()
     }
 }
 
+/// Обработчик нажатия кнопки «Назад»: очищает поля и испускает сигнал backToAuth
 void VerifyWidget::onBackClicked()
 {
     clearFields();
     emit backToAuth();
 }
 
+/**
+ * @brief Обработчик нажатия клавиш
+ *
+ * При нажатии Escape вызывает переход на экран авторизации.
+ *
+ * @param e событие нажатия клавиши
+ */
 void VerifyWidget::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Escape)
@@ -267,6 +332,15 @@ void VerifyWidget::keyPressEvent(QKeyEvent *e)
         QWidget::keyPressEvent(e);
 }
 
+/**
+ * @brief Блокирует ввод на указанное время
+ *
+ * Отключает OTP-ввод и кнопку подтверждения, отображает сообщение
+ * и запускает таймер блокировки.
+ *
+ * @param seconds количество секунд блокировки
+ * @param message сообщение, отображаемое при блокировке
+ */
 void VerifyWidget::applyLock(int seconds, const QString &message)
 {
     isLocked = true;
@@ -279,6 +353,7 @@ void VerifyWidget::applyLock(int seconds, const QString &message)
     lockTimer->start(seconds * 1000);
 }
 
+/// Обработчик срабатывания таймера блокировки: снимает блокировку и сбрасывает попытки
 void VerifyWidget::onLockTimerFired()
 {
     isLocked       = false;
@@ -289,4 +364,5 @@ void VerifyWidget::onLockTimerFired()
     updateVerifyBtn();
 }
 
+/// Пустой обработчик ответа сервера (зарезервирован для будущей реализации)
 void VerifyWidget::onVerifyResponseReceived(const QString &) {}

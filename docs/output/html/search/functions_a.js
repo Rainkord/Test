@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['paintevent_0',['paintEvent',['../classGraphWidget.html#a1b08bd862bf1f2dcb9f3f749de383e14',1,'GraphWidget::paintEvent()'],['../classFlowchartWidget.html#a967b4eb56ecab9960a2a929bddc84ccb',1,'FlowchartWidget::paintEvent()']]],
-  ['processmessage_1',['processMessage',['../classFunctionsForServer.html#aad6526bc31602d25c9e928af84c4effd',1,'FunctionsForServer']]]
+  ['main_0',['main',['../server_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../client_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp']]],
+  ['mainappwidget_1',['MainAppWidget',['../classMainAppWidget.html#a6ea8201bedd3825591e729bef7d88083',1,'MainAppWidget']]],
+  ['mainwindow_2',['MainWindow',['../classMainWindow.html#a996c5a2b6f77944776856f08ec30858d',1,'MainWindow']]],
+  ['mytcpserver_3',['MyTcpServer',['../classMyTcpServer.html#acf367c4695b4d160c7a2d25c2afaaec4',1,'MyTcpServer']]]
 ];

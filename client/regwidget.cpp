@@ -36,6 +36,11 @@
 #define FONT_SIZE_INPUT  11
 #define FONT_SIZE_SMALL   9
 
+/**
+ * @brief Генератор стиля для полей ввода
+ * 
+ * @return Строка CSS-стиля для QLineEdit в стиле GitHub dark
+ */
 QString RegWidget::inputStyle() const
 {
     return QString(
@@ -50,6 +55,11 @@ QString RegWidget::inputStyle() const
      .arg(FONT_FAMILY).arg(FONT_SIZE_INPUT).arg(GH_BLUE).arg(GH_MUTED);
 }
 
+/**
+ * @brief Генератор стиля для основной кнопки (зелёная)
+ * 
+ * @return Строка CSS-стиля для QPushButton в стиле GitHub green
+ */
 QString RegWidget::primaryBtnStyle() const
 {
     return QString(
@@ -63,6 +73,11 @@ QString RegWidget::primaryBtnStyle() const
     ).arg(GH_GREEN).arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
 }
 
+/**
+ * @brief Генератор стиля для вторичной кнопки
+ * 
+ * @return Строка CSS-стиля для QPushButton с тёмным фоном
+ */
 QString RegWidget::secondaryBtnStyle() const
 {
     return QString(
@@ -76,6 +91,11 @@ QString RegWidget::secondaryBtnStyle() const
      .arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
 }
 
+/**
+ * @brief Генератор стиля для призрачной кнопки
+ * 
+ * @return Строка CSS-стиля для QPushButton с прозрачным фоном
+ */
 QString RegWidget::ghostBtnStyle() const
 {
     return QString(
@@ -89,6 +109,11 @@ QString RegWidget::ghostBtnStyle() const
      .arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
 }
 
+/**
+ * @brief Генератор стиля для кнопки-ссылки
+ * 
+ * @return Строка CSS-стиля для QPushButton в виде ссылки
+ */
 QString RegWidget::linkBtnStyle() const
 {
     return QString(
@@ -98,24 +123,47 @@ QString RegWidget::linkBtnStyle() const
     ).arg(GH_BLUE).arg(FONT_FAMILY).arg(FONT_SIZE_BTN).arg(GH_BLUE_H);
 }
 
+/**
+ * @brief Генератор стиля для метки ошибки
+ * 
+ * @return Строка CSS-стиля для QLabel с красным цветом текста
+ */
 QString RegWidget::errorLabelStyle() const
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_RED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
+/**
+ * @brief Генератор стиля для информационной метки
+ * 
+ * @return Строка CSS-стиля для QLabel с серым цветом текста
+ */
 QString RegWidget::infoLabelStyle() const
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_MUTED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
+/**
+ * @brief Генератор стиля для метки успешного действия
+ * 
+ * @return Строка CSS-стиля для QLabel с зелёным цветом текста
+ */
 QString RegWidget::successLabelStyle() const
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
+/**
+ * @brief Конструктор виджета регистрации
+ * 
+ * Инициализирует переменные состояния, создаёт таймер блокировки,
+ * подключает сигнал ответа сервера и настраивает UI.
+ * 
+ * @param parent Родительский виджет
+ */
 RegWidget::RegWidget(QWidget *parent)
     : QWidget(parent),
       codeFailedAttempts(0), codeLockLevel(0),
@@ -136,8 +184,17 @@ RegWidget::RegWidget(QWidget *parent)
     setupUI();
 }
 
+/**
+ * @brief Деструктор виджета регистрации
+ */
 RegWidget::~RegWidget() {}
 
+/**
+ * @brief Очистить все поля и сбросить состояние виджета
+ * 
+ * Очищает все поля ввода, скрывает статусные метки,
+ * сбрасывает флаги состояния и возвращает виджет на шаг 1.
+ */
 void RegWidget::clearFields()
 {
     loginEdit->clear();
@@ -180,6 +237,16 @@ void RegWidget::clearFields()
     showStep(1);
 }
 
+/**
+ * @brief Обработчик нажатия клавиш для навигации
+ * 
+ * При нажатии Escape:
+ * - На шаге 3: возврат к шагу 2
+ * - На шаге 2: возврат к шагу 1
+ * - На шаге 1: переход на экран авторизации
+ * 
+ * @param e Событие нажатия клавиши
+ */
 void RegWidget::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Escape) {
@@ -195,6 +262,15 @@ void RegWidget::keyPressEvent(QKeyEvent *e)
     }
 }
 
+/**
+ * @brief Настройка пользовательского интерфейса
+ * 
+ * Создаёт трёхшаговую форму регистрации с карточкой, содержащей:
+ * - Шаг 1: поля логина и пароля с валидацией
+ * - Шаг 2: поле email с проверкой формата
+ * - Шаг 3: OTP-ввод кода подтверждения
+ * А также ссылку для перехода к авторизации.
+ */
 void RegWidget::setupUI()
 {
     QVBoxLayout *outerV = new QVBoxLayout(this);
@@ -416,6 +492,14 @@ void RegWidget::setupUI()
     showStep(1);
 }
 
+/**
+ * @brief Показать указанный шаг регистрации
+ * 
+ * Делает видимым только виджет указанного шага,
+ * скрывая остальные.
+ * 
+ * @param step Номер шага (1, 2 или 3)
+ */
 void RegWidget::showStep(int step)
 {
     step1Widget->setVisible(step == 1);
@@ -423,12 +507,28 @@ void RegWidget::showStep(int step)
     step3Widget->setVisible(step == 3);
 }
 
+/**
+ * @brief Проверить корректность формата email
+ * 
+ * Использует регулярное выражение для проверки формата
+ * адреса электронной почты.
+ * 
+ * @param email Адрес электронной почты для проверки
+ * @return true если email соответствует формату, false в противном случае
+ */
 bool RegWidget::isEmailValid(const QString &email) const
 {
     QRegularExpression re("^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$");
     return re.match(email).hasMatch();
 }
 
+/**
+ * @brief Валидация полей шага 1
+ * 
+ * Проверяет минимальную длину логина (4 символа), пароля (8 символов),
+ * заполненность поля подтверждения и совпадение паролей.
+ * Активирует/деактивирует кнопку "Продолжить".
+ */
 void RegWidget::validateStep1()
 {
     bool ok = loginEdit->text().length() >= 4
@@ -438,12 +538,26 @@ void RegWidget::validateStep1()
     continueBtn->setEnabled(ok);
 }
 
+/**
+ * @brief Обновить состояние кнопки "Подтвердить"
+ * 
+ * Кнопка активна только если OTP-код введён полностью,
+ * блокировка не действует и хэш кода получен от сервера.
+ */
 void RegWidget::updateVerifyCodeBtn()
 {
     verifyCodeBtn->setEnabled(
         otpCode->isComplete() && !codeIsLocked && !m_pendingCodeHash.isEmpty());
 }
 
+/**
+ * @brief Слот для обработки изменения текста в поле логина
+ * 
+ * Проверяет минимальную длину логина и отображает ошибку
+ * при необходимости. Запускает валидацию шага 1.
+ * 
+ * @param text Новый текст логина
+ */
 void RegWidget::onLoginTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text.length() < 4) {
@@ -455,6 +569,14 @@ void RegWidget::onLoginTextChanged(const QString &text)
     validateStep1();
 }
 
+/**
+ * @brief Слот для обработки изменения текста в поле пароля
+ * 
+ * Проверяет минимальную длину пароля и совпадение с подтверждением.
+ * Отображает соответствующие ошибки.
+ * 
+ * @param text Новый текст пароля
+ */
 void RegWidget::onPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text.length() < 8) {
@@ -472,6 +594,14 @@ void RegWidget::onPasswordTextChanged(const QString &text)
     validateStep1();
 }
 
+/**
+ * @brief Слот для обработки изменения текста в поле подтверждения пароля
+ * 
+ * Проверяет совпадение с введённым паролем и отображает ошибку
+ * при несовпадении.
+ * 
+ * @param text Новый текст подтверждения пароля
+ */
 void RegWidget::onConfirmPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text != passwordEdit->text()) {
@@ -483,18 +613,36 @@ void RegWidget::onConfirmPasswordTextChanged(const QString &text)
     validateStep1();
 }
 
+/**
+ * @brief Слот для переключения видимости первого пароля
+ * 
+ * Переключает режим отображения поля пароля между
+ * скрытым (Password) и видимым (Normal).
+ */
 void RegWidget::onTogglePassword1()
 {
     passwordEdit->setEchoMode(passwordEdit->echoMode() == QLineEdit::Password
                                   ? QLineEdit::Normal : QLineEdit::Password);
 }
 
+/**
+ * @brief Слот для переключения видимости второго пароля
+ * 
+ * Переключает режим отображения поля подтверждения пароля между
+ * скрытым (Password) и видимым (Normal).
+ */
 void RegWidget::onTogglePassword2()
 {
     confirmPasswordEdit->setEchoMode(confirmPasswordEdit->echoMode() == QLineEdit::Password
                                          ? QLineEdit::Normal : QLineEdit::Password);
 }
 
+/**
+ * @brief Слот для обработки нажатия кнопки "Продолжить"
+ * 
+ * Отправляет асинхронный запрос на проверку доступности логина
+ * на сервер. Блокирует кнопку на время проверки.
+ */
 void RegWidget::onContinueClicked()
 {
     if (!continueBtn->isEnabled()) return;
@@ -506,6 +654,14 @@ void RegWidget::onContinueClicked()
         QString("check_login||%1").arg(loginEdit->text().trimmed()));
 }
 
+/**
+ * @brief Слот для обработки изменения текста в поле email
+ * 
+ * Проверяет формат email и отображает ошибку при неверном формате.
+ * Активирует/деактивирует кнопку "Далее →".
+ * 
+ * @param text Новый текст email
+ */
 void RegWidget::onEmailTextChanged(const QString &text)
 {
     if (text.isEmpty()) {
@@ -523,6 +679,13 @@ void RegWidget::onEmailTextChanged(const QString &text)
     }
 }
 
+/**
+ * @brief Слот для обработки нажатия кнопки "Далее →"
+ * 
+ * Хэширует пароль (SHA-256) и отправляет асинхронный запрос
+ * регистрации на сервер с логином, хэшем пароля и email.
+ * Переходит к ожиданию OTP-кода.
+ */
 void RegWidget::onEmailNextClicked()
 {
     if (!emailNextBtn->isEnabled()) return;
@@ -543,6 +706,12 @@ void RegWidget::onEmailNextClicked()
         QString("registration||%1||%2||%3").arg(login, m_pendingPassHash, currentEmail));
 }
 
+/**
+ * @brief Слот для возврата к шагу 1 из шага 2
+ * 
+ * Сбрасывает состояние полей шага 1, включает их для редактирования
+ * и переключает видимость на шаг 1.
+ */
 void RegWidget::onBackToStep1Clicked()
 {
     loginEdit->setReadOnly(false);
@@ -555,6 +724,12 @@ void RegWidget::onBackToStep1Clicked()
     showStep(1);
 }
 
+/**
+ * @brief Слот для возврата к шагу 2 из шага 3
+ * 
+ * Очищает OTP-ввод, скрывает статусные метки и сбрасывает флаги
+ * состояния верификации кода.
+ */
 void RegWidget::onBackToStep2Clicked()
 {
     otpCode->clear();
@@ -569,11 +744,26 @@ void RegWidget::onBackToStep2Clicked()
     showStep(2);
 }
 
+/**
+ * @brief Слот для обработки завершения ввода OTP-кода
+ * 
+ * Обновляет состояние кнопки "Подтвердить" после ввода кода.
+ * 
+ * @param code Введённый код (не используется)
+ */
 void RegWidget::onCodeCompleted(const QString &)
 {
     updateVerifyCodeBtn();
 }
 
+/**
+ * @brief Слот для обработки нажатия кнопки "Подтвердить"
+ * 
+ * Проверяет введённый OTP-код: вычисляет его хэш и сравнивает
+ * с полученным от сервера. При совпадении отправляет запрос
+ * подтверждения регистрации. При несовпадении увеличивает
+ * счётчик попыток с блокировкой при превышении лимита.
+ */
 void RegWidget::onVerifyCodeClicked()
 {
     if (codeIsLocked || !verifyCodeBtn->isEnabled()) return;
@@ -596,7 +786,6 @@ void RegWidget::onVerifyCodeClicked()
         codeStatusLabel->setStyleSheet(infoLabelStyle());
         codeStatusLabel->show();
         m_verifyingCode = true;
-        // FIX: registration_confirm принимает только login — лишние аргументы убраны
         ClientSingleton::instance().sendRequestAsync(
             QString("registration_confirm||%1").arg(loginEdit->text().trimmed()));
         return;
@@ -622,6 +811,12 @@ void RegWidget::onVerifyCodeClicked()
     }
 }
 
+/**
+ * @brief Слот для обработки срабатывания таймера блокировки ввода кода
+ * 
+ * Снимает блокировку OTP-ввода, очищает поле кода
+ * и обновляет состояние кнопки "Подтвердить".
+ */
 void RegWidget::onCodeLockTimerFired()
 {
     codeIsLocked = false;
@@ -632,8 +827,22 @@ void RegWidget::onCodeLockTimerFired()
     codeErrorLabel->hide();
 }
 
+/**
+ * @brief Слот для обработки нажатия ссылки "Уже есть аккаунт? Войти"
+ * 
+ * Испускает сигнал showAuth для переключения на экран авторизации.
+ */
 void RegWidget::onShowAuthClicked() { emit showAuth(); }
 
+/**
+ * @brief Применить блокировку ввода OTP-кода
+ * 
+ * Блокирует OTP-ввод и кнопку "Подтвердить", отображает сообщение
+ * о блокировке и запускает таймер.
+ * 
+ * @param minutes Длительность блокировки в минутах (0 = 30 секунд)
+ * @param message Сообщение для отображения пользователю
+ */
 void RegWidget::applyCodeLock(int minutes, const QString &message)
 {
     codeIsLocked = true;
@@ -645,6 +854,16 @@ void RegWidget::applyCodeLock(int minutes, const QString &message)
     codeLockTimer->start(minutes == 0 ? 30 * 1000 : minutes * 60 * 1000);
 }
 
+/**
+ * @brief Слот для обработки ответа сервера на запросы регистрации
+ * 
+ * Обрабатывает три сценария:
+ * 1. Проверка логина (m_checkingLogin): переход к шагу 2 или отображение ошибки
+ * 2. Ожидание OTP-кода (m_waitingForRegCode): переход к шагу 3 или отображение ошибки
+ * 3. Подтверждение кода (m_verifyingCode): успешная регистрация или ошибка
+ * 
+ * @param response Ответ сервера
+ */
 void RegWidget::onRegistrationResponseReceived(const QString &response)
 {
     QString r = response.trimmed();

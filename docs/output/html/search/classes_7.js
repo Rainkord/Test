@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['regwidget_0',['RegWidget',['../classRegWidget.html',1,'']]],
-  ['resetwidget_1',['ResetWidget',['../classResetWidget.html',1,'']]]
+  ['otpinput_0',['OtpInput',['../classOtpInput.html',1,'']]]
 ];

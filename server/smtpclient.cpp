@@ -8,14 +8,24 @@
 #include <QCoreApplication>
 #include <QDir>
 
+/// Адрес SMTP-сервера Gmail
 const QString SmtpClient::smtpHost = "smtp.gmail.com";
+/// Порт SMTP-сервера Gmail (SSL)
 const int     SmtpClient::smtpPort = 465;
 
 // ── Read email.txt next to the server executable ────────────────────────────
-// Format:
-//   line 1: # comment / link
-//   line 2: email=some@gmail.com
-//   line 3: key=t q o a x w j p q l k p h a j y   (spaces are stripped)
+
+/**
+ * @brief Считывает значение ключа из файла email.txt
+ *
+ * Ищет файл email.txt в каталоге исполняемого файла, на уровень выше
+ * и в текущем рабочем каталоге. Формат файла:
+ *   ключ=значение
+ * Строки, начинающиеся с '#', игнорируются. Пробелы в значении удаляются.
+ *
+ * @param key ключ для поиска (например, "email" или "key")
+ * @return значение ключа; пустая строка, если ключ не найден
+ */
 static QString readEmailTxtValue(const QString &key)
 {
     // Look for email.txt next to the executable, and also one level up (build dir)
@@ -47,11 +57,38 @@ static QString readEmailTxtValue(const QString &key)
     return {};
 }
 
-const QString SmtpClient::senderEmail    = readEmailTxtValue("email");
-const QString SmtpClient::senderPassword = readEmailTxtValue("key");
+/**
+ * @brief Получает адрес электронной почты отправителя
+ *
+ * @return ссылка на строку с email отправителя
+ */
+const QString &SmtpClient::senderEmail() {
+    static QString val = readEmailTxtValue("email");
+    return val;
+}
+
+/**
+ * @brief Получает пароль (App Key) отправителя
+ *
+ * @return ссылка на строку с ключом отправителя
+ */
+const QString &SmtpClient::senderPassword() {
+    static QString val = readEmailTxtValue("key");
+    return val;
+}
 
 // ────────────────────────────────────────────────────────────────────────────
 
+/**
+ * @brief Ожидает и считывает все доступные данные из SSL-сокета
+ *
+ * Если данных нет, ожидает до timeoutMs миллисекунд. Затем считывает
+ * все доступные данные, повторяя waitForReadyRead до исчерпания.
+ *
+ * @param socket SSL-сокет
+ * @param timeoutMs таймаут ожидания в миллисекундах (по умолчанию 15000)
+ * @return все прочитанные данные в виде QByteArray
+ */
 static QByteArray waitForData(QSslSocket *socket, int timeoutMs = 15000)
 {
     QByteArray result;
@@ -65,6 +102,16 @@ static QByteArray waitForData(QSslSocket *socket, int timeoutMs = 15000)
     return result;
 }
 
+/**
+ * @brief Читает ответ SMTP-сервера из сокета
+ *
+ * Считывает данные через waitForData и возвращает последнюю непустую строку
+ * (код ответа SMTP). Логирует полученный ответ.
+ *
+ * @param socket SSL-сокет
+ * @param timeoutMs таймаут ожидания (по умолчанию 15000 мс)
+ * @return последняя строка ответа SMTP-сервера
+ */
 static QString readResponse(QSslSocket *socket, int timeoutMs = 15000)
 {
     QByteArray data = waitForData(socket, timeoutMs);
@@ -79,6 +126,13 @@ static QString readResponse(QSslSocket *socket, int timeoutMs = 15000)
     return QString();
 }
 
+/**
+ * @brief Отправляет команду SMTP-серверу и считывает ответ
+ *
+ * @param socket SSL-сокет
+ * @param cmd команда для отправки (включая \r\n)
+ * @return ответ SMTP-сервера (код + описание)
+ */
 static QString sendCmd(QSslSocket *socket, const QByteArray &cmd)
 {
     qDebug() << "[SMTP] -->" << cmd.trimmed();
@@ -88,6 +142,18 @@ static QString sendCmd(QSslSocket *socket, const QByteArray &cmd)
     return readResponse(socket);
 }
 
+/**
+ * @brief Выполняет полную процедуру отправки email через SMTP
+ *
+ * Устанавливает SSL-соединение, выполняет авторизацию (AUTH LOGIN),
+ * формирует письмо с заголовками (Subject, From, To, Content-Type)
+ * и отправляет его. Завершает сессию командой QUIT.
+ *
+ * @param toEmail адрес получателя
+ * @param subjectText тема письма
+ * @param bodyText текст письма
+ * @return true, если письмо успешно отправлено; false — при ошибке
+ */
 static bool doSend(const QString &toEmail,
                    const QString &subjectText,
                    const QString &bodyText)
@@ -110,14 +176,14 @@ static bool doSend(const QString &toEmail,
     resp = sendCmd(&socket, "AUTH LOGIN\r\n");
     if (!resp.startsWith("334")) return false;
 
-    resp = sendCmd(&socket, SmtpClient::senderEmail.toUtf8().toBase64() + "\r\n");
+    resp = sendCmd(&socket, SmtpClient::senderEmail().toUtf8().toBase64() + "\r\n");
     if (!resp.startsWith("334")) return false;
 
-    resp = sendCmd(&socket, SmtpClient::senderPassword.toUtf8().toBase64() + "\r\n");
+    resp = sendCmd(&socket, SmtpClient::senderPassword().toUtf8().toBase64() + "\r\n");
     if (!resp.startsWith("235")) return false;
     qDebug() << "[SMTP] Authenticated";
 
-    resp = sendCmd(&socket, "MAIL FROM:<" + SmtpClient::senderEmail.toUtf8() + ">\r\n");
+    resp = sendCmd(&socket, "MAIL FROM:<" + SmtpClient::senderEmail().toUtf8() + ">\r\n");
     if (!resp.startsWith("250")) return false;
 
     resp = sendCmd(&socket, "RCPT TO:<" + toEmail.toUtf8() + ">\r\n");
@@ -130,7 +196,7 @@ static bool doSend(const QString &toEmail,
 
     QByteArray email;
     email += "Subject: =?UTF-8?B?" + subjectB64 + "?=\r\n";
-    email += "From: " + SmtpClient::senderEmail.toUtf8() + "\r\n";
+    email += "From: " + SmtpClient::senderEmail().toUtf8() + "\r\n";
     email += "To: " + toEmail.toUtf8() + "\r\n";
     email += "Content-Type: text/plain; charset=UTF-8\r\n";
     email += "\r\n";
@@ -155,6 +221,16 @@ static bool doSend(const QString &toEmail,
     return true;
 }
 
+/**
+ * @brief Отправляет письмо с кодом подтверждения
+ *
+ * Формирует письмо с темой "Код подтверждения ТИМП" и текстом,
+ * содержащим переданный код подтверждения.
+ *
+ * @param toEmail адрес получателя
+ * @param code код подтверждения (6 цифр)
+ * @return true, если письмо успешно отправлено; false — при ошибке
+ */
 bool SmtpClient::sendVerificationCode(const QString &toEmail, const QString &code)
 {
     QString subject = QString::fromUtf8("\u041a\u043e\u0434 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f \u0422\u0418\u041c\u041f");
@@ -162,6 +238,18 @@ bool SmtpClient::sendVerificationCode(const QString &toEmail, const QString &cod
     return doSend(toEmail, subject, body);
 }
 
+/**
+ * @brief Отправляет письмо с кодом сброса пароля
+ *
+ * Формирует письмо с темой "Восстановление пароля ТИМП" и текстом,
+ * содержащим приветствие с логином, код сброса и предупреждение
+ * о необходимости игнорировать письмо при несанкционированном запросе.
+ *
+ * @param toEmail адрес получателя
+ * @param login логин пользователя
+ * @param code код сброса пароля (6 цифр)
+ * @return true, если письмо успешно отправлено; false — при ошибке
+ */
 bool SmtpClient::sendPasswordResetCode(const QString &toEmail,
                                         const QString &login,
                                         const QString &code)

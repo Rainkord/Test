@@ -33,12 +33,33 @@
 #define FONT_FAMILY    "Segoe UI"
 
 // ──────────────────────────────────────────────────────────────────────────
+/**
+ * @brief Конструктор виджета блок-схемы
+ *
+ * Устанавливает фиксированный размер виджета.
+ *
+ * @param parent родительский виджет
+ */
 FlowchartWidget::FlowchartWidget(QWidget *parent)
     : QWidget(parent)
 {
     setFixedSize(700, 735);
 }
 
+/**
+ * @brief Рисует прямоугольный блок со скруглёнными углами
+ *
+ * Используется для блоков «Начало», «Конец», ввода, вычислений и вывода.
+ *
+ * @param p объект рисовальщика
+ * @param cx центр блока по X
+ * @param cy центр блока по Y
+ * @param w ширина блока
+ * @param h высота блока
+ * @param text текст внутри блока
+ * @param fill цвет заливки
+ * @param border цвет обводки
+ */
 void FlowchartWidget::drawRoundedBlock(QPainter &p, int cx, int cy, int w, int h,
                                         const QString &text,
                                         const QColor &fill, const QColor &border)
@@ -55,6 +76,20 @@ void FlowchartWidget::drawRoundedBlock(QPainter &p, int cx, int cy, int w, int h
     p.drawText(rect, Qt::AlignCenter | Qt::TextWordWrap, text);
 }
 
+/**
+ * @brief Рисует ромбовидный блок условия
+ *
+ * Используется для блоков условий «x < -2?» и «-2 <= x < 2?».
+ *
+ * @param p объект рисовальщика
+ * @param cx центр блока по X
+ * @param cy центр блока по Y
+ * @param w ширина блока
+ * @param h высота блока
+ * @param text текст условия внутри ромба
+ * @param fill цвет заливки
+ * @param border цвет обводки
+ */
 void FlowchartWidget::drawDiamond(QPainter &p, int cx, int cy, int w, int h,
                                    const QString &text,
                                    const QColor &fill, const QColor &border)
@@ -77,6 +112,13 @@ void FlowchartWidget::drawDiamond(QPainter &p, int cx, int cy, int w, int h,
     p.drawText(textRect, Qt::AlignCenter | Qt::TextWordWrap, text);
 }
 
+/**
+ * @brief Рисует стрелку вниз (линия + наконечник)
+ * @param p объект рисовальщика
+ * @param cx координата X начала и конца стрелки
+ * @param y1 координата Y начала стрелки
+ * @param y2 координата Y конца стрелки
+ */
 void FlowchartWidget::drawArrowDown(QPainter &p, int cx, int y1, int y2)
 {
     p.setPen(QPen(FC_ARROW, 2));
@@ -88,6 +130,13 @@ void FlowchartWidget::drawArrowDown(QPainter &p, int cx, int y1, int y2)
     p.setBrush(Qt::NoBrush);
 }
 
+/**
+ * @brief Рисует стрелку вправо (линия + наконечник)
+ * @param p объект рисовальщика
+ * @param x1 координата X начала стрелки
+ * @param x2 координата X конца стрелки
+ * @param y координата Y линии стрелки
+ */
 void FlowchartWidget::drawArrowRight(QPainter &p, int x1, int x2, int y)
 {
     p.setPen(QPen(FC_ARROW, 2));
@@ -99,12 +148,29 @@ void FlowchartWidget::drawArrowRight(QPainter &p, int x1, int x2, int y)
     p.setBrush(Qt::NoBrush);
 }
 
+/**
+ * @brief Рисует линию-стрелку между двумя точками (без наконечника)
+ * @param p объект рисовальщика
+ * @param x1 координата X начала
+ * @param y1 координата Y начала
+ * @param x2 координата X конца
+ * @param y2 координата Y конца
+ */
 void FlowchartWidget::drawArrowLine(QPainter &p, int x1, int y1, int x2, int y2)
 {
     p.setPen(QPen(FC_ARROW, 2));
     p.drawLine(x1, y1, x2, y2);
 }
 
+/**
+ * @brief Рисует текстовую подпись (например, «Да»/«Нет»)
+ * @param p объект рисовальщика
+ * @param cx центр текста по X
+ * @param cy центр текста по Y
+ * @param w ширина области текста
+ * @param h высота области текста
+ * @param text выводимый текст
+ */
 void FlowchartWidget::drawText(QPainter &p, int cx, int cy, int w, int h, const QString &text)
 {
     QRect rect(cx - w/2, cy - h/2, w, h);
@@ -114,6 +180,14 @@ void FlowchartWidget::drawText(QPainter &p, int cx, int cy, int w, int h, const 
     p.drawText(rect, Qt::AlignCenter, text);
 }
 
+/**
+ * @brief Обработчик отрисовки блок-схемы
+ *
+ * Последовательно отрисовывает все элементы блок-схемы:
+ * Начало → Ввод → Условия → Ветви вычислений → Вывод → Конец.
+ *
+ * @param event событие отрисовки (не используется)
+ */
 void FlowchartWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
@@ -201,6 +275,13 @@ void FlowchartWidget::paintEvent(QPaintEvent *)
 }
 
 // ──────────────────────────────────────────────────────────────────────────
+/**
+ * @brief Конструктор диалога блок-схемы
+ *
+ * Устанавливает стили и создаёт пользовательский интерфейс.
+ *
+ * @param parent родительский виджет
+ */
 SchemaDialog::SchemaDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -210,8 +291,14 @@ SchemaDialog::SchemaDialog(QWidget *parent)
     setupUI();
 }
 
+/// Деструктор диалога блок-схемы
 SchemaDialog::~SchemaDialog() {}
 
+/**
+ * @brief Инициализация пользовательского интерфейса диалога
+ *
+ * Создаёт виджет блок-схемы и кнопку закрытия.
+ */
 void SchemaDialog::setupUI()
 {
     setWindowTitle("Блок-схема вычислительного процесса");

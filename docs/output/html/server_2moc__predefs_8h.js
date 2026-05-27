@@ -361,7 +361,7 @@ var server_2moc__predefs_8h =
     [ "__LP64__", "server_2moc__predefs_8h.html#a1939a48605c72ad163215e2279590fd5", null ],
     [ "__MMX__", "server_2moc__predefs_8h.html#ab61dd6e368adb90e2eff5739188b0bcb", null ],
     [ "__MMX_WITH_SSE__", "server_2moc__predefs_8h.html#a0669bf63ae7b04ed5f40ad73520271d8", null ],
-    [ "__OPTIMIZE__", "server_2moc__predefs_8h.html#a5bcf2962d7a37c34484cef13fa9601b2", null ],
+    [ "__NO_INLINE__", "server_2moc__predefs_8h.html#a7a76473a66d022aee2c9f661405d8fbb", null ],
     [ "__ORDER_BIG_ENDIAN__", "server_2moc__predefs_8h.html#a190d0219caabccc0e05909f39bcb00d6", null ],
     [ "__ORDER_LITTLE_ENDIAN__", "server_2moc__predefs_8h.html#a2b695357ce4b46971d54e8e9dfe5724f", null ],
     [ "__ORDER_PDP_ENDIAN__", "server_2moc__predefs_8h.html#a94ead674b2441dc29dbd5d6aba467197", null ],

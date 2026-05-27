@@ -1,8 +1,3 @@
-/**
- * @file resetwidget.cpp
- * @brief Восстановление пароля. Шаг 2 использует OTP-ввод 6 боксов. ESC → шаг 1.
- */
-
 #include "resetwidget.h"
 #include "otpinput.h"
 #include "clientsingleton.h"
@@ -40,6 +35,10 @@
 
 // ── Style helpers ─────────────────────────────────────────────────────────────
 
+/**
+ * @brief Генерирует стиль CSS для полей ввода
+ * @return строка со стилем CSS
+ */
 static QString inputStyleR()
 {
     return QString(
@@ -50,6 +49,10 @@ static QString inputStyleR()
     ).arg(GH_INPUT_BG, GH_TEXT, GH_BORDER, FONT_FAMILY).arg(FS_INPUT).arg(GH_BLUE);
 }
 
+/**
+ * @brief Генерирует стиль CSS для основной зелёной кнопки
+ * @return строка со стилем CSS
+ */
 static QString primaryR()
 {
     return QString(
@@ -61,6 +64,10 @@ static QString primaryR()
     ).arg(GH_GREEN, GH_GREEN_H, FONT_FAMILY).arg(FS_BTN);
 }
 
+/**
+ * @brief Генерирует стиль CSS для второстепенной кнопки
+ * @return строка со стилем CSS
+ */
 static QString secondaryR()
 {
     return QString(
@@ -71,6 +78,10 @@ static QString secondaryR()
     ).arg(GH_BTN_GHOST, GH_BTN_GHOST_H, GH_TEXT, GH_BORDER, FONT_FAMILY).arg(FS_BTN);
 }
 
+/**
+ * @brief Генерирует стиль CSS для прозрачной кнопки-призрака
+ * @return строка со стилем CSS
+ */
 static QString ghostR()
 {
     return QString(
@@ -81,6 +92,10 @@ static QString ghostR()
     ).arg(GH_BTN_GHOST, GH_BTN_GHOST_H, GH_TEXT, GH_BORDER, FONT_FAMILY).arg(FS_BTN);
 }
 
+/**
+ * @brief Генерирует стиль CSS для кнопки-ссылки
+ * @return строка со стилем CSS
+ */
 static QString linkR()
 {
     return QString(
@@ -90,18 +105,30 @@ static QString linkR()
     ).arg(GH_BLUE, FONT_FAMILY).arg(FS_BTN).arg(GH_BLUE_H);
 }
 
+/**
+ * @brief Генерирует стиль CSS для метки ошибки
+ * @return строка со стилем CSS
+ */
 static QString errorR()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_RED, FONT_FAMILY).arg(FS_SMALL);
 }
 
+/**
+ * @brief Генерирует стиль CSS для информационной метки
+ * @return строка со стилем CSS
+ */
 static QString infoR()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_MUTED, FONT_FAMILY).arg(FS_SMALL);
 }
 
+/**
+ * @brief Генерирует стиль CSS для метки успешного результата
+ * @return строка со стилем CSS
+ */
 static QString successR()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
@@ -109,6 +136,14 @@ static QString successR()
 }
 
 // ── Constructor ──────────────────────────────────────────────────────────────────
+/**
+ * @brief Конструктор виджета сброса пароля
+ *
+ * Инициализирует таймер блокировки, подключает сигнал ответа сервера,
+ * устанавливает стили и создаёт пользовательский интерфейс.
+ *
+ * @param parent родительский виджет
+ */
 ResetWidget::ResetWidget(QWidget *parent)
     : QWidget(parent)
     , m_currentStep(StepEmail)
@@ -132,6 +167,7 @@ ResetWidget::ResetWidget(QWidget *parent)
     setupUI();
 }
 
+/// Деструктор виджета сброса пароля
 ResetWidget::~ResetWidget() {}
 
 // ── clearFields ───────────────────────────────────────────────────────────────
@@ -140,6 +176,13 @@ ResetWidget::~ResetWidget() {}
 // Это предотвращает ситуацию, когда зависший флаг m_waitingForCodeHash
 // или m_waitingForSave заставляет onResetResponseReceived обрабатывать
 // следующий ответ сервера (например, от auth) как ответ на сброс пароля.
+/**
+ * @brief Полный сброс состояния виджета
+ *
+ * Сбрасывает флаги ожидания, останавливает таймер блокировки,
+ * очищает все поля и возвращает виджет на шаг ввода email.
+ * Вызывается перед каждым открытием экрана сброса пароля.
+ */
 void ResetWidget::clearFields()
 {
     // Сброс флагов ожидания — ПЕРВЫМ ДЕЛОМ, до любых UI-изменений
@@ -184,6 +227,12 @@ void ResetWidget::clearFields()
     showStep(StepEmail);
 }
 
+/**
+ * @brief Инициализация пользовательского интерфейса
+ *
+ * Создаёт три шага: ввод email, OTP-код и новый пароль.
+ * Настраивает все сигналы и слоты, компонует элементы управления.
+ */
 void ResetWidget::setupUI()
 {
     auto *outerV = new QVBoxLayout(this);
@@ -382,6 +431,10 @@ void ResetWidget::setupUI()
     showStep(StepEmail);
 }
 
+/**
+ * @brief Переключает отображаемый шаг процесса сброса пароля
+ * @param step номер шага для отображения
+ */
 void ResetWidget::showStep(Step step)
 {
     m_currentStep = step;
@@ -395,6 +448,14 @@ void ResetWidget::showStep(Step step)
     }
 }
 
+/**
+ * @brief Обработчик нажатия клавиш
+ *
+ * При нажатии Escape: на шаге кода — возврат к email,
+ * на шаге пароля — возврат к коду, на шаге email — выход на авторизацию.
+ *
+ * @param e событие нажатия клавиши
+ */
 void ResetWidget::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Escape) {
@@ -408,12 +469,18 @@ void ResetWidget::keyPressEvent(QKeyEvent *e)
     }
 }
 
+/**
+ * @brief Проверяет корректность формата email
+ * @param email адрес электронной почты для проверки
+ * @return true если email соответствует регулярному выражению
+ */
 bool ResetWidget::isEmailValid(const QString &email) const
 {
     QRegularExpression re("^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$");
     return re.match(email).hasMatch();
 }
 
+/// Проверяет совпадение и корректность паролей, обновляет состояние кнопки «Сохранить»
 void ResetWidget::validatePasswords()
 {
     const QString np = newPasswordEdit->text();
@@ -422,6 +489,14 @@ void ResetWidget::validatePasswords()
     saveBtn->setEnabled(ok);
 }
 
+/**
+ * @brief Обработчик изменения текста в поле email
+ *
+ * Проверяет формат email и показывает ошибку при неверном формате.
+ * Активирует кнопку «Отправить код» при корректном email.
+ *
+ * @param text текущее содержимое поля email
+ */
 void ResetWidget::onEmailTextChanged(const QString &text)
 {
     if (text.isEmpty()) { emailErrorLabel->hide(); continueBtn->setEnabled(false); return; }
@@ -435,6 +510,7 @@ void ResetWidget::onEmailTextChanged(const QString &text)
     }
 }
 
+/// Обработчик нажатия кнопки «Отправить код»: отправляет запрос на сброс пароля серверу
 void ResetWidget::onContinueClicked()
 {
     if (!continueBtn->isEnabled()) return;
@@ -447,11 +523,25 @@ void ResetWidget::onContinueClicked()
         QString("reset_password||%1").arg(m_email));
 }
 
+/**
+ * @brief Обработчик изменения OTP-кода
+ *
+ * Активирует кнопку «Подтвердить» при заполнении всех полей.
+ *
+ * @param text текущее содержимое OTP-ввода (не используется)
+ */
 void ResetWidget::onCodeTextChanged(const QString &)
 {
     verifyCodeBtn->setEnabled(!isLocked && codeEdit->isComplete() && !m_pendingCodeHash.isEmpty());
 }
 
+/**
+ * @brief Обработчик нажатия кнопки «Подтвердить код»
+ *
+ * Хэширует введённый код и сравнивает с полученным от сервера.
+ * При совпадении переход к шагу установки нового пароля.
+ * При несовпадении увеличивает счётчик попыток с блокировкой.
+ */
 void ResetWidget::onVerifyCodeClicked()
 {
     if (isLocked) return;
@@ -494,6 +584,14 @@ void ResetWidget::onVerifyCodeClicked()
     }
 }
 
+/**
+ * @brief Обработчик изменения поля «Новый пароль»
+ *
+ * Проверяет минимальную длину пароля (8 символов) и совпадение
+ * с полем подтверждения.
+ *
+ * @param text текущее значение нового пароля
+ */
 void ResetWidget::onNewPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text.length() < 8) {
@@ -511,6 +609,13 @@ void ResetWidget::onNewPasswordTextChanged(const QString &text)
     validatePasswords();
 }
 
+/**
+ * @brief Обработчик изменения поля «Подтвердите пароль»
+ *
+ * Проверяет совпадение с полем нового пароля.
+ *
+ * @param text текущее значение подтверждения пароля
+ */
 void ResetWidget::onConfirmPasswordTextChanged(const QString &text)
 {
     if (!text.isEmpty() && text != newPasswordEdit->text()) {
@@ -522,18 +627,21 @@ void ResetWidget::onConfirmPasswordTextChanged(const QString &text)
     validatePasswords();
 }
 
+/// Переключает видимость нового пароля между режимами Password и Normal
 void ResetWidget::onTogglePassword1()
 {
     newPasswordEdit->setEchoMode(newPasswordEdit->echoMode() == QLineEdit::Password
                                      ? QLineEdit::Normal : QLineEdit::Password);
 }
 
+/// Переключает видимость подтверждения пароля между режимами Password и Normal
 void ResetWidget::onTogglePassword2()
 {
     confirmPasswordEdit->setEchoMode(confirmPasswordEdit->echoMode() == QLineEdit::Password
                                          ? QLineEdit::Normal : QLineEdit::Password);
 }
 
+/// Обработчик нажатия кнопки «Сохранить пароль»: хэширует пароль и отправляет на сервер
 void ResetWidget::onSavePasswordClicked()
 {
     if (!saveBtn->isEnabled()) return;
@@ -549,6 +657,7 @@ void ResetWidget::onSavePasswordClicked()
         QString("set_new_password||%1||%2").arg(m_email, hash));
 }
 
+/// Обработчик нажатия кнопки «Назад»: сбрасывает флаги ожидания и испускает сигнал backToAuth
 void ResetWidget::onBackClicked()
 {
     // Сбрасываем флаги ожидания перед уходом — если сервер ещё не ответил,
@@ -560,6 +669,7 @@ void ResetWidget::onBackClicked()
     emit backToAuth();
 }
 
+/// Обработчик срабатывания таймера блокировки: снимает блокировку и очищает OTP-ввод
 void ResetWidget::onLockTimerFired()
 {
     isLocked = false;
@@ -569,6 +679,11 @@ void ResetWidget::onLockTimerFired()
     codeErrorLabel->hide();
 }
 
+/**
+ * @brief Блокирует ввод OTP-кода на указанное время
+ * @param minutes количество минут блокировки (0 = 30 секунд)
+ * @param message сообщение при блокировке
+ */
 void ResetWidget::applyLock(int minutes, const QString &message)
 {
     isLocked = true;
@@ -579,6 +694,14 @@ void ResetWidget::applyLock(int minutes, const QString &message)
     lockTimer->start(minutes == 0 ? 30 * 1000 : minutes * 60 * 1000);
 }
 
+/**
+ * @brief Обработчик ответа сервера на запросы сброса пароля
+ *
+ * Обрабатывает два типа ответов: получение хэша кода (m_waitingForCodeHash)
+ * и результат сохранения нового пароля (m_waitingForSave).
+ *
+ * @param response строка ответа от сервера
+ */
 void ResetWidget::onResetResponseReceived(const QString &response)
 {
     QString r = response.trimmed();

@@ -109,6 +109,8 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
 <code>#include &lt;QFrame&gt;</code><br />
 <code>#include &lt;QStyle&gt;</code><br />
 <code>#include &lt;QApplication&gt;</code><br />
+<code>#include &lt;QPixmap&gt;</code><br />
+<code>#include &lt;QSizePolicy&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
@@ -122,13 +124,9 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
 <tr class="memitem:a38738d697be4294cef70da505776fd3a" id="r_a38738d697be4294cef70da505776fd3a"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a38738d697be4294cef70da505776fd3a">GH_BORDER</a>&#160;&#160;&#160;&quot;#30363d&quot;</td></tr>
 <tr class="memitem:a76923ca4d575de2db881bfd1e2ed8fc6" id="r_a76923ca4d575de2db881bfd1e2ed8fc6"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a76923ca4d575de2db881bfd1e2ed8fc6">GH_TEXT</a>&#160;&#160;&#160;&quot;#e6edf3&quot;</td></tr>
 <tr class="memitem:ae8746773945bc183eb687ba96b77b05c" id="r_ae8746773945bc183eb687ba96b77b05c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ae8746773945bc183eb687ba96b77b05c">GH_MUTED</a>&#160;&#160;&#160;&quot;#8b949e&quot;</td></tr>
-<tr class="memitem:a3f734cf434f583d8a713631c43619f90" id="r_a3f734cf434f583d8a713631c43619f90"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a3f734cf434f583d8a713631c43619f90">GH_GREEN</a>&#160;&#160;&#160;&quot;#238636&quot;</td></tr>
-<tr class="memitem:a68e2e9b14ef1d97a4810924fe86a4046" id="r_a68e2e9b14ef1d97a4810924fe86a4046"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a68e2e9b14ef1d97a4810924fe86a4046">GH_GREEN_H</a>&#160;&#160;&#160;&quot;#2ea043&quot;</td></tr>
 <tr class="memitem:aa2a841231efbad4248103dde1cca91df" id="r_aa2a841231efbad4248103dde1cca91df"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#aa2a841231efbad4248103dde1cca91df">GH_RED_BTN</a>&#160;&#160;&#160;&quot;#b91c1c&quot;</td></tr>
 <tr class="memitem:ab9f67b2de7b3756b87d634a89d7d274b" id="r_ab9f67b2de7b3756b87d634a89d7d274b"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ab9f67b2de7b3756b87d634a89d7d274b">GH_RED_BTN_H</a>&#160;&#160;&#160;&quot;#991b1b&quot;</td></tr>
 <tr class="memitem:a5626014872de4495ee148e630d071b49" id="r_a5626014872de4495ee148e630d071b49"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a5626014872de4495ee148e630d071b49">GH_INPUT_BG</a>&#160;&#160;&#160;&quot;#0d1117&quot;</td></tr>
-<tr class="memitem:a764be68141614f04e8dd8fd317d22a50" id="r_a764be68141614f04e8dd8fd317d22a50"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a764be68141614f04e8dd8fd317d22a50">GH_BTN_GHOST</a>&#160;&#160;&#160;&quot;#21262d&quot;</td></tr>
-<tr class="memitem:ac82523c67e2b8f2dc18c3176d28f5708" id="r_ac82523c67e2b8f2dc18c3176d28f5708"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ac82523c67e2b8f2dc18c3176d28f5708">GH_BTN_GHOST_H</a>&#160;&#160;&#160;&quot;#30363d&quot;</td></tr>
 <tr class="memitem:a1c70ca2b0d1bfcbf5e6c8e4313730684" id="r_a1c70ca2b0d1bfcbf5e6c8e4313730684"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a1c70ca2b0d1bfcbf5e6c8e4313730684">CANVAS_BG</a>&#160;&#160;&#160;QColor(0x0d, 0x11, 0x17)</td></tr>
 <tr class="memitem:aa144abea62a576df6a8b38fcbff5cabd" id="r_aa144abea62a576df6a8b38fcbff5cabd"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#aa144abea62a576df6a8b38fcbff5cabd">GRID_COLOR</a>&#160;&#160;&#160;QColor(0x21, 0x26, 0x2d)</td></tr>
 <tr class="memitem:abdf75ae320ab1dc8bc06fb987b89f772" id="r_abdf75ae320ab1dc8bc06fb987b89f772"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#abdf75ae320ab1dc8bc06fb987b89f772">AXIS_COLOR</a>&#160;&#160;&#160;QColor(0xe6, 0xed, 0xf3)</td></tr>
@@ -152,7 +150,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00040">40</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00036">36</a></p>
 
 </div>
 </div>
@@ -168,7 +166,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00038">38</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00034">34</a></p>
 
 </div>
 </div>
@@ -184,7 +182,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00045">45</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00041">41</a></p>
 
 </div>
 </div>
@@ -200,7 +198,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00046">46</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00042">42</a></p>
 
 </div>
 </div>
@@ -216,7 +214,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00047">47</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00043">43</a></p>
 
 </div>
 </div>
@@ -232,7 +230,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00024">24</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00025">25</a></p>
 
 </div>
 </div>
@@ -248,71 +246,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00026">26</a></p>
-
-</div>
-</div>
-<a id="a764be68141614f04e8dd8fd317d22a50" name="a764be68141614f04e8dd8fd317d22a50"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a764be68141614f04e8dd8fd317d22a50">&#9670;&#160;</a></span>GH_BTN_GHOST</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define GH_BTN_GHOST&#160;&#160;&#160;&quot;#21262d&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00034">34</a></p>
-
-</div>
-</div>
-<a id="ac82523c67e2b8f2dc18c3176d28f5708" name="ac82523c67e2b8f2dc18c3176d28f5708"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac82523c67e2b8f2dc18c3176d28f5708">&#9670;&#160;</a></span>GH_BTN_GHOST_H</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define GH_BTN_GHOST_H&#160;&#160;&#160;&quot;#30363d&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00035">35</a></p>
-
-</div>
-</div>
-<a id="a3f734cf434f583d8a713631c43619f90" name="a3f734cf434f583d8a713631c43619f90"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f734cf434f583d8a713631c43619f90">&#9670;&#160;</a></span>GH_GREEN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define GH_GREEN&#160;&#160;&#160;&quot;#238636&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00029">29</a></p>
-
-</div>
-</div>
-<a id="a68e2e9b14ef1d97a4810924fe86a4046" name="a68e2e9b14ef1d97a4810924fe86a4046"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68e2e9b14ef1d97a4810924fe86a4046">&#9670;&#160;</a></span>GH_GREEN_H</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define GH_GREEN_H&#160;&#160;&#160;&quot;#2ea043&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00030">30</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00027">27</a></p>
 
 </div>
 </div>
@@ -328,7 +262,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00033">33</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00032">32</a></p>
 
 </div>
 </div>
@@ -344,7 +278,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00028">28</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00029">29</a></p>
 
 </div>
 </div>
@@ -360,7 +294,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00025">25</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00026">26</a></p>
 
 </div>
 </div>
@@ -376,7 +310,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00031">31</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00030">30</a></p>
 
 </div>
 </div>
@@ -392,7 +326,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00032">32</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00031">31</a></p>
 
 </div>
 </div>
@@ -408,7 +342,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00027">27</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00028">28</a></p>
 
 </div>
 </div>
@@ -424,7 +358,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00039">39</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00035">35</a></p>
 
 </div>
 </div>
@@ -440,7 +374,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00041">41</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00037">37</a></p>
 
 </div>
 </div>
@@ -456,7 +390,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00042">42</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00038">38</a></p>
 
 </div>
 </div>
@@ -472,7 +406,7 @@ $(function(){initNavTree('graphwidget_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00043">43</a></p>
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00039">39</a></p>
 
 </div>
 </div>

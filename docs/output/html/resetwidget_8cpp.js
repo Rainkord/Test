@@ -1,10 +1,10 @@
 var resetwidget_8cpp =
 [
     [ "FONT_FAMILY", "resetwidget_8cpp.html#a1f86a89716ada4d7063c047811d1076b", null ],
-    [ "FONT_SIZE_BTN", "resetwidget_8cpp.html#a04827d7a2d5f2dfa0236cefc3ddff298", null ],
-    [ "FONT_SIZE_INPUT", "resetwidget_8cpp.html#a3dcd1a12d9c5585515d2476ea015682e", null ],
-    [ "FONT_SIZE_SMALL", "resetwidget_8cpp.html#aed5645d2c15efb00e43ba14e9669044d", null ],
-    [ "FONT_SIZE_TITLE", "resetwidget_8cpp.html#aa56fde3a1ad53534c34093b86e10afe4", null ],
+    [ "FS_BTN", "resetwidget_8cpp.html#a4324f002987f880745b061019d4b5852", null ],
+    [ "FS_INPUT", "resetwidget_8cpp.html#a9d90811720e620729f85a7d92d310b2f", null ],
+    [ "FS_SMALL", "resetwidget_8cpp.html#a82f9123103a81a3d4d81ff005d217785", null ],
+    [ "FS_TITLE", "resetwidget_8cpp.html#acac4b5a2221e625d4b3eac4d7c4ad32f", null ],
     [ "GH_BG", "resetwidget_8cpp.html#a9a85fef90bad6eab392e2471a65f8d4f", null ],
     [ "GH_BLUE", "resetwidget_8cpp.html#a9d20cf908492c430163af5d2a12856b7", null ],
     [ "GH_BLUE_H", "resetwidget_8cpp.html#a42a7d8f7fd32b675ebe65742eddf8b30", null ],

@@ -32,7 +32,11 @@
 #define FONT_SIZE_INPUT  11
 #define FONT_SIZE_SMALL   9
 
-// ── Style helpers ───────────────────────────────────────────────────────────────
+/**
+ * @brief Генератор стиля для полей ввода
+ * 
+ * @return Строка CSS-стиля для QLineEdit в стиле GitHub dark
+ */
 static QString s_input()
 {
     return QString(
@@ -46,6 +50,11 @@ static QString s_input()
      .arg(FONT_FAMILY).arg(FONT_SIZE_INPUT).arg(GH_BLUE);
 }
 
+/**
+ * @brief Генератор стиля для основной кнопки (зелёная)
+ * 
+ * @return Строка CSS-стиля для QPushButton в стиле GitHub green
+ */
 static QString s_primaryBtn()
 {
     return QString(
@@ -59,6 +68,11 @@ static QString s_primaryBtn()
     ).arg(GH_GREEN).arg(GH_GREEN_H).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
 }
 
+/**
+ * @brief Генератор стиля для призрачной кнопки
+ * 
+ * @return Строка CSS-стиля для QPushButton с прозрачным фоном
+ */
 static QString s_ghostBtn()
 {
     return QString(
@@ -72,6 +86,11 @@ static QString s_ghostBtn()
      .arg(GH_BORDER).arg(FONT_FAMILY).arg(FONT_SIZE_BTN);
 }
 
+/**
+ * @brief Генератор стиля для кнопки-ссылки
+ * 
+ * @return Строка CSS-стиля для QPushButton в виде ссылки
+ */
 static QString s_linkBtn()
 {
     return QString(
@@ -81,19 +100,36 @@ static QString s_linkBtn()
     ).arg(GH_BLUE).arg(FONT_FAMILY).arg(FONT_SIZE_BTN).arg(GH_BLUE_H);
 }
 
+/**
+ * @brief Генератор стиля для метки ошибки
+ * 
+ * @return Строка CSS-стиля для QLabel с красным цветом текста
+ */
 static QString s_errorLabel()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_RED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
+/**
+ * @brief Генератор стиля для метки-подсказки
+ * 
+ * @return Строка CSS-стиля для QLabel с серым цветом текста
+ */
 static QString s_hintLabel()
 {
     return QString("QLabel { color: %1; border: none; font-family: '%2'; font-size: %3pt; }")
            .arg(GH_MUTED).arg(FONT_FAMILY).arg(FONT_SIZE_SMALL);
 }
 
-// ── Constructor ───────────────────────────────────────────────────────────────────
+/**
+ * @brief Конструктор виджета авторизации
+ * 
+ * Инициализирует переменные состояния, настраивает UI,
+ * создаёт таймер блокировки и подключает сигнал ответа сервера.
+ * 
+ * @param parent Родительский виджет
+ */
 AuthWidget::AuthWidget(QWidget *parent)
     : QWidget(parent)
     , failedAttempts(0)
@@ -115,9 +151,18 @@ AuthWidget::AuthWidget(QWidget *parent)
             this, &AuthWidget::onAuthResponseReceived);
 }
 
+/**
+ * @brief Деструктор виджета авторизации
+ */
 AuthWidget::~AuthWidget() {}
 
-// ── setupUI ────────────────────────────────────────────────────────────────────
+/**
+ * @brief Настройка пользовательского интерфейса
+ * 
+ * Создаёт центрированную карточку с заголовком, полями ввода
+ * логина и пароля, кнопками "Войти", "Регистрация" и "Забыл пароль",
+ * а также статусными метками для отображения ошибок.
+ */
 void AuthWidget::setupUI()
 {
     auto *outerLayout = new QVBoxLayout(this);
@@ -223,7 +268,12 @@ void AuthWidget::setupUI()
     outerLayout->addStretch(1);
 }
 
-// ── clearFields ─────────────────────────────────────────────────────────────────
+/**
+ * @brief Очистить все поля ввода и сбросить состояние виджета
+ * 
+ * Очищает поля логина и пароля, скрывает статусные метки,
+ * включает кнопку входа и сбрасывает флаги ожидания.
+ */
 void AuthWidget::clearFields()
 {
     loginEdit->clear();
@@ -236,7 +286,12 @@ void AuthWidget::clearFields()
     m_pendingCodeHash.clear();
 }
 
-// ── Slots ─────────────────────────────────────────────────────────────────────
+/**
+ * @brief Слот для переключения видимости пароля
+ * 
+ * Переключает режим отображения поля пароля между
+ * скрытым (Password) и видимым (Normal).
+ */
 void AuthWidget::onTogglePassword()
 {
     if (passwordEdit->echoMode() == QLineEdit::Password) {
@@ -248,6 +303,13 @@ void AuthWidget::onTogglePassword()
     }
 }
 
+/**
+ * @brief Слот для обработки нажатия кнопки "Войти"
+ * 
+ * Проверяет заполненность полей, хэширует пароль (SHA-256),
+ * отправляет асинхронный запрос авторизации на сервер
+ * и отображает статус "Проверка...".
+ */
 void AuthWidget::onLoginClicked()
 {
     if (isLocked || m_waitingForAuth) return;
@@ -274,9 +336,30 @@ void AuthWidget::onLoginClicked()
         QString("auth||%1||%2").arg(login, passHash));
 }
 
+/**
+ * @brief Слот для обработки нажатия ссылки "Регистрация"
+ * 
+ * Испускает сигнал showRegister для переключения на экран регистрации.
+ */
 void AuthWidget::onRegisterClicked() { emit showRegister(); }
+
+/**
+ * @brief Слот для обработки нажатия ссылки "Забыл пароль"
+ * 
+ * Испускает сигнал showReset для переключения на экран восстановления пароля.
+ */
 void AuthWidget::onForgotClicked()   { emit showReset(); }
 
+/**
+ * @brief Слот для обработки ответа сервера на запрос авторизации
+ * 
+ * Обрабатывает три варианта ответа:
+ * - auth_code_sent: сервер отправил код подтверждения, переход на верификацию
+ * - auth-: неверные учётные данные, увеличение счётчика попыток с блокировкой
+ * - другой: ошибка соединения с сервером
+ * 
+ * @param response Ответ сервера
+ */
 void AuthWidget::onAuthResponseReceived(const QString &response)
 {
     if (!m_waitingForAuth) return;
@@ -314,6 +397,15 @@ void AuthWidget::onAuthResponseReceived(const QString &response)
     statusLabel->show();
 }
 
+/**
+ * @brief Применить блокировку входа на указанное время
+ * 
+ * Блокирует кнопку входа, отображает сообщение о блокировке
+ * и запускает таймер на указанное количество секунд.
+ * 
+ * @param durationSec Длительность блокировки в секундах
+ * @param message Сообщение для отображения пользователю
+ */
 void AuthWidget::applyLock(int durationSec, const QString &message)
 {
     isLocked = true;
@@ -325,6 +417,11 @@ void AuthWidget::applyLock(int durationSec, const QString &message)
     lockTimer->start(durationSec * 1000);
 }
 
+/**
+ * @brief Слот для обработки срабатывания таймера блокировки
+ * 
+ * Снимает блокировку, включает кнопку входа и скрывает статусные метки.
+ */
 void AuthWidget::onLockTimerFired()
 {
     isLocked = false;

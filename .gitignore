@@ -52,3 +52,4 @@ server/email.txt
 .DS_Store
 Thumbs.db
 *~
+.idea/

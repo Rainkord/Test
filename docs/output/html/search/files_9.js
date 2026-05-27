@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['verifywidget_2ecpp_0',['verifywidget.cpp',['../verifywidget_8cpp.html',1,'']]],
-  ['verifywidget_2eh_1',['verifywidget.h',['../verifywidget_8h.html',1,'']]]
+  ['regwidget_2ecpp_0',['regwidget.cpp',['../regwidget_8cpp.html',1,'']]],
+  ['regwidget_2eh_1',['regwidget.h',['../regwidget_8h.html',1,'']]],
+  ['resetwidget_2ecpp_2',['resetwidget.cpp',['../resetwidget_8cpp.html',1,'']]],
+  ['resetwidget_2eh_3',['resetwidget.h',['../resetwidget_8h.html',1,'']]]
 ];

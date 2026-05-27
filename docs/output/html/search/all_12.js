@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['verificationsuccess_0',['verificationSuccess',['../classVerifyWidget.html#a3385b37432077b02c6af753c7b2e0d4d',1,'VerifyWidget']]],
-  ['verifywidget_1',['VerifyWidget',['../classVerifyWidget.html',1,'VerifyWidget'],['../classVerifyWidget.html#ac9137b260ddd289dcd1dd084b38338f8',1,'VerifyWidget::VerifyWidget()']]],
-  ['verifywidget_2ecpp_2',['verifywidget.cpp',['../verifywidget_8cpp.html',1,'']]],
-  ['verifywidget_2eh_3',['verifywidget.h',['../verifywidget_8h.html',1,'']]]
+  ['taskdialog_0',['TaskDialog',['../classTaskDialog.html',1,'TaskDialog'],['../classTaskDialog.html#ab0c4ebb04bc3ad9761644eceeaf90859',1,'TaskDialog::TaskDialog()']]],
+  ['taskdialog_2ecpp_1',['taskdialog.cpp',['../taskdialog_8cpp.html',1,'']]],
+  ['taskdialog_2eh_2',['taskdialog.h',['../taskdialog_8h.html',1,'']]],
+  ['tempregdata_3',['TempRegData',['../structTempRegData.html',1,'']]],
+  ['tempresetdata_4',['TempResetData',['../structTempResetData.html',1,'']]]
 ];

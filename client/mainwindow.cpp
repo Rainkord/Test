@@ -15,6 +15,14 @@ static const char* GH_PANEL  = "#161b22";
 static const char* GH_BORDER = "#30363d";
 static const char* GH_TEXT   = "#e6edf3";
 
+/**
+ * @brief Конструктор главного окна
+ * 
+ * Устанавливает заголовок окна, настраивает UI и подключает сигналы.
+ * Центрирует окно на экране и устанавливает максимальный размер.
+ * 
+ * @param parent Родительский виджет
+ */
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -30,8 +38,18 @@ MainWindow::MainWindow(QWidget *parent)
     }
 }
 
+/**
+ * @brief Деструктор главного окна
+ */
 MainWindow::~MainWindow() {}
 
+/**
+ * @brief Настройка пользовательского интерфейса
+ * 
+ * Создаёт центральный виджет, верхнюю панель с кнопками навигации
+ * и стековый виджет с экранами: авторизация, регистрация, верификация,
+ * график и восстановление пароля.
+ */
 void MainWindow::setupUI()
 {
     centralWidget = new QWidget(this);
@@ -103,6 +121,13 @@ void MainWindow::setupUI()
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
+/**
+ * @brief Подключение сигналов виджетов к слотам главного окна
+ * 
+ * Устанавливает все соединения для навигации между экранами:
+ * авторизация ↔ регистрация, верификация, восстановление пароля,
+ * выход из аккаунта, открытие диалогов задания и схемы.
+ */
 void MainWindow::connectSignals()
 {
     connect(authWidget, &AuthWidget::showVerifyAuth, this, &MainWindow::onShowVerifyAuth);
@@ -124,28 +149,47 @@ void MainWindow::connectSignals()
     connect(schemaBtn, &QPushButton::clicked, this, &MainWindow::onSchemaBtnClicked);
 }
 
+/**
+ * @brief Слот для переключения на экран регистрации
+ * 
+ * Очищает поля виджета регистрации и устанавливает текущий индекс стека на IDX_REG.
+ */
 void MainWindow::onShowRegister()
 {
     regWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_REG);
 }
 
+/**
+ * @brief Слот для переключения на экран авторизации
+ * 
+ * Очищает поля виджета авторизации и устанавливает текущий индекс стека на IDX_AUTH.
+ */
 void MainWindow::onShowAuth()
 {
     authWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
+/**
+ * @brief Слот для возврата на экран авторизации
+ * 
+ * Сбрасывает виджеты восстановления пароля и авторизации,
+ * гарантируя что флаги ожидания не останутся в состоянии true.
+ */
 void MainWindow::onBackToAuth()
 {
-    // Сбрасываем resetWidget на случай если возврат произошёл из середины
-    // процесса сброса пароля — это гарантирует что флаги m_waitingFor*
-    // не останутся висеть и не перехватят следующий ответ сервера
     resetWidget->clearFields();
     authWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
+/**
+ * @brief Слот для выхода из аккаунта
+ * 
+ * Очищает поля виджетов восстановления пароля и авторизации,
+ * возвращая пользователя на экран входа.
+ */
 void MainWindow::onLogout()
 {
     resetWidget->clearFields();
@@ -153,12 +197,29 @@ void MainWindow::onLogout()
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
+/**
+ * @brief Слот для переключения на экран верификации при входе
+ * 
+ * Устанавливает логин и хэш кода в виджете верификации,
+ * затем переключает стек на IDX_VERIFY.
+ * 
+ * @param login Логин пользователя, проходящего верификацию
+ * @param codeHash Хэш кода подтверждения, полученный от сервера
+ */
 void MainWindow::onShowVerifyAuth(const QString &login, const QString &codeHash)
 {
     verifyWidget->setLogin(login, codeHash);
     stackedWidget->setCurrentIndex(IDX_VERIFY);
 }
 
+/**
+ * @brief Слот, вызываемый при успешной верификации
+ * 
+ * Устанавливает логин в виджете графика, обновляет данные графика
+ * и переключает стек на IDX_GRAPH.
+ * 
+ * @param login Логин верифицированного пользователя
+ */
 void MainWindow::onVerificationSuccess(const QString &login)
 {
     graphWidget->setUserLogin(login);
@@ -166,6 +227,14 @@ void MainWindow::onVerificationSuccess(const QString &login)
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
+/**
+ * @brief Слот, вызываемый при успешной регистрации
+ * 
+ * Устанавливает логин в виджете графика, обновляет данные графика
+ * и переключает стек на IDX_GRAPH.
+ * 
+ * @param login Логин зарегистрированного пользователя
+ */
 void MainWindow::onRegistrationSuccess(const QString &login)
 {
     graphWidget->setUserLogin(login);
@@ -173,27 +242,45 @@ void MainWindow::onRegistrationSuccess(const QString &login)
     stackedWidget->setCurrentIndex(IDX_GRAPH);
 }
 
+/**
+ * @brief Слот для переключения на экран восстановления пароля
+ * 
+ * Сбрасывает виджет восстановления пароля перед открытием
+ * для устранения зависания при повторном открытии.
+ */
 void MainWindow::onShowReset()
 {
-    // Всегда сбрасываем виджет перед открытием — устраняет зависание
-    // при повторном открытии экрана восстановления пароля, когда
-    // m_waitingForCodeHash или m_waitingForSave остались true
     resetWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_RESET);
 }
 
+/**
+ * @brief Слот, вызываемый при успешном сбросе пароля
+ * 
+ * Очищает поля авторизации и возвращает пользователя на экран входа.
+ */
 void MainWindow::onResetSuccess()
 {
     authWidget->clearFields();
     stackedWidget->setCurrentIndex(IDX_AUTH);
 }
 
+/**
+ * @brief Слот для открытия диалога задания
+ * 
+ * Создаёт и отображает модальный диалог TaskDialog.
+ */
 void MainWindow::onTaskBtnClicked()
 {
     TaskDialog dlg(this);
     dlg.exec();
 }
 
+/**
+ * @brief Слот для открытия диалога схемы
+ * 
+ * Создаёт и отображает модальный диалог SchemaDialog.
+ */
 void MainWindow::onSchemaBtnClicked()
 {
     SchemaDialog dlg(this);

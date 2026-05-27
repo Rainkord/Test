@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['verifywidget_0',['VerifyWidget',['../classVerifyWidget.html',1,'']]]
+  ['schemadialog_0',['SchemaDialog',['../classSchemaDialog.html',1,'']]],
+  ['smtpclient_1',['SmtpClient',['../classSmtpClient.html',1,'']]]
 ];

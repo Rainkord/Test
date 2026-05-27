@@ -94,19 +94,25 @@ $(function(){initNavTree('server_2main_8cpp_source.html','',''); });
 <div class="contents">
 <a href="server_2main_8cpp.html">См. документацию.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &lt;QCoreApplication&gt;</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="mytcpserver_8h.html">mytcpserver.h</a>&quot;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span></div>
-<div class="foldopen" id="foldopen00018" data-start="{" data-end="}">
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="server_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">   18</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="client_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>{</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    QCoreApplication a(argc, argv);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <a class="code hl_class" href="classMyTcpServer.html">MyTcpServer</a> server;</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keywordflow">return</span> a.exec();</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>}</div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="logger_8h.html">logger.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span></div>
+<div class="foldopen" id="foldopen00016" data-start="{" data-end="}">
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="server_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">   16</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="client_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>{</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    QCoreApplication a(argc, argv);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <a class="code hl_function" href="classLogger.html#a265c4692f217acfc4113518735ddb9b8">Logger::banner</a>();</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <a class="code hl_class" href="classMyTcpServer.html">MyTcpServer</a> server;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordflow">return</span> a.exec();</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>}</div>
 </div>
-<div class="ttc" id="aclassMyTcpServer_html"><div class="ttname"><a href="classMyTcpServer.html">MyTcpServer</a></div><div class="ttdoc">Многопользовательский TCP-сервер.</div><div class="ttdef"><b>Определения</b> <a href="mytcpserver_8h_source.html#l00031">mytcpserver.h:32</a></div></div>
-<div class="ttc" id="aclient_2main_8cpp_html_a0ddf1224851353fc92bfbff6f499fa97"><div class="ttname"><a href="client_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a></div><div class="ttdeci">int main(int argc, char *argv[])</div><div class="ttdef"><b>Определения</b> <a href="client_2main_8cpp_source.html#l00004">main.cpp:4</a></div></div>
-<div class="ttc" id="amytcpserver_8h_html"><div class="ttname"><a href="mytcpserver_8h.html">mytcpserver.h</a></div><div class="ttdoc">TCP-сервер на базе Qt с поддержкой множества одновременных клиентов.</div></div>
+<div class="ttc" id="aclassLogger_html_a265c4692f217acfc4113518735ddb9b8"><div class="ttname"><a href="classLogger.html#a265c4692f217acfc4113518735ddb9b8">Logger::banner</a></div><div class="ttdeci">static void banner()</div><div class="ttdoc">Выводит баннер сервера при запуске</div><div class="ttdef"><b>Определения</b> <a href="logger_8h_source.html#l00064">logger.h:64</a></div></div>
+<div class="ttc" id="aclassMyTcpServer_html"><div class="ttname"><a href="classMyTcpServer.html">MyTcpServer</a></div><div class="ttdoc">Класс TCP-сервера для обработки клиентских подключений</div><div class="ttdef"><b>Определения</b> <a href="mytcpserver_8h_source.html#l00024">mytcpserver.h:25</a></div></div>
+<div class="ttc" id="aclient_2main_8cpp_html_a0ddf1224851353fc92bfbff6f499fa97"><div class="ttname"><a href="client_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a></div><div class="ttdeci">int main(int argc, char *argv[])</div><div class="ttdoc">Точка входа в приложение</div><div class="ttdef"><b>Определения</b> <a href="client_2main_8cpp_source.html#l00014">main.cpp:14</a></div></div>
+<div class="ttc" id="alogger_8h_html"><div class="ttname"><a href="logger_8h.html">logger.h</a></div></div>
+<div class="ttc" id="amytcpserver_8h_html"><div class="ttname"><a href="mytcpserver_8h.html">mytcpserver.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 </div><!-- container -->

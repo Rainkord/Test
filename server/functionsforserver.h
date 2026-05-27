@@ -5,98 +5,158 @@
 #include <QMap>
 
 /**
- * @file functionsforserver.h
- * @brief Парсер входящих команд и обработчики запросов клиента.
- */
-
-/**
- * @struct TempRegData
- * @brief Временные данные регистрации, ожидающие подтверждения по email.
+ * @brief Структура для хранения временных данных регистрации
+ *
+ * Содержит данные пользователя, который ещё не завершил процесс
+ * регистрации (не подтвердил код подтверждения).
  */
 struct TempRegData {
-    QString name;         ///< Логин пользователя.
-    QString passwordHash; ///< Хэш пароля (SHA-256).
-    QString email;        ///< Email-адрес пользователя.
-    QString code;         ///< Шестизначный код подтверждения.
+    /// Логин пользователя
+    QString name;
+    /// Хеш пароля пользователя
+    QString passwordHash;
+    /// Электронная почта пользователя
+    QString email;
+    /// Хеш кода подтверждения
+    QString code;
 };
 
 /**
- * @struct TempResetData
- * @brief Временные данные сброса пароля, ожидающие подтверждения по email.
+ * @brief Структура для хранения временных данных сброса пароля
+ *
+ * Содержит данные о процессе сброса пароля до подтверждения кода.
  */
 struct TempResetData {
-    QString email; ///< Email-адрес пользователя.
-    QString code;  ///< Шестизначный код подтверждения.
+    /// Электронная почта пользователя
+    QString email;
+    /// Хеш кода подтверждения
+    QString code;
 };
 
 /**
- * @class FunctionsForServer
- * @brief Статический класс-диспетчер: разбирает входящее сообщение от клиента
- *        и маршрутизирует его к соответствующему обработчику.
+ * @brief Класс обработки сообщений сервера
  *
- * Протокол команд использует разделитель @c "||".
- *
- * ## Архитектура верификации (клиентская)
- *
- * Для всех операций с кодом подтверждения (вход, регистрация, сброс пароля)
- * используется единая схема:
- *  1. Сервер генерирует код и немедленно возвращает его SHA-256 хэш клиенту.
- *  2. Письмо с кодом отправляется на почту в фоне (QtConcurrent).
- *  3. Клиент хэширует введённый пользователем код и сравнивает хэши ЛОКАЛЬНО.
- *  4. Сетевой запрос для проверки кода НЕ выполняется.
- *
- * Поддерживаемые команды:
- * | Команда                | Параметры                  | Ответ при успехе              |
- * |------------------------|----------------------------|-------------------------------|
- * | check_login            | login                      | login_free / login_taken      |
- * | registration           | login, hash, email         | reg_code_sent||codeHash       |
- * | registration_confirm   | login, passwordHash, email | reg+||login                   |
- * | auth                   | login, hash                | auth_code_sent||codeHash      |
- * | get_graph              | xMin, xMax, step, a, b, c  | graph||x;y||...               |
- * | get_task               | —                          | task||название||описание      |
- * | reset_password         | email                      | reset_code_sent||codeHash     |
- * | set_new_password       | email, newPasswordHash     | password_changed              |
+ * Центральный класс бизнес-логики сервера. Обрабатывает входящие
+ * команды от клиентов (регистрация, авторизация, сброс пароля,
+ * получение графика и задания). Управляет временными данными
+ * незавершённых операций и взаимодействует с базой данных
+ * и SMTP-клиентом.
  */
 class FunctionsForServer
 {
 public:
+
     /**
-     * @brief Разбирает входящее сообщение и возвращает строку-ответ клиенту.
-     * @param message Строка команды (формат: @c "команда||param1||param2").
-     * @return Строка ответа для отправки клиенту.
+     * @brief Обрабатывает входящее сообщение от клиента
+     *
+     * Парсит сообщение, определяет команду по первому токену
+     * и делегирует обработку соответствующему обработчику.
+     *
+     * @param message строка сообщения от клиента в формате "команда||параметр1||параметр2||..."
+     * @return строка ответа клиенту
      */
     static QString processMessage(const QString &message);
 
 private:
-    /// Ожидающие коды 2FA при авторизации: логин → код.
+
+    /// Маппинг логин → хеш кода для подтверждения входа (2FA)
     static QMap<QString, QString> pendingCodes;
 
-    /// Ожидающие данные регистрации: логин → TempRegData.
+    /// Маппинг логин → временные данные регистрации
     static QMap<QString, TempRegData> pendingRegistrations;
 
-    /// Ожидающие данные сброса пароля: email → TempResetData.
+    /// Маппинг email → временные данные сброса пароля
     static QMap<QString, TempResetData> pendingResets;
 
     /**
-     * @brief Генерирует случайный шестизначный код.
-     * @return Строка вида "042731" (6 цифр, с ведущими нулями).
+     * @brief Генерирует случайный 6-значный код подтверждения
+     *
+     * @return строка из 6 цифр (от 100000 до 999999)
      */
     static QString generateCode();
 
     /**
-     * @brief Возвращает SHA-256 хэш строки в hex-формате.
-     * @param code Исходная строка.
-     * @return Hex-строка SHA-256.
+     * @brief Вычисляет SHA-256 хеш строки
+     *
+     * @param code исходная строка (код подтверждения)
+     * @return хеш-строка в шестнадцатеричном представлении
      */
     static QString hashCode(const QString &code);
 
+    /**
+     * @brief Обработчик команды проверки занятости логина
+     *
+     * @param parts список частей сообщения (check_login||логин)
+     * @return "login_taken" или "login_free"
+     */
     static QString handleCheckLogin(const QStringList &parts);
+
+    /**
+     * @brief Обработчик команды регистрации нового пользователя
+     *
+     * Генерирует код подтверждения, сохраняет временные данные
+     * регистрации и отправляет код на email.
+     *
+     * @param parts список частей сообщения (registration||логин||хеш_пароля||email)
+     * @return "reg_code_sent||хеш_кода" или сообщение об ошибке
+     */
     static QString handleRegistration(const QStringList &parts);
+
+    /**
+     * @brief Обработчик подтверждения регистрации
+     *
+     * Добавляет пользователя в базу данных после подтверждения кода.
+     *
+     * @param parts список частей сообщения (registration_confirm||логин)
+     * @return "reg+||логин" при успехе; "reg-" при ошибке
+     */
     static QString handleRegistrationConfirm(const QStringList &parts);
+
+    /**
+     * @brief Обработчик команды авторизации
+     *
+     * Проверяет учётные данные, генерирует код 2FA и отправляет
+     * его на email пользователя.
+     *
+     * @param parts список частей сообщения (auth||логин||хеш_пароля)
+     * @return "auth_code_sent||хеш_кода" или "auth-" при ошибке
+     */
     static QString handleAuth(const QStringList &parts);
+
+    /**
+     * @brief Обработчик команды получения графика
+     *
+     * @param parts список частей сообщения (get_graph||...)
+     * @return "graph_error" (заглушка)
+     */
     static QString handleGetGraph(const QStringList &parts);
+
+    /**
+     * @brief Обработчик команды получения задания
+     *
+     * @return "task_error" (заглушка)
+     */
     static QString handleGetTask();
+
+    /**
+     * @brief Обработчик команды сброса пароля
+     *
+     * Генерирует код подтверждения, сохраняет временные данные
+     * сброса и отправляет код на email.
+     *
+     * @param parts список частей сообщения (reset_password||email)
+     * @return "reset_code_sent||хеш_кода" или "reset-" при ошибке
+     */
     static QString handleResetPassword(const QStringList &parts);
+
+    /**
+     * @brief Обработчик установки нового пароля
+     *
+     * Обновляет пароль пользователя в базе данных.
+     *
+     * @param parts список частей сообщения (set_new_password||email||новый_хеш)
+     * @return "set_password+" при успехе; "set_password-" при ошибке
+     */
     static QString handleSetNewPassword(const QStringList &parts);
 };
 

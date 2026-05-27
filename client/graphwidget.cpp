@@ -42,6 +42,14 @@
 #define FONT_SIZE_BTN  11
 #define FONT_SIZE_UI   10
 
+/**
+ * @brief Конструктор виджета графика
+ *
+ * Инициализирует параметры a, b, c значениями по умолчанию (1.0),
+ * устанавливает стили и создаёт пользовательский интерфейс.
+ *
+ * @param parent родительский виджет
+ */
 GraphWidget::GraphWidget(QWidget *parent)
     : QWidget(parent)
     , currentA(1.0), currentB(1.0), currentC(1.0)
@@ -55,8 +63,14 @@ GraphWidget::GraphWidget(QWidget *parent)
     updateGraph();
 }
 
+/// Деструктор виджета графика
 GraphWidget::~GraphWidget() {}
 
+/**
+ * @brief Создание и компоновка основного интерфейса
+ *
+ * Размещает левую панель управления и область отрисовки графика.
+ */
 void GraphWidget::setupUI()
 {
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
@@ -79,6 +93,12 @@ void GraphWidget::setupUI()
     setMinimumSize(900, 600);
 }
 
+/**
+ * @brief Создание левой панели с элементами управления
+ *
+ * Формула, слайдеры и спинбоксы параметров a, b, c,
+ * таблица значений, метка пользователя и кнопка выхода.
+ */
 void GraphWidget::setupLeftPanel()
 {
     QVBoxLayout *vbox = new QVBoxLayout(leftPanel);
@@ -184,6 +204,7 @@ void GraphWidget::setupLeftPanel()
     vbox->addWidget(logoutBtn);
 }
 
+/// Обновление метки с формулой функции (из ресурса или текстового fallback)
 void GraphWidget::updateFormulaLabel()
 {
     QPixmap pm(":/formula_graph.png");
@@ -203,19 +224,63 @@ void GraphWidget::updateFormulaLabel()
     }
 }
 
+/**
+ * @brief Обработчик изменения слайдера параметра a
+ * @param v целочисленное значение слайдера (делится на 10.0)
+ */
 void GraphWidget::onSliderAChanged(int v) { if(blockSliderA) return; blockSpinA=true; spinA->setValue(v/10.0); blockSpinA=false; updateGraph(); }
+
+/**
+ * @brief Обработчик изменения слайдера параметра b
+ * @param v целочисленное значение слайдера (делится на 10.0)
+ */
 void GraphWidget::onSliderBChanged(int v) { if(blockSliderB) return; blockSpinB=true; spinB->setValue(v/10.0); blockSpinB=false; updateGraph(); }
+
+/**
+ * @brief Обработчик изменения слайдера параметра c
+ * @param v целочисленное значение слайдера (делится на 10.0)
+ */
 void GraphWidget::onSliderCChanged(int v) { if(blockSliderC) return; blockSpinC=true; spinC->setValue(v/10.0); blockSpinC=false; updateGraph(); }
+
+/**
+ * @brief Обработчик изменения спинбокса параметра a
+ * @param v вещественное значение параметра
+ */
 void GraphWidget::onSpinAChanged(double v) { if(blockSpinA) return; blockSliderA=true; sliderA->setValue((int)(v*10)); blockSliderA=false; updateGraph(); }
+
+/**
+ * @brief Обработчик изменения спинбокса параметра b
+ * @param v вещественное значение параметра
+ */
 void GraphWidget::onSpinBChanged(double v) { if(blockSpinB) return; blockSliderB=true; sliderB->setValue((int)(v*10)); blockSliderB=false; updateGraph(); }
+
+/**
+ * @brief Обработчик изменения спинбокса параметра c
+ * @param v вещественное значение параметра
+ */
 void GraphWidget::onSpinCChanged(double v) { if(blockSpinC) return; blockSliderC=true; sliderC->setValue((int)(v*10)); blockSliderC=false; updateGraph(); }
 
+/// Обработчик нажатия кнопки «Выйти из аккаунта»: отключается от сервера и испускает сигнал logout
 void GraphWidget::onLogoutClicked()
 {
     ClientSingleton::instance().disconnectFromServer();
     emit logout();
 }
 
+/**
+ * @brief Вычисляет значение кусочной функции f(x)
+ *
+ * Три ветви:
+ * - x < -2:  f(x) = |x*a| - 2
+ * - -2 <= x < 2:  f(x) = b*(x^2) + x + 1
+ * - x >= 2:  f(x) = |x - 2| + 1*c
+ *
+ * @param x аргумент функции
+ * @param a параметр a
+ * @param b параметр b
+ * @param c параметр c
+ * @return значение функции f(x)
+ */
 double GraphWidget::calculate(double x, double a, double b, double c) const
 {
     if (x < -2.0)      return std::fabs(x * a) - 2.0;
@@ -223,6 +288,12 @@ double GraphWidget::calculate(double x, double a, double b, double c) const
     else               return std::fabs(x - 2.0) + 1.0 * c;
 }
 
+/**
+ * @brief Пересчитывает точки графика и обновляет отображение
+ *
+ * Запрашивает данные у сервера. При недоступности сервера
+ * вычисляет точки локально. Заполняет таблицу значениями.
+ */
 void GraphWidget::updateGraph()
 {
     double a = spinA->value(), b = spinB->value(), c = spinC->value();
@@ -264,6 +335,12 @@ void GraphWidget::updateGraph()
     update();
 }
 
+/**
+ * @brief Заполняет таблицу значениями функции для целых x от -10 до 10
+ * @param a значение параметра a
+ * @param b значение параметра b
+ * @param c значение параметра c
+ */
 void GraphWidget::fillTable(double a, double b, double c)
 {
     table->setRowCount(21);
@@ -280,6 +357,10 @@ void GraphWidget::fillTable(double a, double b, double c)
     }
 }
 
+/**
+ * @brief Устанавливает логин пользователя для отображения
+ * @param login логин пользователя
+ */
 void GraphWidget::setUserLogin(const QString &login)
 {
     userLogin = login;
@@ -287,6 +368,14 @@ void GraphWidget::setUserLogin(const QString &login)
         userLabel->setText(QString::fromUtf8("\xd0\x9f\xd0\xbe\xd0\xbb\xd1\x8c\xd0\xb7\xd0\xbe\xd0\xb2\xd0\xb0\xd1\x82\xd0\xb5\xd0\xbb\xd1\x8c: ") + login);
 }
 
+/**
+ * @brief Обработчик отрисовки графика
+ *
+ * Отрисовывает фон, сетку, оси, подписи, три ветви функции
+ * разными цветами и легенду.
+ *
+ * @param event событие отрисовки
+ */
 void GraphWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);

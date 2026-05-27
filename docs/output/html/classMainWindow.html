@@ -93,6 +93,9 @@ $(function(){initNavTree('classMainWindow.html','','classMainWindow-members'); }
 </div><!--header-->
 <div class="contents">
 
+<p>Главное окно приложения "График функции".  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:MainWindow:</div>
@@ -104,11 +107,15 @@ $(function(){initNavTree('classMainWindow.html','','classMainWindow-members'); }
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a996c5a2b6f77944776856f08ec30858d" id="r_a996c5a2b6f77944776856f08ec30858d"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a996c5a2b6f77944776856f08ec30858d">MainWindow</a> (QWidget *parent=nullptr)</td></tr>
+<tr class="memdesc:a996c5a2b6f77944776856f08ec30858d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор главного окна  <br /></td></tr>
 <tr class="memitem:ae98d00a93bc118200eeef9f9bba1dba7" id="r_ae98d00a93bc118200eeef9f9bba1dba7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ae98d00a93bc118200eeef9f9bba1dba7">~MainWindow</a> ()</td></tr>
+<tr class="memdesc:ae98d00a93bc118200eeef9f9bba1dba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деструктор главного окна  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a> строка <a class="el" href="mainwindow_8h_source.html#l00017">17</a></p>
+<div class="textblock"><p>Главное окно приложения "График функции". </p>
+<p>Управляет навигацией между экранами: авторизация, регистрация, верификация, восстановление пароля и просмотр графика. Использует QStackedWidget для переключения между виджетами. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a> строка <a class="el" href="mainwindow_8h_source.html#l00024">24</a></p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Конструктор(ы)</h2>
 <a id="a996c5a2b6f77944776856f08ec30858d" name="a996c5a2b6f77944776856f08ec30858d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a996c5a2b6f77944776856f08ec30858d">&#9670;&#160;</a></span>MainWindow()</h2>
@@ -133,7 +140,22 @@ $(function(){initNavTree('classMainWindow.html','','classMainWindow-members'); }
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a> строка <a class="el" href="mainwindow_8cpp_source.html#l00034">34</a></p>
+<p>Конструктор главного окна </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>Родительский виджет</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Устанавливает заголовок окна, настраивает UI и подключает сигналы. Центрирует окно на экране и устанавливает максимальный размер.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>Родительский виджет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a> строка <a class="el" href="mainwindow_8cpp_source.html#l00026">26</a></p>
 
 </div>
 </div>
@@ -152,7 +174,9 @@ $(function(){initNavTree('classMainWindow.html','','classMainWindow-members'); }
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a> строка <a class="el" href="mainwindow_8cpp_source.html#l00047">47</a></p>
+<p>Деструктор главного окна </p>
+
+<p class="definition">См. определение в файле <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a> строка <a class="el" href="mainwindow_8cpp_source.html#l00044">44</a></p>
 
 </div>
 </div>

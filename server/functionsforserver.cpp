@@ -16,12 +16,30 @@ QMap<QString, TempResetData> FunctionsForServer::pendingResets;
 static QMutex g_mutex;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+/**
+ * @brief Генерирует случайный 6-значный код подтверждения
+ *
+ * Использует QRandomGenerator для генерации числа в диапазоне
+ * [100000, 999999] и возвращает его в виде строки.
+ *
+ * @return строка из 6 цифр
+ */
 QString FunctionsForServer::generateCode()
 {
     quint32 n = QRandomGenerator::global()->bounded(100000u, 1000000u);
     return QString::number(n);
 }
 
+/**
+ * @brief Вычисляет SHA-256 хеш строки
+ *
+ * Конвертирует входную строку в UTF-8 и вычисляет её SHA-256 хеш,
+ * возвращая результат в шестнадцатеричном представлении.
+ *
+ * @param s входная строка
+ * @return hex-строка SHA-256 хеша
+ */
 QString FunctionsForServer::hashCode(const QString &s)
 {
     return QString::fromLatin1(
@@ -29,6 +47,20 @@ QString FunctionsForServer::hashCode(const QString &s)
 }
 
 // ── processMessage ───────────────────────────────────────────────────────────
+
+/**
+ * @brief Обрабатывает входящее сообщение от клиента
+ *
+ * Разделяет сообщение по разделителю "||", определяет команду
+ * по первому токену и делегирует обработку соответствующему
+ * обработчику. Поддерживаемые команды: check_login, registration,
+ * registration_confirm, auth, get_graph, get_task, reset_password,
+ * set_new_password.
+ *
+ * @param message строка сообщения от клиента
+ * @return строка ответа клиенту; "error" при пустом сообщении;
+ *         "unknown_command" при неизвестной команде
+ */
 QString FunctionsForServer::processMessage(const QString &message)
 {
     QStringList parts = message.split("||");
@@ -50,6 +82,17 @@ QString FunctionsForServer::processMessage(const QString &message)
 }
 
 // ── handleAuth ────────────────────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик команды авторизации
+ *
+ * Проверяет учётные данные пользователя через Database::checkUser.
+ * При успешной проверке генерирует код 2FA, сохраняет его хеш
+ * в pendingCodes и асинхронно отправляет код на email через SMTP.
+ *
+ * @param parts список частей сообщения: ["auth", "логин", "хеш_пароля"]
+ * @return "auth_code_sent||хеш_кода" при успехе; "auth-" при ошибке
+ */
 QString FunctionsForServer::handleAuth(const QStringList &parts)
 {
     if (parts.size() < 3) return "auth-";
@@ -87,6 +130,16 @@ QString FunctionsForServer::handleAuth(const QStringList &parts)
 }
 
 // ── handleCheckLogin ──────────────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик команды проверки занятости логина
+ *
+ * Проверяет是否存在 пользователя с указанным логином в базе данных.
+ *
+ * @param parts список частей сообщения: ["check_login", "логин"]
+ * @return "login_taken" если логин занят; "login_free" если свободен;
+ *         "check_login_error" при некорректном формате
+ */
 QString FunctionsForServer::handleCheckLogin(const QStringList &parts)
 {
     if (parts.size() < 2) return "check_login_error";
@@ -95,6 +148,18 @@ QString FunctionsForServer::handleCheckLogin(const QStringList &parts)
 }
 
 // ── handleRegistration ────────────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик команды регистрации нового пользователя
+ *
+ * Проверяет уникальность логина и email, генерирует код подтверждения,
+ * сохраняет временные данные регистрации в pendingRegistrations и
+ * асинхронно отправляет код на email через SMTP.
+ *
+ * @param parts список частей сообщения: ["registration", "логин", "хеш_пароля", "email"]
+ * @return "reg_code_sent||хеш_кода" при успехе; "login_taken" если логин занят;
+ *         "email_taken" если email занят; "reg-" при ошибке
+ */
 QString FunctionsForServer::handleRegistration(const QStringList &parts)
 {
     if (parts.size() < 4) return "reg-";
@@ -133,6 +198,16 @@ QString FunctionsForServer::handleRegistration(const QStringList &parts)
 }
 
 // ── handleRegistrationConfirm ─────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик подтверждения регистрации
+ *
+ * Извлекает временные данные регистрации из pendingRegistrations
+ * и добавляет пользователя в базу данных через Database::addUser.
+ *
+ * @param parts список частей сообщения: ["registration_confirm", "логин"]
+ * @return "reg+||логин" при успешной регистрации; "reg-" при ошибке
+ */
 QString FunctionsForServer::handleRegistrationConfirm(const QStringList &parts)
 {
     if (parts.size() < 2) return "reg-";
@@ -157,6 +232,15 @@ QString FunctionsForServer::handleRegistrationConfirm(const QStringList &parts)
 }
 
 // ── handleGetGraph ─────────────────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик команды получения графика
+ *
+ * Заглушка — возвращает ошибку.
+ *
+ * @param parts список частей сообщения
+ * @return "graph_error"
+ */
 QString FunctionsForServer::handleGetGraph(const QStringList &parts)
 {
     Q_UNUSED(parts)
@@ -164,12 +248,31 @@ QString FunctionsForServer::handleGetGraph(const QStringList &parts)
 }
 
 // ── handleGetTask ──────────────────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик команды получения задания
+ *
+ * Заглушка — возвращает ошибку.
+ *
+ * @return "task_error"
+ */
 QString FunctionsForServer::handleGetTask()
 {
     return "task_error";
 }
 
 // ── handleResetPassword ───────────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик команды сброса пароля
+ *
+ * Проверяет существование email в базе данных, генерирует код
+ * подтверждения, сохраняет временные данные сброса в pendingResets
+ * и асинхронно отправляет код на email через SMTP.
+ *
+ * @param parts список частей сообщения: ["reset_password", "email"]
+ * @return "reset_code_sent||хеш_кода" при успехе; "reset-" при ошибке
+ */
 QString FunctionsForServer::handleResetPassword(const QStringList &parts)
 {
     if (parts.size() < 2) return "reset-";
@@ -203,6 +306,16 @@ QString FunctionsForServer::handleResetPassword(const QStringList &parts)
 }
 
 // ── handleSetNewPassword ──────────────────────────────────────────────────────
+
+/**
+ * @brief Обработчик установки нового пароля
+ *
+ * Удаляет временные данные сброса из pendingResets и обновляет
+ * хеш пароля в базе данных через Database::updatePasswordByEmail.
+ *
+ * @param parts список частей сообщения: ["set_new_password", "email", "новый_хеш"]
+ * @return "set_password+" при успехе; "set_password-" при ошибке
+ */
 QString FunctionsForServer::handleSetNewPassword(const QStringList &parts)
 {
     if (parts.size() < 3) return "set_password-";

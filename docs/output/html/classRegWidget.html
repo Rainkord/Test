@@ -93,6 +93,9 @@ $(function(){initNavTree('classRegWidget.html','','classRegWidget-members'); });
 </div><!--header-->
 <div class="contents">
 
+<p>Виджет регистрации нового пользователя  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="regwidget_8h_source.html">regwidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:RegWidget:</div>
@@ -104,16 +107,34 @@ $(function(){initNavTree('classRegWidget.html','','classRegWidget-members'); });
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 Сигналы</h2></td></tr>
 <tr class="memitem:a79e2d43c1747d252254fc8f0016d320e" id="r_a79e2d43c1747d252254fc8f0016d320e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a79e2d43c1747d252254fc8f0016d320e">registrationSuccess</a> (const QString &amp;login)</td></tr>
+<tr class="memdesc:a79e2d43c1747d252254fc8f0016d320e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сигнал об успешной регистрации  <br /></td></tr>
 <tr class="memitem:ac173990dc8de328d78e4e6f4708c2628" id="r_ac173990dc8de328d78e4e6f4708c2628"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac173990dc8de328d78e4e6f4708c2628">showAuth</a> ()</td></tr>
+<tr class="memdesc:ac173990dc8de328d78e4e6f4708c2628"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сигнал для переключения на экран авторизации  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a8c42413d99d1f7fd0f192247c635e7c0" id="r_a8c42413d99d1f7fd0f192247c635e7c0"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a8c42413d99d1f7fd0f192247c635e7c0">RegWidget</a> (QWidget *parent=nullptr)</td></tr>
+<tr class="memdesc:a8c42413d99d1f7fd0f192247c635e7c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор виджета регистрации  <br /></td></tr>
 <tr class="memitem:a86d9d1d86e5e8f987ab2bb2f44f8fd9c" id="r_a86d9d1d86e5e8f987ab2bb2f44f8fd9c"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a86d9d1d86e5e8f987ab2bb2f44f8fd9c">~RegWidget</a> ()</td></tr>
+<tr class="memdesc:a86d9d1d86e5e8f987ab2bb2f44f8fd9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деструктор виджета регистрации  <br /></td></tr>
+<tr class="memitem:abf454e11df0a80ddb3b63950d3efdca8" id="r_abf454e11df0a80ddb3b63950d3efdca8"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#abf454e11df0a80ddb3b63950d3efdca8">clearFields</a> ()</td></tr>
+<tr class="memdesc:abf454e11df0a80ddb3b63950d3efdca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Очистить все поля и сбросить состояние виджета  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Защищенные члены</h2></td></tr>
+<tr class="memitem:a49b73d41c3903bfe5a6da747281634b9" id="r_a49b73d41c3903bfe5a6da747281634b9"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a49b73d41c3903bfe5a6da747281634b9">keyPressEvent</a> (QKeyEvent *e) override</td></tr>
+<tr class="memdesc:a49b73d41c3903bfe5a6da747281634b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик нажатия клавиш для навигации Escape.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="regwidget_8h_source.html">regwidget.h</a> строка <a class="el" href="regwidget_8h_source.html#l00010">10</a></p>
+<div class="textblock"><p>Виджет регистрации нового пользователя </p>
+<p>Реализует трёхшаговый процесс регистрации:</p><ol type="1">
+<li>Ввод логина и пароля</li>
+<li>Ввод email</li>
+<li>Ввод OTP-кода подтверждения</li>
+</ol>
+<p>Поддерживает валидацию полей, проверку доступности логина, блокировку при превышении лимита попыток ввода кода и навигацию между шагами клавишей Escape. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="regwidget_8h_source.html">regwidget.h</a> строка <a class="el" href="regwidget_8h_source.html#l00025">25</a></p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Конструктор(ы)</h2>
 <a id="a8c42413d99d1f7fd0f192247c635e7c0" name="a8c42413d99d1f7fd0f192247c635e7c0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8c42413d99d1f7fd0f192247c635e7c0">&#9670;&#160;</a></span>RegWidget()</h2>
@@ -138,7 +159,22 @@ $(function(){initNavTree('classRegWidget.html','','classRegWidget-members'); });
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="regwidget_8cpp_source.html">regwidget.cpp</a> строка <a class="el" href="regwidget_8cpp_source.html#l00037">37</a></p>
+<p>Конструктор виджета регистрации </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>Родительский виджет</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Инициализирует переменные состояния, создаёт таймер блокировки, подключает сигнал ответа сервера и настраивает UI.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>Родительский виджет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="regwidget_8cpp_source.html">regwidget.cpp</a> строка <a class="el" href="regwidget_8cpp_source.html#l00167">167</a></p>
 
 </div>
 </div>
@@ -157,11 +193,83 @@ $(function(){initNavTree('classRegWidget.html','','classRegWidget-members'); });
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="regwidget_8cpp_source.html">regwidget.cpp</a> строка <a class="el" href="regwidget_8cpp_source.html#l00058">58</a></p>
+<p>Деструктор виджета регистрации </p>
+
+<p class="definition">См. определение в файле <a class="el" href="regwidget_8cpp_source.html">regwidget.cpp</a> строка <a class="el" href="regwidget_8cpp_source.html#l00190">190</a></p>
 
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Методы</h2>
+<a id="abf454e11df0a80ddb3b63950d3efdca8" name="abf454e11df0a80ddb3b63950d3efdca8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf454e11df0a80ddb3b63950d3efdca8">&#9670;&#160;</a></span>clearFields()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RegWidget::clearFields </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Очистить все поля и сбросить состояние виджета </p>
+<p>Сбрасывает все поля ввода, статусные метки, флаги состояния и возвращает виджет на первый шаг регистрации.</p>
+<p>Очищает все поля ввода, скрывает статусные метки, сбрасывает флаги состояния и возвращает виджет на шаг 1. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="regwidget_8cpp_source.html">regwidget.cpp</a> строка <a class="el" href="regwidget_8cpp_source.html#l00198">198</a></p>
+
+</div>
+</div>
+<a id="a49b73d41c3903bfe5a6da747281634b9" name="a49b73d41c3903bfe5a6da747281634b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49b73d41c3903bfe5a6da747281634b9">&#9670;&#160;</a></span>keyPressEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RegWidget::keyPressEvent </td>
+          <td>(</td>
+          <td class="paramtype">QKeyEvent *</td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Обработчик нажатия клавиш для навигации Escape. </p>
+<p>Обработчик нажатия клавиш для навигации</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>Событие нажатия клавиши</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>При нажатии Escape:</p><ul>
+<li>На шаге 3: возврат к шагу 2</li>
+<li>На шаге 2: возврат к шагу 1</li>
+<li>На шаге 1: переход на экран авторизации</li>
+</ul>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>Событие нажатия клавиши </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="regwidget_8cpp_source.html">regwidget.cpp</a> строка <a class="el" href="regwidget_8cpp_source.html#l00250">250</a></p>
+
+</div>
+</div>
 <a id="a79e2d43c1747d252254fc8f0016d320e" name="a79e2d43c1747d252254fc8f0016d320e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a79e2d43c1747d252254fc8f0016d320e">&#9670;&#160;</a></span>registrationSuccess</h2>
 
@@ -185,7 +293,15 @@ $(function(){initNavTree('classRegWidget.html','','classRegWidget-members'); });
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__regwidget_8cpp_source.html">moc_regwidget.cpp</a> строка <a class="el" href="moc__regwidget_8cpp_source.html#l00211">211</a></p>
+<p>Сигнал об успешной регистрации </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>Логин зарегистрированного пользователя </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__regwidget_8cpp_source.html">moc_regwidget.cpp</a> строка <a class="el" href="moc__regwidget_8cpp_source.html#l00217">217</a></p>
 
 </div>
 </div>
@@ -212,7 +328,9 @@ $(function(){initNavTree('classRegWidget.html','','classRegWidget-members'); });
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__regwidget_8cpp_source.html">moc_regwidget.cpp</a> строка <a class="el" href="moc__regwidget_8cpp_source.html#l00218">218</a></p>
+<p>Сигнал для переключения на экран авторизации </p>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__regwidget_8cpp_source.html">moc_regwidget.cpp</a> строка <a class="el" href="moc__regwidget_8cpp_source.html#l00224">224</a></p>
 
 </div>
 </div>

@@ -93,6 +93,9 @@ $(function(){initNavTree('classResetWidget.html','','classResetWidget-members');
 </div><!--header-->
 <div class="contents">
 
+<p>Виджет восстановления пароля через email.  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="resetwidget_8h_source.html">resetwidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:ResetWidget:</div>
@@ -103,17 +106,30 @@ $(function(){initNavTree('classResetWidget.html','','classResetWidget-members');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 Сигналы</h2></td></tr>
-<tr class="memitem:ab91dbf8ffee8a31a2a45d32733512ee6" id="r_ab91dbf8ffee8a31a2a45d32733512ee6"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab91dbf8ffee8a31a2a45d32733512ee6">backToAuth</a> ()</td></tr>
 <tr class="memitem:a28bb99c9e95e550f9d9e56a2e2e1310e" id="r_a28bb99c9e95e550f9d9e56a2e2e1310e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a28bb99c9e95e550f9d9e56a2e2e1310e">resetSuccess</a> ()</td></tr>
+<tr class="memdesc:a28bb99c9e95e550f9d9e56a2e2e1310e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Испускается при успешном сохранении нового пароля  <br /></td></tr>
+<tr class="memitem:ab91dbf8ffee8a31a2a45d32733512ee6" id="r_ab91dbf8ffee8a31a2a45d32733512ee6"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab91dbf8ffee8a31a2a45d32733512ee6">backToAuth</a> ()</td></tr>
+<tr class="memdesc:ab91dbf8ffee8a31a2a45d32733512ee6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Испускается при возврате на экран авторизации  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:aba5690215f8440459515bd802170f93b" id="r_aba5690215f8440459515bd802170f93b"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aba5690215f8440459515bd802170f93b">ResetWidget</a> (QWidget *parent=nullptr)</td></tr>
+<tr class="memdesc:aba5690215f8440459515bd802170f93b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор виджета сброса пароля  <br /></td></tr>
 <tr class="memitem:a901cd54c875f1aff99d73f9a083d6a4c" id="r_a901cd54c875f1aff99d73f9a083d6a4c"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a901cd54c875f1aff99d73f9a083d6a4c">~ResetWidget</a> ()</td></tr>
+<tr class="memdesc:a901cd54c875f1aff99d73f9a083d6a4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деструктор виджета  <br /></td></tr>
+<tr class="memitem:a95608a31a3f998b856bbb4c776c285ac" id="r_a95608a31a3f998b856bbb4c776c285ac"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a95608a31a3f998b856bbb4c776c285ac">clearFields</a> ()</td></tr>
+<tr class="memdesc:a95608a31a3f998b856bbb4c776c285ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Полностью очищает все поля и сбрасывает внутреннее состояние  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Защищенные члены</h2></td></tr>
+<tr class="memitem:a1edf2ece87a9e75b8a89fadb3966dae8" id="r_a1edf2ece87a9e75b8a89fadb3966dae8"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1edf2ece87a9e75b8a89fadb3966dae8">keyPressEvent</a> (QKeyEvent *e) override</td></tr>
+<tr class="memdesc:a1edf2ece87a9e75b8a89fadb3966dae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик нажатия клавиш (Escape — назад на предыдущий шаг).  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="resetwidget_8h_source.html">resetwidget.h</a> строка <a class="el" href="resetwidget_8h_source.html#l00010">10</a></p>
+<div class="textblock"><p>Виджет восстановления пароля через email. </p>
+<p>Пошаговый виджет сброса пароля: ввод email → проверка OTP-кода → установка нового пароля. Поддерживает блокировку при превышении лимита попыток ввода кода. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="resetwidget_8h_source.html">resetwidget.h</a> строка <a class="el" href="resetwidget_8h_source.html#l00020">20</a></p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Конструктор(ы)</h2>
 <a id="aba5690215f8440459515bd802170f93b" name="aba5690215f8440459515bd802170f93b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aba5690215f8440459515bd802170f93b">&#9670;&#160;</a></span>ResetWidget()</h2>
@@ -138,7 +154,22 @@ $(function(){initNavTree('classResetWidget.html','','classResetWidget-members');
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="resetwidget_8cpp_source.html">resetwidget.cpp</a> строка <a class="el" href="resetwidget_8cpp_source.html#l00166">166</a></p>
+<p>Конструктор виджета сброса пароля </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Инициализирует таймер блокировки, подключает сигнал ответа сервера, устанавливает стили и создаёт пользовательский интерфейс.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="resetwidget_8cpp_source.html">resetwidget.cpp</a> строка <a class="el" href="resetwidget_8cpp_source.html#l00147">147</a></p>
 
 </div>
 </div>
@@ -157,7 +188,10 @@ $(function(){initNavTree('classResetWidget.html','','classResetWidget-members');
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="resetwidget_8cpp_source.html">resetwidget.cpp</a> строка <a class="el" href="resetwidget_8cpp_source.html#l00188">188</a></p>
+<p>Деструктор виджета </p>
+<p>Деструктор виджета сброса пароля </p>
+
+<p class="definition">См. определение в файле <a class="el" href="resetwidget_8cpp_source.html">resetwidget.cpp</a> строка <a class="el" href="resetwidget_8cpp_source.html#l00171">171</a></p>
 
 </div>
 </div>
@@ -185,7 +219,75 @@ $(function(){initNavTree('classResetWidget.html','','classResetWidget-members');
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__resetwidget_8cpp_source.html">moc_resetwidget.cpp</a> строка <a class="el" href="moc__resetwidget_8cpp_source.html#l00201">201</a></p>
+<p>Испускается при возврате на экран авторизации </p>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__resetwidget_8cpp_source.html">moc_resetwidget.cpp</a> строка <a class="el" href="moc__resetwidget_8cpp_source.html#l00207">207</a></p>
+
+</div>
+</div>
+<a id="a95608a31a3f998b856bbb4c776c285ac" name="a95608a31a3f998b856bbb4c776c285ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95608a31a3f998b856bbb4c776c285ac">&#9670;&#160;</a></span>clearFields()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ResetWidget::clearFields </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Полностью очищает все поля и сбрасывает внутреннее состояние </p>
+<p>Полный сброс состояния виджета</p>
+<p>Сбрасывает флаги ожидания, останавливает таймер блокировки, очищает все поля и возвращает виджет на шаг ввода email. Вызывается перед каждым открытием экрана сброса пароля. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="resetwidget_8cpp_source.html">resetwidget.cpp</a> строка <a class="el" href="resetwidget_8cpp_source.html#l00186">186</a></p>
+
+</div>
+</div>
+<a id="a1edf2ece87a9e75b8a89fadb3966dae8" name="a1edf2ece87a9e75b8a89fadb3966dae8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1edf2ece87a9e75b8a89fadb3966dae8">&#9670;&#160;</a></span>keyPressEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ResetWidget::keyPressEvent </td>
+          <td>(</td>
+          <td class="paramtype">QKeyEvent *</td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Обработчик нажатия клавиш (Escape — назад на предыдущий шаг). </p>
+<p>Обработчик нажатия клавиш</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>событие нажатия клавиши</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>При нажатии Escape: на шаге кода — возврат к email, на шаге пароля — возврат к коду, на шаге email — выход на авторизацию.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>событие нажатия клавиши </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="resetwidget_8cpp_source.html">resetwidget.cpp</a> строка <a class="el" href="resetwidget_8cpp_source.html#l00459">459</a></p>
 
 </div>
 </div>
@@ -212,7 +314,9 @@ $(function(){initNavTree('classResetWidget.html','','classResetWidget-members');
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__resetwidget_8cpp_source.html">moc_resetwidget.cpp</a> строка <a class="el" href="moc__resetwidget_8cpp_source.html#l00207">207</a></p>
+<p>Испускается при успешном сохранении нового пароля </p>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__resetwidget_8cpp_source.html">moc_resetwidget.cpp</a> строка <a class="el" href="moc__resetwidget_8cpp_source.html#l00201">201</a></p>
 
 </div>
 </div>

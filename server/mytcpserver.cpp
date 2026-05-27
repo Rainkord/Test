@@ -4,6 +4,14 @@
 
 #define SERVER_PORT 33333
 
+/**
+ * @brief Конструктор TCP-сервера
+ *
+ * Создаёт QTcpServer, подключает сигнал newConnection к слоту
+ * slotNewConnection. Пытается начать прослушивание на порту SERVER_PORT.
+ * В случае ошибки выводит лог-сообщение, иначе устанавливает
+ * статус сервера в true.
+ */
 MyTcpServer::MyTcpServer(QObject *parent)
     : QObject(parent)
     , m_pServer(new QTcpServer(this))
@@ -20,6 +28,13 @@ MyTcpServer::MyTcpServer(QObject *parent)
     }
 }
 
+/**
+ * @brief Деструктор TCP-сервера
+ *
+ * Проходит по всем активным клиентским соединениям, закрывает
+ * каждый сокет, планирует его удаление и очищает карту клиентов.
+ * Затем закрывает сам сервер.
+ */
 MyTcpServer::~MyTcpServer()
 {
     for (QTcpSocket *socket : m_clients) {
@@ -30,6 +45,14 @@ MyTcpServer::~MyTcpServer()
     m_pServer->close();
 }
 
+/**
+ * @brief Слот обработки нового подключения клиента
+ *
+ * Последовательно принимает все ожидающие подключения от QTcpServer.
+ * Для каждого нового сокета устанавливает обработчики сигналов
+ * readyRead и disconnected, добавляет сокет в карту m_clients
+ * и логирует информацию о подключении.
+ */
 void MyTcpServer::slotNewConnection()
 {
     while (m_pServer->hasPendingConnections()) {
@@ -50,6 +73,14 @@ void MyTcpServer::slotNewConnection()
     }
 }
 
+/**
+ * @brief Слот чтения данных от клиента
+ *
+ * Получает указатель на сокет-отправителя через sender().
+ * Последовательно считывает строки из сокета, передаёт каждое
+ * сообщение на обработку через FunctionsForServer::processMessage,
+ * логирует запрос и ответ, затем отправляет ответ обратно клиенту.
+ */
 void MyTcpServer::slotServerRead()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
@@ -72,6 +103,13 @@ void MyTcpServer::slotServerRead()
     }
 }
 
+/**
+ * @brief Слот обработки отключения клиента
+ *
+ * Получает указатель на отключившийся сокет через sender(),
+ * логирует отключение, удаляет сокет из карты m_clients
+ * и планирует его удаление через deleteLater().
+ */
 void MyTcpServer::slotClientDisconnected()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());

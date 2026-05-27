@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['loginsuccess_0',['loginSuccess',['../classAuthWidget.html#a3a5c8198a19c4f9e7fd90915986350a1',1,'AuthWidget']]],
-  ['logout_1',['logout',['../classGraphWidget.html#aafaa8f64b822bdb49df25793f2bf4a2c',1,'GraphWidget']]]
+  ['keypressevent_0',['keyPressEvent',['../classRegWidget.html#a49b73d41c3903bfe5a6da747281634b9',1,'RegWidget::keyPressEvent()'],['../classResetWidget.html#a1edf2ece87a9e75b8a89fadb3966dae8',1,'ResetWidget::keyPressEvent()'],['../classVerifyWidget.html#affef6415bfa16a515503780fd286852d',1,'VerifyWidget::keyPressEvent()']]]
 ];

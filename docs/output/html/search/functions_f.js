@@ -1,5 +1,23 @@
 var searchData=
 [
-  ['verificationsuccess_0',['verificationSuccess',['../classVerifyWidget.html#a3385b37432077b02c6af753c7b2e0d4d',1,'VerifyWidget']]],
-  ['verifywidget_1',['VerifyWidget',['../classVerifyWidget.html#ac9137b260ddd289dcd1dd084b38338f8',1,'VerifyWidget']]]
+  ['schemadialog_0',['SchemaDialog',['../classSchemaDialog.html#a18e3136b30177c668d2de67a5c3a7b63',1,'SchemaDialog']]],
+  ['senderemail_1',['senderEmail',['../classSmtpClient.html#a70170ba799781c4edbe0b04e2eeb6886',1,'SmtpClient']]],
+  ['senderpassword_2',['senderPassword',['../classSmtpClient.html#a81d41f91f8937a7fbe87d94e680ffd4f',1,'SmtpClient']]],
+  ['sendpasswordresetcode_3',['sendPasswordResetCode',['../classSmtpClient.html#a1314f5dad90876cd5a0338f5a3026bf9',1,'SmtpClient']]],
+  ['sendrequest_4',['sendRequest',['../classClientSingleton.html#ab2f84329f8d18eb6216f10513e55a94f',1,'ClientSingleton']]],
+  ['sendrequestasync_5',['sendRequestAsync',['../classClientSingleton.html#a83de07f38c0218089973aa27050bfbad',1,'ClientSingleton']]],
+  ['sendverificationcode_6',['sendVerificationCode',['../classSmtpClient.html#ab637a48b3f57c35e60fe92c648fc662a',1,'SmtpClient']]],
+  ['serverfailed_7',['serverFailed',['../classLogger.html#a400a1cd50faf95184ec0da42d660d0ca',1,'Logger']]],
+  ['serverstarted_8',['serverStarted',['../classLogger.html#a888f2c3d4f606fc821a1e638c01a6543',1,'Logger']]],
+  ['setenabled_9',['setEnabled',['../classOtpInput.html#a5650d385718e92e643f684c6ca32a1b0',1,'OtpInput']]],
+  ['seterror_10',['setError',['../classOtpInput.html#ad49185c9a0a50bf9cbc6d1ea23a8b4d2',1,'OtpInput']]],
+  ['setlogin_11',['setLogin',['../classMainAppWidget.html#a1fba0a6bf41e8bd6634f336f3772a28b',1,'MainAppWidget::setLogin()'],['../classVerifyWidget.html#a32596128556f70c024d87d1e07a653f2',1,'VerifyWidget::setLogin()']]],
+  ['setuserlogin_12',['setUserLogin',['../classGraphWidget.html#a406b2c645f428d6b061d0f3f88f35740',1,'GraphWidget']]],
+  ['showauth_13',['showAuth',['../classRegWidget.html#ac173990dc8de328d78e4e6f4708c2628',1,'RegWidget']]],
+  ['showregister_14',['showRegister',['../classAuthWidget.html#a1e5e908862a827d2ef3ae7123f194635',1,'AuthWidget']]],
+  ['showreset_15',['showReset',['../classAuthWidget.html#a9a21ea2bba138e77cc49d2efe8baed75',1,'AuthWidget']]],
+  ['showverifyauth_16',['showVerifyAuth',['../classAuthWidget.html#a1dcd66627691bbd98dafd32ea7d9ced9',1,'AuthWidget']]],
+  ['slotclientdisconnected_17',['slotClientDisconnected',['../classMyTcpServer.html#a3e040c49dbefd65b9a58ab662fc9f7a2',1,'MyTcpServer']]],
+  ['slotnewconnection_18',['slotNewConnection',['../classMyTcpServer.html#a0ba7316ffe1a26c57fabde9e74b6c8dc',1,'MyTcpServer']]],
+  ['slotserverread_19',['slotServerRead',['../classMyTcpServer.html#ab4a64d2eab985d723090963f5c8a2882',1,'MyTcpServer']]]
 ];

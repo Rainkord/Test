@@ -93,6 +93,9 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
 </div><!--header-->
 <div class="contents">
 
+<p>Виджет авторизации пользователя  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="authwidget_8h_source.html">authwidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:AuthWidget:</div>
@@ -103,19 +106,27 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 Сигналы</h2></td></tr>
-<tr class="memitem:a3a5c8198a19c4f9e7fd90915986350a1" id="r_a3a5c8198a19c4f9e7fd90915986350a1"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3a5c8198a19c4f9e7fd90915986350a1">loginSuccess</a> (QString login)</td></tr>
 <tr class="memitem:a1e5e908862a827d2ef3ae7123f194635" id="r_a1e5e908862a827d2ef3ae7123f194635"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1e5e908862a827d2ef3ae7123f194635">showRegister</a> ()</td></tr>
-<tr class="memitem:a6e5e6749cb5e18d828e04c3d7ab5c6b0" id="r_a6e5e6749cb5e18d828e04c3d7ab5c6b0"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a6e5e6749cb5e18d828e04c3d7ab5c6b0">showVerifyAuth</a> (QString login)</td></tr>
+<tr class="memdesc:a1e5e908862a827d2ef3ae7123f194635"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сигнал для переключения на экран регистрации  <br /></td></tr>
 <tr class="memitem:a9a21ea2bba138e77cc49d2efe8baed75" id="r_a9a21ea2bba138e77cc49d2efe8baed75"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a9a21ea2bba138e77cc49d2efe8baed75">showReset</a> ()</td></tr>
+<tr class="memdesc:a9a21ea2bba138e77cc49d2efe8baed75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сигнал для переключения на экран восстановления пароля  <br /></td></tr>
+<tr class="memitem:a1dcd66627691bbd98dafd32ea7d9ced9" id="r_a1dcd66627691bbd98dafd32ea7d9ced9"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1dcd66627691bbd98dafd32ea7d9ced9">showVerifyAuth</a> (const QString &amp;login, const QString &amp;codeHash)</td></tr>
+<tr class="memdesc:a1dcd66627691bbd98dafd32ea7d9ced9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сигнал для переключения на экран верификации при входе  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a3c75e95c00152f80392c004d71bcc668" id="r_a3c75e95c00152f80392c004d71bcc668"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a3c75e95c00152f80392c004d71bcc668">AuthWidget</a> (QWidget *parent=nullptr)</td></tr>
+<tr class="memdesc:a3c75e95c00152f80392c004d71bcc668"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор виджета авторизации  <br /></td></tr>
 <tr class="memitem:a5c1b0f1fdcd0da42a3982ab0107e5d4b" id="r_a5c1b0f1fdcd0da42a3982ab0107e5d4b"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a5c1b0f1fdcd0da42a3982ab0107e5d4b">~AuthWidget</a> ()</td></tr>
+<tr class="memdesc:a5c1b0f1fdcd0da42a3982ab0107e5d4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деструктор виджета авторизации  <br /></td></tr>
+<tr class="memitem:ab602ac82962d5ce8a89556e2537390a9" id="r_ab602ac82962d5ce8a89556e2537390a9"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab602ac82962d5ce8a89556e2537390a9">clearFields</a> ()</td></tr>
+<tr class="memdesc:ab602ac82962d5ce8a89556e2537390a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Очистить все поля ввода и сбросить состояние  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="authwidget_8h_source.html">authwidget.h</a> строка <a class="el" href="authwidget_8h_source.html#l00010">10</a></p>
+<div class="textblock"><p>Виджет авторизации пользователя </p>
+<p>Предоставляет интерфейс для входа в аккаунт: ввод логина и пароля, отправка запроса на сервер, обработка ответа с блокировкой при превышении лимита попыток. Поддерживает переход к регистрации и восстановлению пароля. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="authwidget_8h_source.html">authwidget.h</a> строка <a class="el" href="authwidget_8h_source.html#l00018">18</a></p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Конструктор(ы)</h2>
 <a id="a3c75e95c00152f80392c004d71bcc668" name="a3c75e95c00152f80392c004d71bcc668"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3c75e95c00152f80392c004d71bcc668">&#9670;&#160;</a></span>AuthWidget()</h2>
@@ -140,7 +151,22 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="authwidget_8cpp_source.html">authwidget.cpp</a> строка <a class="el" href="authwidget_8cpp_source.html#l00034">34</a></p>
+<p>Конструктор виджета авторизации </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>Родительский виджет</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Инициализирует переменные состояния, настраивает UI, создаёт таймер блокировки и подключает сигнал ответа сервера.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>Родительский виджет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="authwidget_8cpp_source.html">authwidget.cpp</a> строка <a class="el" href="authwidget_8cpp_source.html#l00133">133</a></p>
 
 </div>
 </div>
@@ -159,35 +185,34 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="authwidget_8cpp_source.html">authwidget.cpp</a> строка <a class="el" href="authwidget_8cpp_source.html#l00055">55</a></p>
+<p>Деструктор виджета авторизации </p>
+
+<p class="definition">См. определение в файле <a class="el" href="authwidget_8cpp_source.html">authwidget.cpp</a> строка <a class="el" href="authwidget_8cpp_source.html#l00157">157</a></p>
 
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Методы</h2>
-<a id="a3a5c8198a19c4f9e7fd90915986350a1" name="a3a5c8198a19c4f9e7fd90915986350a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a5c8198a19c4f9e7fd90915986350a1">&#9670;&#160;</a></span>loginSuccess</h2>
+<a id="ab602ac82962d5ce8a89556e2537390a9" name="ab602ac82962d5ce8a89556e2537390a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab602ac82962d5ce8a89556e2537390a9">&#9670;&#160;</a></span>clearFields()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void AuthWidget::loginSuccess </td>
+          <td class="memname">void AuthWidget::clearFields </td>
           <td>(</td>
-          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>login</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__authwidget_8cpp_source.html">moc_authwidget.cpp</a> строка <a class="el" href="moc__authwidget_8cpp_source.html#l00196">196</a></p>
+<p>Очистить все поля ввода и сбросить состояние </p>
+<p>Очистить все поля ввода и сбросить состояние виджета</p>
+<p>Сбрасывает логин, пароль, статусные метки, флаги ожидания и включает кнопку входа.</p>
+<p>Очищает поля логина и пароля, скрывает статусные метки, включает кнопку входа и сбрасывает флаги ожидания. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="authwidget_8cpp_source.html">authwidget.cpp</a> строка <a class="el" href="authwidget_8cpp_source.html#l00277">277</a></p>
 
 </div>
 </div>
@@ -214,7 +239,9 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__authwidget_8cpp_source.html">moc_authwidget.cpp</a> строка <a class="el" href="moc__authwidget_8cpp_source.html#l00203">203</a></p>
+<p>Сигнал для переключения на экран регистрации </p>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__authwidget_8cpp_source.html">moc_authwidget.cpp</a> строка <a class="el" href="moc__authwidget_8cpp_source.html#l00186">186</a></p>
 
 </div>
 </div>
@@ -241,12 +268,14 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__authwidget_8cpp_source.html">moc_authwidget.cpp</a> строка <a class="el" href="moc__authwidget_8cpp_source.html#l00216">216</a></p>
+<p>Сигнал для переключения на экран восстановления пароля </p>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__authwidget_8cpp_source.html">moc_authwidget.cpp</a> строка <a class="el" href="moc__authwidget_8cpp_source.html#l00192">192</a></p>
 
 </div>
 </div>
-<a id="a6e5e6749cb5e18d828e04c3d7ab5c6b0" name="a6e5e6749cb5e18d828e04c3d7ab5c6b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e5e6749cb5e18d828e04c3d7ab5c6b0">&#9670;&#160;</a></span>showVerifyAuth</h2>
+<a id="a1dcd66627691bbd98dafd32ea7d9ced9" name="a1dcd66627691bbd98dafd32ea7d9ced9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dcd66627691bbd98dafd32ea7d9ced9">&#9670;&#160;</a></span>showVerifyAuth</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,8 +286,12 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
         <tr>
           <td class="memname">void AuthWidget::showVerifyAuth </td>
           <td>(</td>
-          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>login</em></span></td><td>)</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>codeHash</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -268,7 +301,16 @@ $(function(){initNavTree('classAuthWidget.html','','classAuthWidget-members'); }
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__authwidget_8cpp_source.html">moc_authwidget.cpp</a> строка <a class="el" href="moc__authwidget_8cpp_source.html#l00209">209</a></p>
+<p>Сигнал для переключения на экран верификации при входе </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>Логин пользователя </td></tr>
+    <tr><td class="paramname">codeHash</td><td>Хэш кода подтверждения </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__authwidget_8cpp_source.html">moc_authwidget.cpp</a> строка <a class="el" href="moc__authwidget_8cpp_source.html#l00198">198</a></p>
 
 </div>
 </div>

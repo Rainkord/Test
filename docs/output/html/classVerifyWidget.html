@@ -93,6 +93,9 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
 </div><!--header-->
 <div class="contents">
 
+<p>Виджет двухфакторной верификации по OTP-коду  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="verifywidget_8h_source.html">verifywidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:VerifyWidget:</div>
@@ -103,18 +106,32 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 Сигналы</h2></td></tr>
-<tr class="memitem:a3385b37432077b02c6af753c7b2e0d4d" id="r_a3385b37432077b02c6af753c7b2e0d4d"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3385b37432077b02c6af753c7b2e0d4d">verificationSuccess</a> (QString login)</td></tr>
+<tr class="memitem:a1d0ab29aea72443d5069088b7a173910" id="r_a1d0ab29aea72443d5069088b7a173910"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1d0ab29aea72443d5069088b7a173910">verificationSuccess</a> (const QString &amp;login)</td></tr>
+<tr class="memdesc:a1d0ab29aea72443d5069088b7a173910"><td class="mdescLeft">&#160;</td><td class="mdescRight">Испускается при успешной верификации OTP-кода  <br /></td></tr>
 <tr class="memitem:a809975925f75296a1437c82f08d42efa" id="r_a809975925f75296a1437c82f08d42efa"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a809975925f75296a1437c82f08d42efa">backToAuth</a> ()</td></tr>
+<tr class="memdesc:a809975925f75296a1437c82f08d42efa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Испускается при возврате на экран авторизации  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:ac9137b260ddd289dcd1dd084b38338f8" id="r_ac9137b260ddd289dcd1dd084b38338f8"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ac9137b260ddd289dcd1dd084b38338f8">VerifyWidget</a> (QWidget *parent=nullptr)</td></tr>
+<tr class="memdesc:ac9137b260ddd289dcd1dd084b38338f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор виджета верификации  <br /></td></tr>
 <tr class="memitem:a84c3621007d655d2af43421c0157fda4" id="r_a84c3621007d655d2af43421c0157fda4"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a84c3621007d655d2af43421c0157fda4">~VerifyWidget</a> ()</td></tr>
-<tr class="memitem:aa51aed6e8d8cfff96a6727c8653998ef" id="r_aa51aed6e8d8cfff96a6727c8653998ef"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aa51aed6e8d8cfff96a6727c8653998ef">setLogin</a> (const QString &amp;login)</td></tr>
+<tr class="memdesc:a84c3621007d655d2af43421c0157fda4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деструктор виджета  <br /></td></tr>
+<tr class="memitem:a32596128556f70c024d87d1e07a653f2" id="r_a32596128556f70c024d87d1e07a653f2"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a32596128556f70c024d87d1e07a653f2">setLogin</a> (const QString &amp;login, const QString &amp;codeHash)</td></tr>
+<tr class="memdesc:a32596128556f70c024d87d1e07a653f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Устанавливает логин и хэш кода для верификации  <br /></td></tr>
+<tr class="memitem:a120ada713a10823851a25db12dbdd609" id="r_a120ada713a10823851a25db12dbdd609"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a120ada713a10823851a25db12dbdd609">clearFields</a> ()</td></tr>
+<tr class="memdesc:a120ada713a10823851a25db12dbdd609"><td class="mdescLeft">&#160;</td><td class="mdescRight">Очищает все поля и сбрасывает состояние виджета  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Защищенные члены</h2></td></tr>
+<tr class="memitem:affef6415bfa16a515503780fd286852d" id="r_affef6415bfa16a515503780fd286852d"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#affef6415bfa16a515503780fd286852d">keyPressEvent</a> (QKeyEvent *e) override</td></tr>
+<tr class="memdesc:affef6415bfa16a515503780fd286852d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик нажатия клавиш  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="verifywidget_8h_source.html">verifywidget.h</a> строка <a class="el" href="verifywidget_8h_source.html#l00010">10</a></p>
+<div class="textblock"><p>Виджет двухфакторной верификации по OTP-коду </p>
+<p>Экран ввода одноразового кода подтверждения, отправленного пользователю при входе в аккаунт. Поддерживает блокировку при превышении лимита попыток. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8h_source.html">verifywidget.h</a> строка <a class="el" href="verifywidget_8h_source.html#l00018">18</a></p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Конструктор(ы)</h2>
 <a id="ac9137b260ddd289dcd1dd084b38338f8" name="ac9137b260ddd289dcd1dd084b38338f8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac9137b260ddd289dcd1dd084b38338f8">&#9670;&#160;</a></span>VerifyWidget()</h2>
@@ -139,7 +156,22 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00068">68</a></p>
+<p>Конструктор виджета верификации </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Устанавливает стили, создаёт интерфейс и таймер блокировки.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00105">105</a></p>
 
 </div>
 </div>
@@ -158,7 +190,10 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00089">89</a></p>
+<p>Деструктор виджета </p>
+<p>Деструктор виджета верификации </p>
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00120">120</a></p>
 
 </div>
 </div>
@@ -186,12 +221,78 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__verifywidget_8cpp_source.html">moc_verifywidget.cpp</a> строка <a class="el" href="moc__verifywidget_8cpp_source.html#l00171">171</a></p>
+<p>Испускается при возврате на экран авторизации </p>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__verifywidget_8cpp_source.html">moc_verifywidget.cpp</a> строка <a class="el" href="moc__verifywidget_8cpp_source.html#l00177">177</a></p>
 
 </div>
 </div>
-<a id="aa51aed6e8d8cfff96a6727c8653998ef" name="aa51aed6e8d8cfff96a6727c8653998ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa51aed6e8d8cfff96a6727c8653998ef">&#9670;&#160;</a></span>setLogin()</h2>
+<a id="a120ada713a10823851a25db12dbdd609" name="a120ada713a10823851a25db12dbdd609"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a120ada713a10823851a25db12dbdd609">&#9670;&#160;</a></span>clearFields()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VerifyWidget::clearFields </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Очищает все поля и сбрасывает состояние виджета </p>
+<p>Полностью очищает все поля и сбрасывает внутреннее состояние виджета </p>
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00228">228</a></p>
+
+</div>
+</div>
+<a id="affef6415bfa16a515503780fd286852d" name="affef6415bfa16a515503780fd286852d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affef6415bfa16a515503780fd286852d">&#9670;&#160;</a></span>keyPressEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VerifyWidget::keyPressEvent </td>
+          <td>(</td>
+          <td class="paramtype">QKeyEvent *</td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Обработчик нажатия клавиш </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>событие нажатия клавиши</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>При нажатии Escape вызывает переход на экран авторизации.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>событие нажатия клавиши </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00327">327</a></p>
+
+</div>
+</div>
+<a id="a32596128556f70c024d87d1e07a653f2" name="a32596128556f70c024d87d1e07a653f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32596128556f70c024d87d1e07a653f2">&#9670;&#160;</a></span>setLogin()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,18 +300,39 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
         <tr>
           <td class="memname">void VerifyWidget::setLogin </td>
           <td>(</td>
-          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span></td><td>)</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>codeHash</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00091">91</a></p>
+<p>Устанавливает логин и хэш кода для верификации </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>логин пользователя </td></tr>
+    <tr><td class="paramname">codeHash</td><td>SHA-256 хэш ожидаемого OTP-кода</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Сбрасывает состояние: очищает OTP-ввод, восстанавливает лимит попыток и скрывает сообщения об ошибках.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>логин пользователя </td></tr>
+    <tr><td class="paramname">codeHash</td><td>SHA-256 хэш ожидаемого OTP-кода </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="verifywidget_8cpp_source.html">verifywidget.cpp</a> строка <a class="el" href="verifywidget_8cpp_source.html#l00213">213</a></p>
 
 </div>
 </div>
-<a id="a3385b37432077b02c6af753c7b2e0d4d" name="a3385b37432077b02c6af753c7b2e0d4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3385b37432077b02c6af753c7b2e0d4d">&#9670;&#160;</a></span>verificationSuccess</h2>
+<a id="a1d0ab29aea72443d5069088b7a173910" name="a1d0ab29aea72443d5069088b7a173910"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d0ab29aea72443d5069088b7a173910">&#9670;&#160;</a></span>verificationSuccess</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -221,7 +343,7 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
         <tr>
           <td class="memname">void VerifyWidget::verificationSuccess </td>
           <td>(</td>
-          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>login</em></span></td><td>)</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -232,7 +354,9 @@ $(function(){initNavTree('classVerifyWidget.html','','classVerifyWidget-members'
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="moc__verifywidget_8cpp_source.html">moc_verifywidget.cpp</a> строка <a class="el" href="moc__verifywidget_8cpp_source.html#l00164">164</a></p>
+<p>Испускается при успешной верификации OTP-кода </p>
+
+<p class="definition">См. определение в файле <a class="el" href="moc__verifywidget_8cpp_source.html">moc_verifywidget.cpp</a> строка <a class="el" href="moc__verifywidget_8cpp_source.html#l00170">170</a></p>
 
 </div>
 </div>

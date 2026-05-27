@@ -4,30 +4,62 @@
 #include <QDateTime>
 #include <iostream>
 
+/**
+ * @brief Пространство имён с ANSI-escape-кодами для форматирования вывода в терминале
+ */
 // ════════════════════════════════════════════════════════════
 namespace Ansi {
+    /// Сброс форматирования
     constexpr auto RESET    = "\033[0m";
+    /// Жирный шрифт
     constexpr auto BOLD     = "\033[1m";
+    /// Тусклый шрифт
     constexpr auto DIM      = "\033[2m";
+    /// Красный цвет
     constexpr auto RED      = "\033[31m";
+    /// Зелёный цвет
     constexpr auto GREEN    = "\033[32m";
+    /// Жёлтый цвет
     constexpr auto YELLOW   = "\033[33m";
+    /// Голубой цвет
     constexpr auto CYAN     = "\033[36m";
+    /// Белый цвет
     constexpr auto WHITE    = "\033[37m";
+    /// Ярко-красный цвет
     constexpr auto BRED     = "\033[91m";
+    /// Ярко-зелёный цвет
     constexpr auto BGREEN   = "\033[92m";
+    /// Ярко-жёлтый цвет
     constexpr auto BYELLOW  = "\033[93m";
+    /// Ярко-синий цвет
     constexpr auto BBLUE    = "\033[94m";
+    /// Ярко-пурпурный цвет
     constexpr auto BMAGENTA = "\033[95m";
+    /// Ярко-голубой цвет
     constexpr auto BCYAN    = "\033[96m";
+    /// Ярко-белый цвет
     constexpr auto BWHITE   = "\033[97m";
 }
 
+/**
+ * @brief Класс логирования серверных событий в терминал
+ *
+ * Предоставляет статические методы для вывода форматированных
+ * сообщений о событиях сервера: запуск, подключения, отключения,
+ * запросы, ответы, авторизация, регистрация, отправка email,
+ * ошибки. Использует ANSI-escape-коды для цветового форматирования.
+ */
 // ════════════════════════════════════════════════════════════
 class Logger
 {
 public:
 
+    /**
+     * @brief Выводит баннер сервера при запуске
+     *
+     * Отображает декоративную рамку с названием сервера
+     * и информацией о группе.
+     */
     // ── Баннер при старте ──────────────────────────────────────
     static void banner()
     {
@@ -49,6 +81,11 @@ public:
             << Ansi::RESET << "\n\n";
     }
 
+    /**
+     * @brief Логирует успешный запуск сервера
+     *
+     * @param port номер порта, на котором работает сервер
+     */
     // ── Сервер ───────────────────────────────────────────────
     static void serverStarted(int port)
     {
@@ -61,6 +98,11 @@ public:
         divider();
     }
 
+    /**
+     * @brief Логирует ошибку запуска сервера
+     *
+     * @param err описание ошибки от QTcpServer
+     */
     static void serverFailed(const QString &err)
     {
         tag("FAIL", Ansi::BRED);
@@ -69,6 +111,13 @@ public:
             << Ansi::RESET << err.toStdString() << "\n";
     }
 
+    /**
+     * @brief Логирует подключение нового клиента
+     *
+     * @param ip IP-адрес подключившегося клиента
+     * @param port порт клиента
+     * @param id уникальный дескриптор сокета клиента
+     */
     // ── Клиенты ─────────────────────────────────────────────
     static void clientConnected(const QString &ip, quint16 port, qintptr id)
     {
@@ -82,6 +131,11 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует отключение клиента
+     *
+     * @param ip IP-адрес отключившегося клиента
+     */
     static void clientDisconnected(const QString &ip)
     {
         tag("DISC", Ansi::YELLOW);
@@ -91,6 +145,12 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует входящее сообщение от клиента
+     *
+     * @param ip IP-адрес отправителя
+     * @param msg текст сообщения
+     */
     // ── Запрос / ответ ──────────────────────────────────────
     static void request(const QString &ip, const QString &msg)
     {
@@ -102,6 +162,11 @@ public:
             << Ansi::RESET    << "\n";
     }
 
+    /**
+     * @brief Логирует отправляемый клиенту ответ
+     *
+     * @param resp текст ответа
+     */
     static void response(const QString &resp)
     {
         tag("SEND", Ansi::BBLUE);
@@ -110,6 +175,11 @@ public:
             << Ansi::RESET << "\n";
     }
 
+    /**
+     * @brief Логирует успешную авторизацию
+     *
+     * @param login логин авторизованного пользователя
+     */
     // ── Авторизация ─────────────────────────────────────────
     static void authOk(const QString &login)
     {
@@ -121,6 +191,11 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует неуспешную попытку авторизации
+     *
+     * @param login логин пользователя с неверными данными
+     */
     static void authFail(const QString &login)
     {
         tag("AUTH", Ansi::BRED);
@@ -131,6 +206,11 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует успешную отправку email
+     *
+     * @param toEmail адрес получателя письма
+     */
     // ── Email-отправка ───────────────────────────────────────
     static void emailSent(const QString &toEmail)
     {
@@ -142,6 +222,11 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует ошибку отправки email
+     *
+     * @param toEmail адрес получателя, которому не удалось отправить письмо
+     */
     static void emailFailed(const QString &toEmail)
     {
         tag("MAIL", Ansi::BRED);
@@ -152,6 +237,13 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует отправку кода 2FA-подтверждения
+     *
+     * @param login логин пользователя
+     * @param email email пользователя
+     * @param code код подтверждения (отображается в рамке)
+     */
     // ── 2FA-код ──────────────────────────────────────────────
     static void codeSent(const QString &login, const QString &email, const QString &code)
     {
@@ -165,6 +257,13 @@ public:
         codeBox(code, Ansi::BYELLOW);
     }
 
+    /**
+     * @brief Логирует генерацию кода подтверждения регистрации
+     *
+     * @param login логин регистрируемого пользователя
+     * @param email email пользователя
+     * @param code код подтверждения (отображается в рамке)
+     */
     // ── Регистрация ──────────────────────────────────────────
     static void regCode(const QString &login, const QString &email, const QString &code)
     {
@@ -178,6 +277,11 @@ public:
         codeBox(code, Ansi::BBLUE);
     }
 
+    /**
+     * @brief Логирует успешное создание пользователя
+     *
+     * @param login логин созданного пользователя
+     */
     static void regOk(const QString &login)
     {
         tag("REG ", Ansi::BGREEN);
@@ -188,6 +292,11 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует ошибку при регистрации
+     *
+     * @param login логин, при регистрации которого произошла ошибка
+     */
     static void regFail(const QString &login)
     {
         tag("REG ", Ansi::BRED);
@@ -198,6 +307,12 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует генерацию кода сброса пароля
+     *
+     * @param email email пользователя
+     * @param code код подтверждения (отображается в рамке)
+     */
     // ── Сброс пароля ─────────────────────────────────────────
     static void resetCode(const QString &email, const QString &code)
     {
@@ -209,6 +324,11 @@ public:
         codeBox(code, Ansi::BMAGENTA);
     }
 
+    /**
+     * @brief Логирует успешное обновление пароля
+     *
+     * @param email email пользователя, чей пароль был обновлён
+     */
     static void resetOk(const QString &email)
     {
         tag("RESET", Ansi::BGREEN);
@@ -219,6 +339,11 @@ public:
             << Ansi::RESET  << "\n";
     }
 
+    /**
+     * @brief Логирует сообщение об ошибке
+     *
+     * @param msg текст ошибки
+     */
     // ── Ошибка ────────────────────────────────────────────
     static void error(const QString &msg)
     {
@@ -228,6 +353,9 @@ public:
             << Ansi::RESET << "\n";
     }
 
+    /**
+     * @brief Выводит горизонтальный разделитель
+     */
     // ── Разделитель ──────────────────────────────────────────
     static void divider()
     {
@@ -238,6 +366,13 @@ public:
     }
 
 private:
+
+    /**
+     * @brief Выводит временну́ю метку и тег сообщения
+     *
+     * @param label текстовый тег (например, "CONN", "AUTH")
+     * @param color ANSI-escape-код цвета
+     */
     // ── Тег ───────────────────────────────────────────────────
     static void tag(const char *label, const char *color)
     {
@@ -249,6 +384,12 @@ private:
             << Ansi::RESET;
     }
 
+    /**
+     * @brief Выводит код подтверждения в декоративной рамке
+     *
+     * @param code код подтверждения
+     * @param color ANSI-escape-код цвета рамки
+     */
     // ── Рамка с кодом ───────────────────────────────────────
     static void codeBox(const QString &code, const char *color)
     {
@@ -262,17 +403,37 @@ private:
             << Ansi::RESET << "\n";
     }
 
+    /**
+     * @brief Повторяет символ n раз
+     *
+     * @param c символ для повторения
+     * @param n количество повторений
+     * @return строка из n символов c
+     */
     // ── Вспомогательные методы для баннера ──────────────────
     static std::string repeat(char c, int n)
     {
         return std::string(static_cast<size_t>(n), c);
     }
 
+    /**
+     * @brief Генерирует строку из n пробелов
+     *
+     * @param n количество пробелов
+     * @return строка пробелов
+     */
     static std::string spaces(int n)
     {
         return std::string(static_cast<size_t>(n), ' ');
     }
 
+    /**
+     * @brief Центрирует ASCII-строку в поле заданной ширины
+     *
+     * @param text исходная строка
+     * @param width ширина поля в символах
+     * @return отцентрированная строка
+     */
     // Центрирование ASCII-строки в поле шириной width (символов, не байт)
     static std::string center(const char *text, int width)
     {

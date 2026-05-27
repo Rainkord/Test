@@ -3,6 +3,7 @@ var hierarchy =
     [ "Calculator", "classCalculator.html", null ],
     [ "Database", "classDatabase.html", null ],
     [ "FunctionsForServer", "classFunctionsForServer.html", null ],
+    [ "Logger", "classLogger.html", null ],
     [ "QDialog", null, [
       [ "SchemaDialog", "classSchemaDialog.html", null ],
       [ "TaskDialog", "classTaskDialog.html", null ]
@@ -18,8 +19,10 @@ var hierarchy =
     [ "qt_meta_stringdata_ClientSingleton_t", "structqt__meta__stringdata__ClientSingleton__t.html", null ],
     [ "qt_meta_stringdata_FlowchartWidget_t", "structqt__meta__stringdata__FlowchartWidget__t.html", null ],
     [ "qt_meta_stringdata_GraphWidget_t", "structqt__meta__stringdata__GraphWidget__t.html", null ],
+    [ "qt_meta_stringdata_MainAppWidget_t", "structqt__meta__stringdata__MainAppWidget__t.html", null ],
     [ "qt_meta_stringdata_MainWindow_t", "structqt__meta__stringdata__MainWindow__t.html", null ],
     [ "qt_meta_stringdata_MyTcpServer_t", "structqt__meta__stringdata__MyTcpServer__t.html", null ],
+    [ "qt_meta_stringdata_OtpInput_t", "structqt__meta__stringdata__OtpInput__t.html", null ],
     [ "qt_meta_stringdata_RegWidget_t", "structqt__meta__stringdata__RegWidget__t.html", null ],
     [ "qt_meta_stringdata_ResetWidget_t", "structqt__meta__stringdata__ResetWidget__t.html", null ],
     [ "qt_meta_stringdata_SchemaDialog_t", "structqt__meta__stringdata__SchemaDialog__t.html", null ],
@@ -29,6 +32,8 @@ var hierarchy =
       [ "AuthWidget", "classAuthWidget.html", null ],
       [ "FlowchartWidget", "classFlowchartWidget.html", null ],
       [ "GraphWidget", "classGraphWidget.html", null ],
+      [ "MainAppWidget", "classMainAppWidget.html", null ],
+      [ "OtpInput", "classOtpInput.html", null ],
       [ "RegWidget", "classRegWidget.html", null ],
       [ "ResetWidget", "classResetWidget.html", null ],
       [ "VerifyWidget", "classVerifyWidget.html", null ]

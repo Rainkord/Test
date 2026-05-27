@@ -8,36 +8,46 @@ class QPushButton;
 class QStackedWidget;
 
 /**
- * @class MainAppWidget
- * @brief Главный экран приложения после успешного входа.
+ * @brief Основной виджет приложения после успешного входа
  *
- * Отображает логин пользователя и предоставляет кнопку выхода.
- * При нажатии «Выйти» испускает сигнал logout().
+ * Содержит верхнюю панель с приветствием и кнопкой выхода,
+ * а также стековый виджет для размещения основного контента.
  */
 class MainAppWidget : public QWidget
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief Конструктор главного виджета приложения
+     * @param parent родительский виджет
+     */
     explicit MainAppWidget(QWidget *parent = nullptr);
+
+    /// Деструктор виджета
     ~MainAppWidget();
 
-    /** @brief Устанавливает логин текущего пользователя в заголовок. */
+    /**
+     * @brief Устанавливает логин пользователя для отображения в приветствии
+     * @param login логин пользователя
+     */
     void setLogin(const QString &login);
 
 signals:
-    /** @brief Испускается при нажатии кнопки «Выйти». */
+    /// Испускается при нажатии кнопки «Выйти»
     void logout();
 
 private slots:
+    /// Обработчик нажатия кнопки «Выйти»
     void onLogoutClicked();
 
 private:
+    /// Инициализация пользовательского интерфейса
     void setupUI();
 
-    QLabel      *welcomeLabel;
-    QPushButton *logoutBtn;
-    QStackedWidget *contentStack;
+    QLabel         *welcomeLabel;   ///< Метка приветствия с логином
+    QPushButton    *logoutBtn;      ///< Кнопка «Выйти»
+    QStackedWidget *contentStack;   ///< Стековый виджет для контента
 };
 
 #endif // MAINAPPWIDGET_H

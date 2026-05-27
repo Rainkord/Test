@@ -5,92 +5,115 @@
 #include <QSqlDatabase>
 
 /**
- * @file database.h
- * @brief Singleton-класс для работы с базой данных пользователей.
- */
-
-/**
- * @class Database
- * @brief Предоставляет интерфейс к SQLite-базе данных через паттерн Singleton.
+ * @brief Класс для работы с базой данных пользователей (Singleton)
  *
- * Все методы класса выполняют SQL-запросы к таблице пользователей.
- * Прямое создание объектов класса запрещено — доступ только через instance().
+ * Реализует паттерн Singleton для обеспечения единственного экземпляра
+ * подключения к SQLite базе данных users.db. Предоставляет методы
+ * для добавления пользователей, проверки учётных данных, управления
+ * электронной почтой и сбросом пароля.
+ *
+ * @note Конструктор, деструктор и оператор присваивания приватные —
+ * создание копий объекта запрещено.
  */
 class Database
 {
 public:
+
     /**
-     * @brief Возвращает единственный экземпляр класса Database.
-     * @return Ссылка на экземпляр Database.
+     * @brief Получает единственный экземпляр класса Database
+     *
+     * Реализация паттерна Singleton. При первом вызове создаётся
+     * экземпляр и инициализируется подключение к БД.
+     *
+     * @return ссылка на единственный экземпляр Database
      */
     static Database& instance();
 
     /**
-     * @brief Проверяет, существует ли пользователь с данным логином.
-     * @param login Логин пользователя.
-     * @return @c true если пользователь найден, иначе @c false.
+     * @brief Проверяет существование пользователя по логину
+     *
+     * @param login логин пользователя для проверки
+     * @return true, если пользователь с таким логином существует; false — иначе
      */
     bool userExists(const QString &login);
 
     /**
-     * @brief Проверяет, зарегистрирован ли указанный email.
-     * @param email Email-адрес.
-     * @return @c true если email уже занят, иначе @c false.
+     * @brief Проверяет существование пользователя по email
+     *
+     * @param email электронная почта для проверки
+     * @return true, если пользователь с таким email существует; false — иначе
      */
     bool emailExists(const QString &email);
 
     /**
-     * @brief Добавляет нового пользователя в базу данных.
-     * @param login        Логин пользователя.
-     * @param passwordHash Хэш пароля (SHA-256).
-     * @param email        Email-адрес пользователя.
-     * @return @c true при успешном добавлении, @c false при ошибке.
+     * @brief Добавляет нового пользователя в базу данных
+     *
+     * @param login логин нового пользователя (должен быть уникальным)
+     * @param passwordHash хеш пароля пользователя
+     * @param email электронная почта пользователя
+     * @return true, если пользователь успешно добавлен; false — при ошибке
      */
     bool addUser(const QString &login, const QString &passwordHash, const QString &email);
 
     /**
-     * @brief Проверяет пару логин/хэш пароля.
-     * @param login        Логин пользователя.
-     * @param passwordHash Хэш пароля.
-     * @return @c true если пара совпадает, иначе @c false.
+     * @brief Проверяет корректность учётных данных пользователя
+     *
+     * @param login логин пользователя
+     * @param passwordHash хеш пароля для проверки
+     * @return true, если логин и хеш совпадают с записью в БД; false — иначе
      */
     bool checkUser(const QString &login, const QString &passwordHash);
 
     /**
-     * @brief Возвращает email пользователя по логину.
-     * @param login Логин пользователя.
-     * @return Email-адрес или пустую строку если пользователь не найден.
+     * @brief Получает email пользователя по логину
+     *
+     * @param login логин пользователя
+     * @return email пользователя; пустая строка, если пользователь не найден
      */
     QString getUserEmail(const QString &login);
 
     /**
-     * @brief Возвращает логин пользователя по email.
-     * @param email Email-адрес.
-     * @return Логин или пустую строку если пользователь не найден.
+     * @brief Получает логин пользователя по email
+     *
+     * @param email электронная почта пользователя
+     * @return логин пользователя; пустая строка, если пользователь не найден
      */
     QString getLoginByEmail(const QString &email);
 
     /**
-     * @brief Обновляет хэш пароля пользователя, найденного по email.
-     * @param email           Email-адрес пользователя.
-     * @param newPasswordHash Новый хэш пароля.
-     * @return @c true при успешном обновлении, @c false при ошибке.
+     * @brief Обновляет пароль пользователя по email
+     *
+     * @param email электронная почта пользователя
+     * @param newPasswordHash новый хеш пароля
+     * @return true, если пароль успешно обновлён; false — при ошибке
+     *         или если email не найден
      */
     bool updatePasswordByEmail(const QString &email, const QString &newPasswordHash);
 
 private:
-    /** @brief Закрытый конструктор (Singleton). */
+
+    /**
+     * @brief Приватный конструктор (Singleton)
+     *
+     * Открывает базу данных users.db, создаёт таблицу users,
+     * если она ещё не существует.
+     */
     Database();
 
-    /** @brief Закрытый деструктор (Singleton). */
+    /**
+     * @brief Приватный деструктор
+     *
+     * Закрывает соединение с базой данных при уничтожении объекта.
+     */
     ~Database();
 
-    /** @cond INTERNAL */
+    /// Запрет копирования объекта
     Database(const Database&) = delete;
+    /// Запрет присваивания объекта
     Database& operator=(const Database&) = delete;
-    /** @endcond */
 
-    QSqlDatabase m_db; ///< Объект подключения к SQLite.
+    /// Объект подключения к SQLite базе данных
+    QSqlDatabase m_db;
 };
 
 #endif // DATABASE_H

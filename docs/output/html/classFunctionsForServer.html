@@ -93,7 +93,7 @@ $(function(){initNavTree('classFunctionsForServer.html','','classFunctionsForSer
 </div><!--header-->
 <div class="contents">
 
-<p>Статический класс-диспетчер: разбирает входящее сообщение от клиента и маршрутизирует его к соответствующему обработчику.  
+<p>Класс обработки сообщений сервера  
  <a href="#details">Подробнее...</a></p>
 
 <p><code>#include &lt;<a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a>&gt;</code></p>
@@ -101,22 +101,13 @@ $(function(){initNavTree('classFunctionsForServer.html','','classFunctionsForSer
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Открытые статические члены</h2></td></tr>
 <tr class="memitem:aad6526bc31602d25c9e928af84c4effd" id="r_aad6526bc31602d25c9e928af84c4effd"><td class="memItemLeft">static QString&#160;</td><td class="memItemRight"><a class="el" href="#aad6526bc31602d25c9e928af84c4effd">processMessage</a> (const QString &amp;message)</td></tr>
-<tr class="memdesc:aad6526bc31602d25c9e928af84c4effd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Разбирает входящее сообщение и возвращает строку-ответ клиенту.  <br /></td></tr>
+<tr class="memdesc:aad6526bc31602d25c9e928af84c4effd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обрабатывает входящее сообщение от клиента  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Статический класс-диспетчер: разбирает входящее сообщение от клиента и маршрутизирует его к соответствующему обработчику. </p>
-<p>Протокол команд использует разделитель <code>"||"</code>. Все публичные методы и поля статические — создание объекта не требуется.</p>
-<p>Поддерживаемые команды: </p><table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Команда  </th><th class="markdownTableHeadNone">Параметры  </th><th class="markdownTableHeadNone">Ответ при успехе  </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">check_login  </td><td class="markdownTableBodyNone">login  </td><td class="markdownTableBodyNone">login_free / login_taken  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">registration  </td><td class="markdownTableBodyNone">login, hash, email  </td><td class="markdownTableBodyNone">reg_code_sent  </td></tr>
-</table>
-<p>| verify_reg | login, code | reg+||login | | auth | login, hash | auth_code_sent | | verify_auth | login, code | auth+||login | | get_graph | xMin, xMax, step, a, b, c | graph||x;y||... | | get_task | — | task||название||описание | | reset_password | email | reset_code_sent | | verify_reset | email, code | reset_code_ok | | set_new_password | email, code, hash | password_changed | </p>
+<div class="textblock"><p>Класс обработки сообщений сервера </p>
+<p>Центральный класс бизнес-логики сервера. Обрабатывает входящие команды от клиентов (регистрация, авторизация, сброс пароля, получение графика и задания). Управляет временными данными незавершённых операций и взаимодействует с базой данных и SMTP-клиентом. </p>
 
-<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00054">54</a></p>
+<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00045">45</a></p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Методы</h2>
 <a id="aad6526bc31602d25c9e928af84c4effd" name="aad6526bc31602d25c9e928af84c4effd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aad6526bc31602d25c9e928af84c4effd">&#9670;&#160;</a></span>processMessage()</h2>
@@ -141,17 +132,25 @@ $(function(){initNavTree('classFunctionsForServer.html','','classFunctionsForSer
 </table>
 </div><div class="memdoc">
 
-<p>Разбирает входящее сообщение и возвращает строку-ответ клиенту. </p>
-<p>Является единственной точкой входа для обработки команд. Внутри вызывает приватные handleXxx-методы в зависимости от команды.</p>
+<p>Обрабатывает входящее сообщение от клиента </p>
+<p>Парсит сообщение, определяет команду по первому токену и делегирует обработку соответствующему обработчику.</p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">message</td><td>Строка команды от клиента (формат: <code>"команда||param1||param2"</code>). </td></tr>
+    <tr><td class="paramname">message</td><td>строка сообщения от клиента в формате "команда||параметр1||параметр2||..." </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>Строка ответа для отправки клиенту. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>строка ответа клиенту</dd></dl>
+<p>Разделяет сообщение по разделителю "||", определяет команду по первому токену и делегирует обработку соответствующему обработчику. Поддерживаемые команды: check_login, registration, registration_confirm, auth, get_graph, get_task, reset_password, set_new_password.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>строка сообщения от клиента </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>строка ответа клиенту; "error" при пустом сообщении; "unknown_command" при неизвестной команде </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8cpp_source.html">functionsforserver.cpp</a> строка <a class="el" href="functionsforserver_8cpp_source.html#l00024">24</a></p>
+<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8cpp_source.html">functionsforserver.cpp</a> строка <a class="el" href="functionsforserver_8cpp_source.html#l00064">64</a></p>
 
 </div>
 </div>

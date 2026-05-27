@@ -1,5 +1,5 @@
 var structqt__meta__stringdata__VerifyWidget__t =
 [
-    [ "data", "structqt__meta__stringdata__VerifyWidget__t.html#ad9b2e2ce7b029e8d8682d69e36c82e2a", null ],
-    [ "stringdata0", "structqt__meta__stringdata__VerifyWidget__t.html#a0eab045001cd3806c96eda6084282198", null ]
+    [ "data", "structqt__meta__stringdata__VerifyWidget__t.html#a50336983da8db89479b2cf2c0e73909e", null ],
+    [ "stringdata0", "structqt__meta__stringdata__VerifyWidget__t.html#a03a5c7c72c0251db73c36402d6936d48", null ]
 ];

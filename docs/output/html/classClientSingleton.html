@@ -93,6 +93,9 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
 </div><!--header-->
 <div class="contents">
 
+<p>Класс-одиночка для управления TCP-соединением с сервером  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="clientsingleton_8h_source.html">clientsingleton.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:ClientSingleton:</div>
@@ -104,22 +107,31 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 Сигналы</h2></td></tr>
 <tr class="memitem:a617880b5df66ad9b92db34c759f5626a" id="r_a617880b5df66ad9b92db34c759f5626a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a617880b5df66ad9b92db34c759f5626a">responseReceived</a> (const QString &amp;response)</td></tr>
+<tr class="memdesc:a617880b5df66ad9b92db34c759f5626a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сигнал, испускаемый при получении ответа от сервера  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a8ea7e3d2391a4ac5fbcf191b6e271943" id="r_a8ea7e3d2391a4ac5fbcf191b6e271943"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a8ea7e3d2391a4ac5fbcf191b6e271943">connectToServer</a> (const QString &amp;host, int port)</td></tr>
+<tr class="memdesc:a8ea7e3d2391a4ac5fbcf191b6e271943"><td class="mdescLeft">&#160;</td><td class="mdescRight">Подключиться к серверу  <br /></td></tr>
 <tr class="memitem:a79e501736a61dff6d2fba78fb7673adb" id="r_a79e501736a61dff6d2fba78fb7673adb"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a79e501736a61dff6d2fba78fb7673adb">disconnectFromServer</a> ()</td></tr>
+<tr class="memdesc:a79e501736a61dff6d2fba78fb7673adb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отключиться от сервера  <br /></td></tr>
 <tr class="memitem:a1dce91d90b453205981ef4ce4590c47f" id="r_a1dce91d90b453205981ef4ce4590c47f"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a1dce91d90b453205981ef4ce4590c47f">isConnected</a> () const</td></tr>
+<tr class="memdesc:a1dce91d90b453205981ef4ce4590c47f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверить состояние подключения  <br /></td></tr>
 <tr class="memitem:ab2f84329f8d18eb6216f10513e55a94f" id="r_ab2f84329f8d18eb6216f10513e55a94f"><td class="memItemLeft">QString&#160;</td><td class="memItemRight"><a class="el" href="#ab2f84329f8d18eb6216f10513e55a94f">sendRequest</a> (const QString &amp;request)</td></tr>
+<tr class="memdesc:ab2f84329f8d18eb6216f10513e55a94f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отправить синхронный запрос и получить ответ  <br /></td></tr>
 <tr class="memitem:a83de07f38c0218089973aa27050bfbad" id="r_a83de07f38c0218089973aa27050bfbad"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a83de07f38c0218089973aa27050bfbad">sendRequestAsync</a> (const QString &amp;request)</td></tr>
+<tr class="memdesc:a83de07f38c0218089973aa27050bfbad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отправить асинхронный запрос  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Открытые статические члены</h2></td></tr>
 <tr class="memitem:adfa7d069d54822402ccdd5c5dd85bd75" id="r_adfa7d069d54822402ccdd5c5dd85bd75"><td class="memItemLeft">static <a class="el" href="classClientSingleton.html">ClientSingleton</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#adfa7d069d54822402ccdd5c5dd85bd75">instance</a> ()</td></tr>
+<tr class="memdesc:adfa7d069d54822402ccdd5c5dd85bd75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить единственный экземпляр класса (паттерн Singleton).  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8h_source.html">clientsingleton.h</a> строка <a class="el" href="clientsingleton_8h_source.html#l00008">8</a></p>
+<div class="textblock"><p>Класс-одиночка для управления TCP-соединением с сервером </p>
+<p>Обеспечивает единственный экземпляр клиента для подключения к серверу по протоколу TCP. Поддерживает синхронные и асинхронные запросы, а также уведомления о получении ответа через сигнал. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8h_source.html">clientsingleton.h</a> строка <a class="el" href="clientsingleton_8h_source.html#l00014">14</a></p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Методы</h2>
 <a id="a8ea7e3d2391a4ac5fbcf191b6e271943" name="a8ea7e3d2391a4ac5fbcf191b6e271943"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8ea7e3d2391a4ac5fbcf191b6e271943">&#9670;&#160;</a></span>connectToServer()</h2>
@@ -140,7 +152,27 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00024">24</a></p>
+<p>Подключиться к серверу </p>
+<p>Устанавливает TCP-соединение с указанным хостом и портом. Если уже подключён — возвращает true без повторного подключения.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">host</td><td>Адрес сервера (IP или домен) </td></tr>
+    <tr><td class="paramname">port</td><td>Номер порта сервера </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true если подключение установлено, false в случае ошибки</dd></dl>
+<p>Если клиент уже подключён — возвращает true без повторного подключения. Иначе пытается установить TCP-соединение с указанным хостом и портом с таймаутом 3 секунды.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">host</td><td>Адрес сервера (IP или домен) </td></tr>
+    <tr><td class="paramname">port</td><td>Номер порта сервера </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true если подключение установлено, false в случае ошибки </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00056">56</a></p>
 
 </div>
 </div>
@@ -159,7 +191,11 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00032">32</a></p>
+<p>Отключиться от сервера </p>
+<p>Разрывает текущее TCP-соединение.</p>
+<p>Инициирует разрыв TCP-соединения через метод disconnectFromHost сокета. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00069">69</a></p>
 
 </div>
 </div>
@@ -186,7 +222,12 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00018">18</a></p>
+<p>Получить единственный экземпляр класса (паттерн Singleton). </p>
+<dl class="section return"><dt>Возвращает</dt><dd>Ссылка на единственный экземпляр <a class="el" href="classClientSingleton.html" title="Класс-одиночка для управления TCP-соединением с сервером">ClientSingleton</a></dd></dl>
+<p>Использует локальную статическую переменную для保证 единственности экземпляра на протяжении всего времени работы программы.</p>
+<dl class="section return"><dt>Возвращает</dt><dd>Ссылка на единственный экземпляр <a class="el" href="classClientSingleton.html" title="Класс-одиночка для управления TCP-соединением с сервером">ClientSingleton</a> </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00039">39</a></p>
 
 </div>
 </div>
@@ -205,7 +246,12 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00037">37</a></p>
+<p>Проверить состояние подключения </p>
+<dl class="section return"><dt>Возвращает</dt><dd>true если клиент подключён к серверу, false в противном случае</dd>
+<dd>
+true если сокет находится в состоянии ConnectedState, false в противном случае </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00080">80</a></p>
 
 </div>
 </div>
@@ -232,6 +278,14 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
 </table>
 </div><div class="memdoc">
 
+<p>Сигнал, испускаемый при получении ответа от сервера </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">response</td><td>Ответ сервера в виде строки </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p class="definition">См. определение в файле <a class="el" href="moc__clientsingleton_8cpp_source.html">moc_clientsingleton.cpp</a> строка <a class="el" href="moc__clientsingleton_8cpp_source.html#l00138">138</a></p>
 
 </div>
@@ -251,7 +305,25 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00042">42</a></p>
+<p>Отправить синхронный запрос и получить ответ </p>
+<p>Отправляет строку запроса на сервер и блокирует выполнение, ожидая ответ. Если не подключён — пытается подключиться к 127.0.0.1:33333.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>Строка запроса для отправки на сервер </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>Ответ сервера в виде строки или пустая строка при ошибке</dd></dl>
+<p>Отправляет строку запроса на сервер с символом переноса строки в конце. Если клиент не подключён — пытается подключиться к 127.0.0.1:33333. Ожидает ответа сервера с таймаутом 60 секунд, после чего считывает все доступные данные.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>Строка запроса для отправки на сервер </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>Ответ сервера в виде строки (без пробелов по краям) или пустая строка при ошибке подключения/таймауте </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00097">97</a></p>
 
 </div>
 </div>
@@ -270,7 +342,23 @@ $(function(){initNavTree('classClientSingleton.html','','classClientSingleton-me
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00068">68</a></p>
+<p>Отправить асинхронный запрос </p>
+<p>Отправляет строку запроса на сервер без блокировки. Ответ будет доставлен через сигнал <a class="el" href="#a617880b5df66ad9b92db34c759f5626a" title="Сигнал, испускаемый при получении ответа от сервера">responseReceived()</a>. Если не подключён — пытается подключиться к 127.0.0.1:33333.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>Строка запроса для отправки на сервер</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Отправляет строку запроса на сервер без блокировки основного потока. Если клиент не подключён — пытается подключиться к 127.0.0.1:33333. При ошибке подключения испускает сигнал responseReceived с пустой строкой. Ответ от сервера будет обработан позже через слот onReadyRead.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>Строка запроса для отправки на сервер </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="clientsingleton_8cpp_source.html">clientsingleton.cpp</a> строка <a class="el" href="clientsingleton_8cpp_source.html#l00133">133</a></p>
 
 </div>
 </div>

@@ -21,6 +21,13 @@
 #define GH_BTN_GHOST_H  "#30363d"
 #define FONT_FAMILY     "Segoe UI"
 
+/**
+ * @brief Конструктор главного виджета приложения
+ *
+ * Устанавливает стили и создаёт пользовательский интерфейс.
+ *
+ * @param parent родительский виджет
+ */
 MainAppWidget::MainAppWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -30,8 +37,15 @@ MainAppWidget::MainAppWidget(QWidget *parent)
     setupUI();
 }
 
+/// Деструктор главного виджета приложения
 MainAppWidget::~MainAppWidget() {}
 
+/**
+ * @brief Инициализация пользовательского интерфейса
+ *
+ * Создаёт верхнюю панель с приветствием и кнопкой выхода,
+ * а также стековый виджет с заглушкой основного контента.
+ */
 void MainAppWidget::setupUI()
 {
     auto *outerLayout = new QVBoxLayout(this);
@@ -95,12 +109,17 @@ void MainAppWidget::setupUI()
     outerLayout->addWidget(contentStack, 1);
 }
 
+/**
+ * @brief Устанавливает логин пользователя для отображения в приветствии
+ * @param login логин пользователя
+ */
 void MainAppWidget::setLogin(const QString &login)
 {
     welcomeLabel->setText(
         QString::fromUtf8("Добро пожаловать, %1!").arg(login));
 }
 
+/// Обработчик нажатия кнопки «Выйти»: испускает сигнал logout
 void MainAppWidget::onLogoutClicked()
 {
     emit logout();

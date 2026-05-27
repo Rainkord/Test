@@ -93,6 +93,9 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
 </div><!--header-->
 <div class="contents">
 
+<p>Виджет графического отображения кусочной функции  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="graphwidget_8h_source.html">graphwidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:GraphWidget:</div>
@@ -104,21 +107,29 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 Сигналы</h2></td></tr>
 <tr class="memitem:aafaa8f64b822bdb49df25793f2bf4a2c" id="r_aafaa8f64b822bdb49df25793f2bf4a2c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aafaa8f64b822bdb49df25793f2bf4a2c">logout</a> ()</td></tr>
+<tr class="memdesc:aafaa8f64b822bdb49df25793f2bf4a2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Испускается при нажатии кнопки «Выйти из аккаунта»  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a6df7c301e5551dff21bbdc5b6cd7ffc9" id="r_a6df7c301e5551dff21bbdc5b6cd7ffc9"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a6df7c301e5551dff21bbdc5b6cd7ffc9">GraphWidget</a> (QWidget *parent=nullptr)</td></tr>
+<tr class="memdesc:a6df7c301e5551dff21bbdc5b6cd7ffc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор виджета графика  <br /></td></tr>
 <tr class="memitem:aded42c6a0505efca3bee8d763ae3647f" id="r_aded42c6a0505efca3bee8d763ae3647f"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aded42c6a0505efca3bee8d763ae3647f">~GraphWidget</a> ()</td></tr>
+<tr class="memdesc:aded42c6a0505efca3bee8d763ae3647f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деструктор виджета  <br /></td></tr>
 <tr class="memitem:a406b2c645f428d6b061d0f3f88f35740" id="r_a406b2c645f428d6b061d0f3f88f35740"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a406b2c645f428d6b061d0f3f88f35740">setUserLogin</a> (const QString &amp;login)</td></tr>
+<tr class="memdesc:a406b2c645f428d6b061d0f3f88f35740"><td class="mdescLeft">&#160;</td><td class="mdescRight">Устанавливает логин текущего пользователя для отображения  <br /></td></tr>
 <tr class="memitem:a78636de6e16cfd15d93425474e62213d" id="r_a78636de6e16cfd15d93425474e62213d"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a78636de6e16cfd15d93425474e62213d">updateGraph</a> ()</td></tr>
+<tr class="memdesc:a78636de6e16cfd15d93425474e62213d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Пересчитывает точки графика и таблицу, перерисовывает виджет  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Защищенные члены</h2></td></tr>
 <tr class="memitem:a1b08bd862bf1f2dcb9f3f749de383e14" id="r_a1b08bd862bf1f2dcb9f3f749de383e14"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1b08bd862bf1f2dcb9f3f749de383e14">paintEvent</a> (QPaintEvent *event) override</td></tr>
+<tr class="memdesc:a1b08bd862bf1f2dcb9f3f749de383e14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик отрисовки графика  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8h_source.html">graphwidget.h</a> строка <a class="el" href="graphwidget_8h_source.html#l00016">16</a></p>
+<div class="textblock"><p>Виджет графического отображения кусочной функции </p>
+<p>Позволяет визуализировать функцию f(x) с тремя ветвями на графике, управлять параметрами a, b, c через слайдеры и спинбоксы. Получает данные от сервера или вычисляет локально при недоступности сервера. Отображает таблицу значений и легенду. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8h_source.html">graphwidget.h</a> строка <a class="el" href="graphwidget_8h_source.html#l00022">22</a></p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Конструктор(ы)</h2>
 <a id="a6df7c301e5551dff21bbdc5b6cd7ffc9" name="a6df7c301e5551dff21bbdc5b6cd7ffc9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6df7c301e5551dff21bbdc5b6cd7ffc9">&#9670;&#160;</a></span>GraphWidget()</h2>
@@ -143,7 +154,22 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00050">50</a></p>
+<p>Конструктор виджета графика </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Инициализирует параметры a, b, c значениями по умолчанию (1.0), устанавливает стили и создаёт пользовательский интерфейс.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00053">53</a></p>
 
 </div>
 </div>
@@ -162,7 +188,10 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00064">64</a></p>
+<p>Деструктор виджета </p>
+<p>Деструктор виджета графика </p>
+
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00067">67</a></p>
 
 </div>
 </div>
@@ -189,6 +218,8 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Испускается при нажатии кнопки «Выйти из аккаунта» </p>
 
 <p class="definition">См. определение в файле <a class="el" href="moc__graphwidget_8cpp_source.html">moc_graphwidget.cpp</a> строка <a class="el" href="moc__graphwidget_8cpp_source.html#l00164">164</a></p>
 
@@ -217,7 +248,22 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00336">336</a></p>
+<p>Обработчик отрисовки графика </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td>событие отрисовки</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Отрисовывает фон, сетку, оси, подписи, три ветви функции разными цветами и легенду.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td>событие отрисовки </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00379">379</a></p>
 
 </div>
 </div>
@@ -236,7 +282,16 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00328">328</a></p>
+<p>Устанавливает логин текущего пользователя для отображения </p>
+<p>Устанавливает логин пользователя для отображения</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>логин пользователя </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00364">364</a></p>
 
 </div>
 </div>
@@ -255,7 +310,11 @@ $(function(){initNavTree('classGraphWidget.html','','classGraphWidget-members');
       </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00270">270</a></p>
+<p>Пересчитывает точки графика и таблицу, перерисовывает виджет </p>
+<p>Пересчитывает точки графика и обновляет отображение</p>
+<p>Запрашивает данные у сервера. При недоступности сервера вычисляет точки локально. Заполняет таблицу значениями. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="graphwidget_8cpp_source.html">graphwidget.cpp</a> строка <a class="el" href="graphwidget_8cpp_source.html#l00297">297</a></p>
 
 </div>
 </div>

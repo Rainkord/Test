@@ -93,7 +93,7 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
 </div><!--header-->
 <div class="contents">
 
-<p>Предоставляет интерфейс к SQLite-базе данных через паттерн Singleton.  
+<p>Класс для работы с базой данных пользователей (Singleton).  
  <a href="#details">Подробнее...</a></p>
 
 <p><code>#include &lt;<a class="el" href="database_8h_source.html">database.h</a>&gt;</code></p>
@@ -101,30 +101,31 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a286ca4eb473f35a8a3d01cd65811257c" id="r_a286ca4eb473f35a8a3d01cd65811257c"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a286ca4eb473f35a8a3d01cd65811257c">userExists</a> (const QString &amp;login)</td></tr>
-<tr class="memdesc:a286ca4eb473f35a8a3d01cd65811257c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверяет, существует ли пользователь с данным логином.  <br /></td></tr>
+<tr class="memdesc:a286ca4eb473f35a8a3d01cd65811257c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверяет существование пользователя по логину  <br /></td></tr>
 <tr class="memitem:a9f29a683c7e2b850848cbe90a650f7f4" id="r_a9f29a683c7e2b850848cbe90a650f7f4"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a9f29a683c7e2b850848cbe90a650f7f4">emailExists</a> (const QString &amp;email)</td></tr>
-<tr class="memdesc:a9f29a683c7e2b850848cbe90a650f7f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверяет, зарегистрирован ли указанный email.  <br /></td></tr>
+<tr class="memdesc:a9f29a683c7e2b850848cbe90a650f7f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверяет существование пользователя по email.  <br /></td></tr>
 <tr class="memitem:a6c13aef63d441ebcd53228c7b18b31eb" id="r_a6c13aef63d441ebcd53228c7b18b31eb"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a6c13aef63d441ebcd53228c7b18b31eb">addUser</a> (const QString &amp;login, const QString &amp;passwordHash, const QString &amp;email)</td></tr>
-<tr class="memdesc:a6c13aef63d441ebcd53228c7b18b31eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавляет нового пользователя в базу данных.  <br /></td></tr>
+<tr class="memdesc:a6c13aef63d441ebcd53228c7b18b31eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавляет нового пользователя в базу данных  <br /></td></tr>
 <tr class="memitem:a24542f31a8bab42c165b1694e7ca6e74" id="r_a24542f31a8bab42c165b1694e7ca6e74"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a24542f31a8bab42c165b1694e7ca6e74">checkUser</a> (const QString &amp;login, const QString &amp;passwordHash)</td></tr>
-<tr class="memdesc:a24542f31a8bab42c165b1694e7ca6e74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверяет пару логин/хэш пароля.  <br /></td></tr>
+<tr class="memdesc:a24542f31a8bab42c165b1694e7ca6e74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверяет корректность учётных данных пользователя  <br /></td></tr>
 <tr class="memitem:a0ec808160de36c617c4eddee1f582e69" id="r_a0ec808160de36c617c4eddee1f582e69"><td class="memItemLeft">QString&#160;</td><td class="memItemRight"><a class="el" href="#a0ec808160de36c617c4eddee1f582e69">getUserEmail</a> (const QString &amp;login)</td></tr>
-<tr class="memdesc:a0ec808160de36c617c4eddee1f582e69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Возвращает email пользователя по логину.  <br /></td></tr>
+<tr class="memdesc:a0ec808160de36c617c4eddee1f582e69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получает email пользователя по логину  <br /></td></tr>
 <tr class="memitem:aa036a4411765cb90563168b3cf0d4df5" id="r_aa036a4411765cb90563168b3cf0d4df5"><td class="memItemLeft">QString&#160;</td><td class="memItemRight"><a class="el" href="#aa036a4411765cb90563168b3cf0d4df5">getLoginByEmail</a> (const QString &amp;email)</td></tr>
-<tr class="memdesc:aa036a4411765cb90563168b3cf0d4df5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Возвращает логин пользователя по email.  <br /></td></tr>
+<tr class="memdesc:aa036a4411765cb90563168b3cf0d4df5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получает логин пользователя по email.  <br /></td></tr>
 <tr class="memitem:a839de57262edbbb12b5e1ed3f21f17ed" id="r_a839de57262edbbb12b5e1ed3f21f17ed"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a839de57262edbbb12b5e1ed3f21f17ed">updatePasswordByEmail</a> (const QString &amp;email, const QString &amp;newPasswordHash)</td></tr>
-<tr class="memdesc:a839de57262edbbb12b5e1ed3f21f17ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обновляет хэш пароля пользователя, найденного по email.  <br /></td></tr>
+<tr class="memdesc:a839de57262edbbb12b5e1ed3f21f17ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обновляет пароль пользователя по email.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Открытые статические члены</h2></td></tr>
 <tr class="memitem:ac3325a4cc0a95ed83d10b2a9cf7541d0" id="r_ac3325a4cc0a95ed83d10b2a9cf7541d0"><td class="memItemLeft">static <a class="el" href="classDatabase.html">Database</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#ac3325a4cc0a95ed83d10b2a9cf7541d0">instance</a> ()</td></tr>
-<tr class="memdesc:ac3325a4cc0a95ed83d10b2a9cf7541d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Возвращает единственный экземпляр класса <a class="el" href="classDatabase.html" title="Предоставляет интерфейс к SQLite-базе данных через паттерн Singleton.">Database</a>.  <br /></td></tr>
+<tr class="memdesc:ac3325a4cc0a95ed83d10b2a9cf7541d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получает единственный экземпляр класса <a class="el" href="classDatabase.html" title="Класс для работы с базой данных пользователей (Singleton).">Database</a>.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Предоставляет интерфейс к SQLite-базе данных через паттерн Singleton. </p>
-<p>Все методы класса выполняют SQL-запросы к таблице пользователей. Прямое создание объектов класса запрещено — доступ только через <a class="el" href="#ac3325a4cc0a95ed83d10b2a9cf7541d0" title="Возвращает единственный экземпляр класса Database.">instance()</a>. </p>
+<div class="textblock"><p>Класс для работы с базой данных пользователей (Singleton). </p>
+<p>Реализует паттерн Singleton для обеспечения единственного экземпляра подключения к SQLite базе данных users.db. Предоставляет методы для добавления пользователей, проверки учётных данных, управления электронной почтой и сбросом пароля.</p>
+<dl class="section note"><dt>Заметки</dt><dd>Конструктор, деструктор и оператор присваивания приватные — создание копий объекта запрещено. </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8h_source.html">database.h</a> строка <a class="el" href="database_8h_source.html#l00019">19</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8h_source.html">database.h</a> строка <a class="el" href="database_8h_source.html#l00018">18</a></p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Методы</h2>
 <a id="a6c13aef63d441ebcd53228c7b18b31eb" name="a6c13aef63d441ebcd53228c7b18b31eb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6c13aef63d441ebcd53228c7b18b31eb">&#9670;&#160;</a></span>addUser()</h2>
@@ -135,7 +136,7 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
         <tr>
           <td class="memname">bool Database::addUser </td>
           <td>(</td>
-          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span>, </td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -150,18 +151,28 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
       </table>
 </div><div class="memdoc">
 
-<p>Добавляет нового пользователя в базу данных. </p>
+<p>Добавляет нового пользователя в базу данных </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">login</td><td>Логин пользователя. </td></tr>
-    <tr><td class="paramname">passwordHash</td><td>Хэш пароля (SHA-256). </td></tr>
-    <tr><td class="paramname">email</td><td>Email-адрес пользователя. </td></tr>
+    <tr><td class="paramname">login</td><td>логин нового пользователя (должен быть уникальным) </td></tr>
+    <tr><td class="paramname">passwordHash</td><td>хеш пароля пользователя </td></tr>
+    <tr><td class="paramname">email</td><td>электронная почта пользователя </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd><code>true</code> при успешном добавлении, <code>false</code> при ошибке. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пользователь успешно добавлен; false — при ошибке</dd></dl>
+<p>Вставляет запись в таблицу users с указанными логином, email и хешем пароля. Логин должен быть уникальным.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>логин нового пользователя </td></tr>
+    <tr><td class="paramname">passwordHash</td><td>хеш пароля пользователя </td></tr>
+    <tr><td class="paramname">email</td><td>электронная почта пользователя </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пользователь успешно добавлен; false — при ошибке </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00048">48</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00079">79</a></p>
 
 </div>
 </div>
@@ -174,7 +185,7 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
         <tr>
           <td class="memname">bool Database::checkUser </td>
           <td>(</td>
-          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span>, </td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -184,17 +195,26 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
       </table>
 </div><div class="memdoc">
 
-<p>Проверяет пару логин/хэш пароля. </p>
+<p>Проверяет корректность учётных данных пользователя </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">login</td><td>Логин пользователя. </td></tr>
-    <tr><td class="paramname">passwordHash</td><td>Хэш пароля. </td></tr>
+    <tr><td class="paramname">login</td><td>логин пользователя </td></tr>
+    <tr><td class="paramname">passwordHash</td><td>хеш пароля для проверки </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd><code>true</code> если пара совпадает, иначе <code>false</code>. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если логин и хеш совпадают с записью в БД; false — иначе</dd></dl>
+<p>Выполняет SELECT-запрос для поиска записи с указанными логином и хешем пароля.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>логин пользователя </td></tr>
+    <tr><td class="paramname">passwordHash</td><td>хеш пароля для проверки </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если учётные данные верны; false — иначе </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00065">65</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00106">106</a></p>
 
 </div>
 </div>
@@ -213,16 +233,23 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
       </table>
 </div><div class="memdoc">
 
-<p>Проверяет, зарегистрирован ли указанный email. </p>
+<p>Проверяет существование пользователя по email. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">email</td><td>Email-адрес. </td></tr>
+    <tr><td class="paramname">email</td><td>электронная почта для проверки </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd><code>true</code> если email уже занят, иначе <code>false</code>. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пользователь с таким email существует; false — иначе</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">email</td><td>электронная почта для проверки </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пользователь с таким email найден; false — иначе </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00128">128</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00193">193</a></p>
 
 </div>
 </div>
@@ -241,16 +268,23 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
       </table>
 </div><div class="memdoc">
 
-<p>Возвращает логин пользователя по email. </p>
+<p>Получает логин пользователя по email. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">email</td><td>Email-адрес. </td></tr>
+    <tr><td class="paramname">email</td><td>электронная почта пользователя </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>Логин или пустую строку если пользователь не найден. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>логин пользователя; пустая строка, если пользователь не найден</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">email</td><td>электронная почта пользователя </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>логин пользователя; пустая строка, если не найден </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00111">111</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00170">170</a></p>
 
 </div>
 </div>
@@ -263,22 +297,29 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
         <tr>
           <td class="memname">QString Database::getUserEmail </td>
           <td>(</td>
-          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span></td><td>)</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>name</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Возвращает email пользователя по логину. </p>
+<p>Получает email пользователя по логину </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">login</td><td>Логин пользователя. </td></tr>
+    <tr><td class="paramname">login</td><td>логин пользователя </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>Email-адрес или пустую строку если пользователь не найден. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>email пользователя; пустая строка, если пользователь не найден</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>логин пользователя </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>email пользователя; пустая строка, если не найден </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00094">94</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00147">147</a></p>
 
 </div>
 </div>
@@ -305,10 +346,13 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
 </table>
 </div><div class="memdoc">
 
-<p>Возвращает единственный экземпляр класса <a class="el" href="classDatabase.html" title="Предоставляет интерфейс к SQLite-базе данных через паттерн Singleton.">Database</a>. </p>
-<dl class="section return"><dt>Возвращает</dt><dd>Ссылка на экземпляр <a class="el" href="classDatabase.html" title="Предоставляет интерфейс к SQLite-базе данных через паттерн Singleton.">Database</a>. </dd></dl>
+<p>Получает единственный экземпляр класса <a class="el" href="classDatabase.html" title="Класс для работы с базой данных пользователей (Singleton).">Database</a>. </p>
+<p>Реализация паттерна Singleton. При первом вызове создаётся экземпляр и инициализируется подключение к БД.</p>
+<dl class="section return"><dt>Возвращает</dt><dd>ссылка на единственный экземпляр <a class="el" href="classDatabase.html" title="Класс для работы с базой данных пользователей (Singleton).">Database</a></dd></dl>
+<p>Статическая переменная inst создаётся один раз при первом вызове и уничтожается при завершении программы.</p>
+<dl class="section return"><dt>Возвращает</dt><dd>ссылка на единственный экземпляр <a class="el" href="classDatabase.html" title="Класс для работы с базой данных пользователей (Singleton).">Database</a> </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00007">7</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00015">15</a></p>
 
 </div>
 </div>
@@ -326,22 +370,30 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>newPasswordHash</em></span>&#160;)</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>newHash</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Обновляет хэш пароля пользователя, найденного по email. </p>
+<p>Обновляет пароль пользователя по email. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">email</td><td>Email-адрес пользователя. </td></tr>
-    <tr><td class="paramname">newPasswordHash</td><td>Новый хэш пароля. </td></tr>
+    <tr><td class="paramname">email</td><td>электронная почта пользователя </td></tr>
+    <tr><td class="paramname">newPasswordHash</td><td>новый хеш пароля </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd><code>true</code> при успешном обновлении, <code>false</code> при ошибке. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пароль успешно обновлён; false — при ошибке или если email не найден</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">email</td><td>электронная почта пользователя </td></tr>
+    <tr><td class="paramname">newHash</td><td>новый хеш пароля </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пароль обновлён; false, если email не найден или произошла ошибка </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00142">142</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00215">215</a></p>
 
 </div>
 </div>
@@ -354,22 +406,29 @@ $(function(){initNavTree('classDatabase.html','','classDatabase-members'); });
         <tr>
           <td class="memname">bool Database::userExists </td>
           <td>(</td>
-          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>login</em></span></td><td>)</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>name</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Проверяет, существует ли пользователь с данным логином. </p>
+<p>Проверяет существование пользователя по логину </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">login</td><td>Логин пользователя. </td></tr>
+    <tr><td class="paramname">login</td><td>логин пользователя для проверки </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd><code>true</code> если пользователь найден, иначе <code>false</code>. </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пользователь с таким логином существует; false — иначе</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>логин пользователя для проверки </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>true, если пользователь найден; false — иначе </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00080">80</a></p>
+<p class="definition">См. определение в файле <a class="el" href="database_8cpp_source.html">database.cpp</a> строка <a class="el" href="database_8cpp_source.html#l00127">127</a></p>
 
 </div>
 </div>

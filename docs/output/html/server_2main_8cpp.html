@@ -92,25 +92,18 @@ $(function(){initNavTree('server_2main_8cpp.html','',''); });
   <div class="headertitle"><div class="title">Файл main.cpp</div></div>
 </div><!--header-->
 <div class="contents">
-
-<p>Точка входа консольного эхо-сервера.  
-<a href="#details">Подробнее...</a></p>
 <div class="textblock"><code>#include &lt;QCoreApplication&gt;</code><br />
 <code>#include &quot;<a class="el" href="mytcpserver_8h_source.html">mytcpserver.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="logger_8h_source.html">logger.h</a>&quot;</code><br />
 </div>
 <p><a href="server_2main_8cpp_source.html">См. исходные тексты.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Функции</h2></td></tr>
 <tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97" id="r_a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
-<tr class="memdesc:a0ddf1224851353fc92bfbff6f499fa97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Точка входа приложения.  <br /></td></tr>
+<tr class="memdesc:a0ddf1224851353fc92bfbff6f499fa97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Точка входа в программу (TCP-сервер).  <br /></td></tr>
 </table>
-<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Точка входа консольного эхо-сервера. </p>
-<p>Создаёт экземпляр QCoreApplication и запускает <a class="el" href="classMyTcpServer.html" title="Многопользовательский TCP-сервер.">MyTcpServer</a>. Сервер работает в режиме ожидания событий до принудительного завершения. </p>
-
-<p class="definition">См. определение в файле <a class="el" href="server_2main_8cpp_source.html">main.cpp</a></p>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Функции</h2>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Функции</h2>
 <a id="a0ddf1224851353fc92bfbff6f499fa97" name="a0ddf1224851353fc92bfbff6f499fa97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0ddf1224851353fc92bfbff6f499fa97">&#9670;&#160;</a></span>main()</h2>
 
@@ -130,17 +123,18 @@ $(function(){initNavTree('server_2main_8cpp.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Точка входа приложения. </p>
+<p>Точка входа в программу (TCP-сервер). </p>
+<p>Создаёт объект QApplication, выводит баннер сервера, создаёт экземпляр <a class="el" href="classMyTcpServer.html" title="Класс TCP-сервера для обработки клиентских подключений">MyTcpServer</a> и запускает основной цикл обработки событий Qt.</p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">argc</td><td>Количество аргументов командной строки. </td></tr>
-    <tr><td class="paramname">argv</td><td>Массив аргументов командной строки. </td></tr>
+    <tr><td class="paramname">argc</td><td>количество аргументов командной строки </td></tr>
+    <tr><td class="paramname">argv</td><td>массив аргументов командной строки </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>Код завершения приложения (0 при нормальном завершении). </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>код возврата приложения </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="server_2main_8cpp_source.html">main.cpp</a> строка <a class="el" href="server_2main_8cpp_source.html#l00018">18</a></p>
+<p class="definition">См. определение в файле <a class="el" href="server_2main_8cpp_source.html">main.cpp</a> строка <a class="el" href="server_2main_8cpp_source.html#l00016">16</a></p>
 
 </div>
 </div>

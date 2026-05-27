@@ -1,8 +1,3 @@
-/**
- * @file otpinput.cpp
- * @brief Supercell-style OTP: 6 боксов, живые состояния, вставка из буфера.
- */
-
 #include "otpinput.h"
 
 #include <QHBoxLayout>
@@ -29,6 +24,11 @@
 
 // ── box style по состоянию ────────────────────────────────────────────────
 // state: 0=empty, 1=focused, 2=filled, 3=error, 4=disabled
+/**
+ * @brief Генерирует CSS-стиль для поля ввода цифры по его состоянию
+ * @param state состояние поля: 0 — пустое, 1 — фокус, 2 — заполнено, 3 — ошибка, 4 — отключено
+ * @return строка со стилем CSS
+ */
 static QString boxStyle(int state)
 {
     const char *bg          = GH_CARD;
@@ -75,12 +75,25 @@ static QString boxStyle(int state)
 }
 
 // ── OtpInput ──────────────────────────────────────────────────────────────
+/**
+ * @brief Конструктор виджета OTP-ввода
+ *
+ * Создаёт шесть полей ввода и вызывает настройку интерфейса.
+ *
+ * @param parent родительский виджет
+ */
 OtpInput::OtpInput(QWidget *parent)
     : QWidget(parent)
 {
     setupUI();
 }
 
+/**
+ * @brief Инициализация пользовательского интерфейса
+ *
+ * Создаёт шесть QLineEdit с фиксированным размером, настраивает
+ * фильтр событий и подключает сигнал изменения текста.
+ */
 void OtpInput::setupUI()
 {
     auto *row = new QHBoxLayout(this);
@@ -112,6 +125,13 @@ void OtpInput::setupUI()
 }
 
 // ── style helpers ─────────────────────────────────────────────────────────
+/**
+ * @brief Обновляет стиль одного поля в зависимости от его состояния
+ *
+ * Учитывает включённость виджета, флаг ошибки, наличие текста и фокус.
+ *
+ * @param i индекс поля (0–5)
+ */
 void OtpInput::updateBoxStyle(int i)
 {
     if (!m_boxes[i]->isEnabled()) { m_boxes[i]->setStyleSheet(boxStyle(4)); return; }
@@ -123,11 +143,19 @@ void OtpInput::updateBoxStyle(int i)
     m_boxes[i]->setStyleSheet(boxStyle(0));
 }
 
+/// Обновляет стили всех 6 полей ввода
 void OtpInput::updateAllStyles()
 {
     for (int i = 0; i < N; ++i) updateBoxStyle(i);
 }
 
+/**
+ * @brief Устанавливает или снимает флаг ошибки
+ *
+ * При установке все поля подсвечиваются красным.
+ *
+ * @param error true для включения режима ошибки
+ */
 void OtpInput::setError(bool error)
 {
     m_error = error;
@@ -135,6 +163,10 @@ void OtpInput::setError(bool error)
 }
 
 // ── public API ────────────────────────────────────────────────────────────
+/**
+ * @brief Возвращает текущий введённый шестизначный код
+ * @return строка из 6 цифр
+ */
 QString OtpInput::code() const
 {
     QString s;
@@ -142,6 +174,7 @@ QString OtpInput::code() const
     return s;
 }
 
+/// Очищает все поля ввода и сбрасывает флаг ошибки, устанавливает фокус на первое поле
 void OtpInput::clear()
 {
     m_error = false;
@@ -154,6 +187,10 @@ void OtpInput::clear()
     if (isEnabled()) m_boxes[0]->setFocus();
 }
 
+/**
+ * @brief Проверяет, заполнены ли все 6 полей
+ * @return true если все поля содержат цифру
+ */
 bool OtpInput::isComplete() const
 {
     for (int i = 0; i < N; ++i)
@@ -161,6 +198,13 @@ bool OtpInput::isComplete() const
     return true;
 }
 
+/**
+ * @brief Включает или отключает виджет и все его поля
+ *
+ * При включении устанавливает фокус на первое поле.
+ *
+ * @param enabled true для включения, false для отключения
+ */
 void OtpInput::setEnabled(bool enabled)
 {
     QWidget::setEnabled(enabled);
@@ -170,6 +214,15 @@ void OtpInput::setEnabled(bool enabled)
 }
 
 // ── digit logic ───────────────────────────────────────────────────────────
+/**
+ * @brief Обработчик изменения цифры в конкретном поле
+ *
+ * При вводе цифры автоматически переводит фокус на следующее поле.
+ * При заполнении всех полей испускает сигнал completed().
+ *
+ * @param index индекс поля (0–5)
+ * @param text содержимое поля после изменения
+ */
 void OtpInput::onDigitChanged(int index, const QString &text)
 {
     updateBoxStyle(index);
@@ -186,6 +239,14 @@ void OtpInput::onDigitChanged(int index, const QString &text)
 }
 
 // ── clipboard ─────────────────────────────────────────────────────────────
+/**
+ * @brief Заполняет поля цифрами из буфера обмена
+ *
+ * Извлекает только цифры из текста, распределяет по полям
+ * и переводит фокус на соответствующее поле.
+ *
+ * @param text содержимое буфера обмена
+ */
 void OtpInput::fillFromClipboard(const QString &text)
 {
     QString digits;
@@ -211,6 +272,17 @@ void OtpInput::fillFromClipboard(const QString &text)
 }
 
 // ── event filter ──────────────────────────────────────────────────────────
+/**
+ * @brief Фильтр событий для обработки нажатий клавиш в полях ввода
+ *
+ * Обрабатывает: Escape (возврат), Backspace (удаление/переход),
+ * Ctrl+V / Shift+Insert (вставка из буфера), стрелки (навигация),
+ * цифры (ввод с автопереходом). Также блокирует контекстное меню.
+ *
+ * @param obj объект, для которого вызван фильтр
+ * @param ev фильтруемое событие
+ * @return true если событие обработано и не должно передаваться дальше
+ */
 bool OtpInput::eventFilter(QObject *obj, QEvent *ev)
 {
     int idx = -1;

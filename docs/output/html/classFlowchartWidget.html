@@ -93,6 +93,9 @@ $(function(){initNavTree('classFlowchartWidget.html','','classFlowchartWidget-me
 </div><!--header-->
 <div class="contents">
 
+<p>Виджет отрисовки блок-схемы вычислительного процесса  
+ <a href="#details">Подробнее...</a></p>
+
 <p><code>#include &lt;<a class="el" href="schemadialog_8h_source.html">schemadialog.h</a>&gt;</code></p>
 <div class="dynheader">
 Граф наследования:FlowchartWidget:</div>
@@ -104,14 +107,18 @@ $(function(){initNavTree('classFlowchartWidget.html','','classFlowchartWidget-me
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a8df150057d5cfe6681c251341a511437" id="r_a8df150057d5cfe6681c251341a511437"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a8df150057d5cfe6681c251341a511437">FlowchartWidget</a> (QWidget *parent=nullptr)</td></tr>
+<tr class="memdesc:a8df150057d5cfe6681c251341a511437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор виджета блок-схемы  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Защищенные члены</h2></td></tr>
 <tr class="memitem:a967b4eb56ecab9960a2a929bddc84ccb" id="r_a967b4eb56ecab9960a2a929bddc84ccb"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a967b4eb56ecab9960a2a929bddc84ccb">paintEvent</a> (QPaintEvent *event) override</td></tr>
+<tr class="memdesc:a967b4eb56ecab9960a2a929bddc84ccb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработчик отрисовки блок-схемы  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="schemadialog_8h_source.html">schemadialog.h</a> строка <a class="el" href="schemadialog_8h_source.html#l00012">12</a></p>
+<div class="textblock"><p>Виджет отрисовки блок-схемы вычислительного процесса </p>
+<p>Визуально отображает алгоритм вычисления кусочной функции в виде блок-схемы с блоками начала/конца, ввода, условий, вычислений и вывода результата. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8h_source.html">schemadialog.h</a> строка <a class="el" href="schemadialog_8h_source.html#l00017">17</a></p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Конструктор(ы)</h2>
 <a id="a8df150057d5cfe6681c251341a511437" name="a8df150057d5cfe6681c251341a511437"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8df150057d5cfe6681c251341a511437">&#9670;&#160;</a></span>FlowchartWidget()</h2>
@@ -136,7 +143,22 @@ $(function(){initNavTree('classFlowchartWidget.html','','classFlowchartWidget-me
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00036">36</a></p>
+<p>Конструктор виджета блок-схемы </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Устанавливает фиксированный размер виджета.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>родительский виджет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00043">43</a></p>
 
 </div>
 </div>
@@ -164,7 +186,22 @@ $(function(){initNavTree('classFlowchartWidget.html','','classFlowchartWidget-me
 </table>
 </div><div class="memdoc">
 
-<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00117">117</a></p>
+<p>Обработчик отрисовки блок-схемы </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td>событие отрисовки</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Последовательно отрисовывает все элементы блок-схемы: Начало → Ввод → Условия → Ветви вычислений → Вывод → Конец.</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td>событие отрисовки (не используется) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="schemadialog_8cpp_source.html">schemadialog.cpp</a> строка <a class="el" href="schemadialog_8cpp_source.html#l00191">191</a></p>
 
 </div>
 </div>

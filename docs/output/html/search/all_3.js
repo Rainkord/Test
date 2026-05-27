@@ -6,9 +6,16 @@ var searchData=
   ['calculator_2eh_3',['calculator.h',['../calculator_8h.html',1,'']]],
   ['canvas_5fbg_4',['CANVAS_BG',['../graphwidget_8cpp.html#a1c70ca2b0d1bfcbf5e6c8e4313730684',1,'graphwidget.cpp']]],
   ['checkuser_5',['checkUser',['../classDatabase.html#a24542f31a8bab42c165b1694e7ca6e74',1,'Database']]],
-  ['clientsingleton_6',['ClientSingleton',['../classClientSingleton.html',1,'']]],
-  ['clientsingleton_2ecpp_7',['clientsingleton.cpp',['../clientsingleton_8cpp.html',1,'']]],
-  ['clientsingleton_2eh_8',['clientsingleton.h',['../clientsingleton_8h.html',1,'']]],
-  ['code_9',['code',['../structTempRegData.html#a0192dca2d719a102e2ddb35688d541d9',1,'TempRegData::code'],['../structTempResetData.html#ac68e15634a451740f7652ced90119847',1,'TempResetData::code']]],
-  ['connecttoserver_10',['connectToServer',['../classClientSingleton.html#a8ea7e3d2391a4ac5fbcf191b6e271943',1,'ClientSingleton']]]
+  ['clear_6',['clear',['../classOtpInput.html#aa5e9f3bbc3bce0952cf75dde623669d4',1,'OtpInput']]],
+  ['clearfields_7',['clearFields',['../classAuthWidget.html#ab602ac82962d5ce8a89556e2537390a9',1,'AuthWidget::clearFields()'],['../classRegWidget.html#abf454e11df0a80ddb3b63950d3efdca8',1,'RegWidget::clearFields()'],['../classResetWidget.html#a95608a31a3f998b856bbb4c776c285ac',1,'ResetWidget::clearFields()'],['../classVerifyWidget.html#a120ada713a10823851a25db12dbdd609',1,'VerifyWidget::clearFields()']]],
+  ['clientconnected_8',['clientConnected',['../classLogger.html#a788063f9d7ea2fecad964058ee318d71',1,'Logger']]],
+  ['clientdisconnected_9',['clientDisconnected',['../classLogger.html#ad26aa3daac56e068f5016ce9dbbee60d',1,'Logger']]],
+  ['clientsingleton_10',['ClientSingleton',['../classClientSingleton.html',1,'']]],
+  ['clientsingleton_2ecpp_11',['clientsingleton.cpp',['../clientsingleton_8cpp.html',1,'']]],
+  ['clientsingleton_2eh_12',['clientsingleton.h',['../clientsingleton_8h.html',1,'']]],
+  ['code_13',['code',['../structTempRegData.html#a0192dca2d719a102e2ddb35688d541d9',1,'TempRegData::code'],['../structTempResetData.html#ac68e15634a451740f7652ced90119847',1,'TempResetData::code'],['../classOtpInput.html#a9c48e72389a169410d93aa0f9e10cf6a',1,'OtpInput::code()']]],
+  ['codesent_14',['codeSent',['../classLogger.html#a5fc3c9ecf60716ed618a7bc88c1c8456',1,'Logger']]],
+  ['completed_15',['completed',['../classOtpInput.html#aa11a84409d54cbffb4db31bc62fde821',1,'OtpInput']]],
+  ['connecttoserver_16',['connectToServer',['../classClientSingleton.html#a8ea7e3d2391a4ac5fbcf191b6e271943',1,'ClientSingleton']]],
+  ['cyan_17',['CYAN',['../namespaceAnsi.html#abe40ab6eb0068c5b2dfd67a8531e4a0b',1,'Ansi']]]
 ];

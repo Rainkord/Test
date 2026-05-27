@@ -93,7 +93,7 @@ $(function(){initNavTree('structTempRegData.html','','structTempRegData-members'
 </div><!--header-->
 <div class="contents">
 
-<p>Временные данные регистрации, ожидающие подтверждения по email.  
+<p>Структура для хранения временных данных регистрации  
  <a href="#details">Подробнее...</a></p>
 
 <p><code>#include &lt;<a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a>&gt;</code></p>
@@ -101,18 +101,19 @@ $(function(){initNavTree('structTempRegData.html','','structTempRegData-members'
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Открытые атрибуты</h2></td></tr>
 <tr class="memitem:a638b9f7ca796070604cd9b20dc87f00b" id="r_a638b9f7ca796070604cd9b20dc87f00b"><td class="memItemLeft">QString&#160;</td><td class="memItemRight"><a class="el" href="#a638b9f7ca796070604cd9b20dc87f00b">name</a></td></tr>
-<tr class="memdesc:a638b9f7ca796070604cd9b20dc87f00b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Логин пользователя.  <br /></td></tr>
+<tr class="memdesc:a638b9f7ca796070604cd9b20dc87f00b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Логин пользователя  <br /></td></tr>
 <tr class="memitem:afc43df43f4f556790be26245f8824233" id="r_afc43df43f4f556790be26245f8824233"><td class="memItemLeft">QString&#160;</td><td class="memItemRight"><a class="el" href="#afc43df43f4f556790be26245f8824233">passwordHash</a></td></tr>
-<tr class="memdesc:afc43df43f4f556790be26245f8824233"><td class="mdescLeft">&#160;</td><td class="mdescRight">Хэш пароля (SHA-256).  <br /></td></tr>
+<tr class="memdesc:afc43df43f4f556790be26245f8824233"><td class="mdescLeft">&#160;</td><td class="mdescRight">Хеш пароля пользователя  <br /></td></tr>
 <tr class="memitem:ada35d6d2d47c5e89728b2bb3c57df5c7" id="r_ada35d6d2d47c5e89728b2bb3c57df5c7"><td class="memItemLeft">QString&#160;</td><td class="memItemRight"><a class="el" href="#ada35d6d2d47c5e89728b2bb3c57df5c7">email</a></td></tr>
-<tr class="memdesc:ada35d6d2d47c5e89728b2bb3c57df5c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Email-адрес пользователя.  <br /></td></tr>
+<tr class="memdesc:ada35d6d2d47c5e89728b2bb3c57df5c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Электронная почта пользователя  <br /></td></tr>
 <tr class="memitem:a0192dca2d719a102e2ddb35688d541d9" id="r_a0192dca2d719a102e2ddb35688d541d9"><td class="memItemLeft">QString&#160;</td><td class="memItemRight"><a class="el" href="#a0192dca2d719a102e2ddb35688d541d9">code</a></td></tr>
-<tr class="memdesc:a0192dca2d719a102e2ddb35688d541d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Шестизначный код подтверждения.  <br /></td></tr>
+<tr class="memdesc:a0192dca2d719a102e2ddb35688d541d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Хеш кода подтверждения  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Временные данные регистрации, ожидающие подтверждения по email. </p>
+<div class="textblock"><p>Структура для хранения временных данных регистрации </p>
+<p>Содержит данные пользователя, который ещё не завершил процесс регистрации (не подтвердил код подтверждения). </p>
 
-<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00016">16</a></p>
+<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00013">13</a></p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Данные класса</h2>
 <a id="a0192dca2d719a102e2ddb35688d541d9" name="a0192dca2d719a102e2ddb35688d541d9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0192dca2d719a102e2ddb35688d541d9">&#9670;&#160;</a></span>code</h2>
@@ -126,9 +127,9 @@ $(function(){initNavTree('structTempRegData.html','','structTempRegData-members'
       </table>
 </div><div class="memdoc">
 
-<p>Шестизначный код подтверждения. </p>
+<p>Хеш кода подтверждения </p>
 
-<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00020">20</a></p>
+<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00021">21</a></p>
 
 </div>
 </div>
@@ -144,7 +145,7 @@ $(function(){initNavTree('structTempRegData.html','','structTempRegData-members'
       </table>
 </div><div class="memdoc">
 
-<p>Email-адрес пользователя. </p>
+<p>Электронная почта пользователя </p>
 
 <p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00019">19</a></p>
 
@@ -162,9 +163,9 @@ $(function(){initNavTree('structTempRegData.html','','structTempRegData-members'
       </table>
 </div><div class="memdoc">
 
-<p>Логин пользователя. </p>
+<p>Логин пользователя </p>
 
-<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00017">17</a></p>
+<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00015">15</a></p>
 
 </div>
 </div>
@@ -180,9 +181,9 @@ $(function(){initNavTree('structTempRegData.html','','structTempRegData-members'
       </table>
 </div><div class="memdoc">
 
-<p>Хэш пароля (SHA-256). </p>
+<p>Хеш пароля пользователя </p>
 
-<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00018">18</a></p>
+<p class="definition">См. определение в файле <a class="el" href="functionsforserver_8h_source.html">functionsforserver.h</a> строка <a class="el" href="functionsforserver_8h_source.html#l00017">17</a></p>
 
 </div>
 </div>
