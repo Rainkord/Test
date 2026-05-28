@@ -1,27 +1,4 @@
 var searchData=
 [
-  ['main_0',['main',['../server_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../client_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp']]],
-  ['main_2ecpp_1',['main.cpp',['../client_2main_8cpp.html',1,'(Глобальное пространство имён)'],['../server_2main_8cpp.html',1,'(Глобальное пространство имён)']]],
-  ['mainappwidget_2',['MainAppWidget',['../classMainAppWidget.html',1,'MainAppWidget'],['../classMainAppWidget.html#a6ea8201bedd3825591e729bef7d88083',1,'MainAppWidget::MainAppWidget()']]],
-  ['mainappwidget_2ecpp_3',['mainappwidget.cpp',['../mainappwidget_8cpp.html',1,'']]],
-  ['mainappwidget_2eh_4',['mainappwidget.h',['../mainappwidget_8h.html',1,'']]],
-  ['mainwindow_5',['MainWindow',['../classMainWindow.html',1,'MainWindow'],['../classMainWindow.html#a996c5a2b6f77944776856f08ec30858d',1,'MainWindow::MainWindow()']]],
-  ['mainwindow_2ecpp_6',['mainwindow.cpp',['../mainwindow_8cpp.html',1,'']]],
-  ['mainwindow_2eh_7',['mainwindow.h',['../mainwindow_8h.html',1,'']]],
-  ['moc_5fauthwidget_2ecpp_8',['moc_authwidget.cpp',['../moc__authwidget_8cpp.html',1,'']]],
-  ['moc_5fclientsingleton_2ecpp_9',['moc_clientsingleton.cpp',['../moc__clientsingleton_8cpp.html',1,'']]],
-  ['moc_5fgraphwidget_2ecpp_10',['moc_graphwidget.cpp',['../moc__graphwidget_8cpp.html',1,'']]],
-  ['moc_5fmainappwidget_2ecpp_11',['moc_mainappwidget.cpp',['../moc__mainappwidget_8cpp.html',1,'']]],
-  ['moc_5fmainwindow_2ecpp_12',['moc_mainwindow.cpp',['../moc__mainwindow_8cpp.html',1,'']]],
-  ['moc_5fmytcpserver_2ecpp_13',['moc_mytcpserver.cpp',['../moc__mytcpserver_8cpp.html',1,'']]],
-  ['moc_5fotpinput_2ecpp_14',['moc_otpinput.cpp',['../moc__otpinput_8cpp.html',1,'']]],
-  ['moc_5fpredefs_2eh_15',['moc_predefs.h',['../client_2moc__predefs_8h.html',1,'(Глобальное пространство имён)'],['../server_2moc__predefs_8h.html',1,'(Глобальное пространство имён)']]],
-  ['moc_5fregwidget_2ecpp_16',['moc_regwidget.cpp',['../moc__regwidget_8cpp.html',1,'']]],
-  ['moc_5fresetwidget_2ecpp_17',['moc_resetwidget.cpp',['../moc__resetwidget_8cpp.html',1,'']]],
-  ['moc_5fschemadialog_2ecpp_18',['moc_schemadialog.cpp',['../moc__schemadialog_8cpp.html',1,'']]],
-  ['moc_5ftaskdialog_2ecpp_19',['moc_taskdialog.cpp',['../moc__taskdialog_8cpp.html',1,'']]],
-  ['moc_5fverifywidget_2ecpp_20',['moc_verifywidget.cpp',['../moc__verifywidget_8cpp.html',1,'']]],
-  ['mytcpserver_21',['MyTcpServer',['../classMyTcpServer.html',1,'MyTcpServer'],['../classMyTcpServer.html#acf367c4695b4d160c7a2d25c2afaaec4',1,'MyTcpServer::MyTcpServer()']]],
-  ['mytcpserver_2ecpp_22',['mytcpserver.cpp',['../mytcpserver_8cpp.html',1,'']]],
-  ['mytcpserver_2eh_23',['mytcpserver.h',['../mytcpserver_8h.html',1,'']]]
+  ['keypressevent_0',['keyPressEvent',['../classRegWidget.html#a49b73d41c3903bfe5a6da747281634b9',1,'RegWidget::keyPressEvent()'],['../classResetWidget.html#a1edf2ece87a9e75b8a89fadb3966dae8',1,'ResetWidget::keyPressEvent()'],['../classVerifyWidget.html#affef6415bfa16a515503780fd286852d',1,'VerifyWidget::keyPressEvent()']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.16.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ТМП Подгруппа 5 — Функция 9: Титульная страница</title>
+<title>ТМП Подгруппа 5 — Функция 9: ТМП Подгруппа 5 — Функция 9</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,13 +88,106 @@ $(function(){initNavTree('index.html','',''); });
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">ТМП Подгруппа 5 — Функция 9 Документация</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">ТМП Подгруппа 5 — Функция 9 </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><h1 class="doxsection"><a class="anchor" id="intro"></a>
+Описание</h1>
+<p>Клиент-серверное приложение для графического отображения ветвящейся (кусочной) функции с системой двухфакторной аутентификации. Выполнено в рамках дисциплины «Технологии Интернет и мультимедиа» (251/372).</p>
+<h1 class="doxsection"><a class="anchor" id="func"></a>
+Кусочная функция (вариант 9)</h1>
+<div class="fragment"><div class="line">f(x) = { x² + 1,          при x &lt; -2</div>
+<div class="line">       { 3·sin(x) + 2,    при -2 ≤ x ≤ 1</div>
+<div class="line">       { e^(0.5·x) - 1,   при x &gt; 1</div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="arch"></a>
+Архитектура</h1>
+<p>Приложение состоит из двух независимых компонент:</p>
+<ul>
+<li><b>Сервер</b> — TCP-сервер на порту 33333, SQLite база данных, отправка email через Gmail SMTP (SSL, порт 465).</li>
+<li><b>Клиент</b> — GUI-приложение на Qt Widgets с авторизацией, регистрацией, 2FA, сбросом пароля, построением графика.</li>
+</ul>
+<p>Клиент и сервер общаются по TCP текстовым протоколом с разделителем <span class="tt">||</span>.</p>
+<h1 class="doxsection"><a class="anchor" id="server"></a>
+Компоненты сервера</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Класс  </th><th class="markdownTableHeadNone">Назначение  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classMyTcpServer.html" title="Класс TCP-сервера для обработки клиентских подключений">MyTcpServer</a>  </td><td class="markdownTableBodyNone">TCP-сервер: приём соединений, маршрутизация запросов  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="classDatabase.html" title="Класс для работы с базой данных пользователей (Singleton).">Database</a>  </td><td class="markdownTableBodyNone">Singleton-обёртка над SQLite: CRUD пользователей  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classSmtpClient.html" title="Класс SMTP-клиента для отправки email-писем">SmtpClient</a>  </td><td class="markdownTableBodyNone">Отправка писем через Gmail SMTP  </td></tr>
+</table>
+<p>| <a class="el" href="classFunctionsForServer.html" title="Класс обработки сообщений сервера">FunctionsForServer</a> | Диспетчер команд протокола <span class="tt">||</span> | | <a class="el" href="classCalculator.html" title="Класс калькулятора кусочно-определённой функции">Calculator</a> | Вычисление f(x) и генерация точек графика | | <a class="el" href="classLogger.html" title="Класс логирования серверных событий в терминал">Logger</a> | Логирование событий сервера |</p>
+<h1 class="doxsection"><a class="anchor" id="client"></a>
+Компоненты клиента</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Класс  </th><th class="markdownTableHeadNone">Назначение  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classClientSingleton.html" title="Класс-одиночка для управления TCP-соединением с сервером">ClientSingleton</a>  </td><td class="markdownTableBodyNone">TCP-соединение с сервером (Singleton)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="classMainWindow.html" title="Главное окно приложения &quot;График функции&quot;.">MainWindow</a>  </td><td class="markdownTableBodyNone">Главное окно — переключение между экранами  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classAuthWidget.html" title="Виджет авторизации пользователя">AuthWidget</a>  </td><td class="markdownTableBodyNone">Экран авторизации  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="classRegWidget.html" title="Виджет регистрации нового пользователя">RegWidget</a>  </td><td class="markdownTableBodyNone">Экран регистрации (3 шага)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classVerifyWidget.html" title="Виджет двухфакторной верификации по OTP-коду">VerifyWidget</a>  </td><td class="markdownTableBodyNone">Ввод кода подтверждения email  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="classResetWidget.html" title="Виджет восстановления пароля через email.">ResetWidget</a>  </td><td class="markdownTableBodyNone">Восстановление пароля  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classOtpInput.html" title="Виджет ввода одноразового кода (OTP) из 6 цифр">OtpInput</a>  </td><td class="markdownTableBodyNone">Ввод одноразового кода (6 цифр)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="classGraphWidget.html" title="Виджет графического отображения кусочной функции">GraphWidget</a>  </td><td class="markdownTableBodyNone">Построение и отрисовка графика функции  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classMainAppWidget.html" title="Основной виджет приложения после успешного входа">MainAppWidget</a>  </td><td class="markdownTableBodyNone">Контейнер основного интерфейса после входа  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="classTaskDialog.html" title="Диалоговое окно с информацией о задании">TaskDialog</a>  </td><td class="markdownTableBodyNone">Диалог просмотра задания  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="classSchemaDialog.html" title="Диалоговое окно с блок-схемой вычислительного процесса">SchemaDialog</a>  </td><td class="markdownTableBodyNone">Диалог отображения блок-схемы  </td></tr>
+</table>
+<h1 class="doxsection"><a class="anchor" id="protocol"></a>
+Протокол обмена</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Команда  </th><th class="markdownTableHeadNone">Параметры  </th><th class="markdownTableHeadNone">Описание  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">AUTH  </td><td class="markdownTableBodyNone">логин, пароль  </td><td class="markdownTableBodyNone">Авторизация  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">REG  </td><td class="markdownTableBodyNone">логин, пароль, email  </td><td class="markdownTableBodyNone">Регистрация  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">RESET  </td><td class="markdownTableBodyNone">email  </td><td class="markdownTableBodyNone">Запрос сброса пароля  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">RESET_CODE  </td><td class="markdownTableBodyNone">email, код  </td><td class="markdownTableBodyNone">Подтверждение кода сброса  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">RESET_NEW  </td><td class="markdownTableBodyNone">email, новый_пароль  </td><td class="markdownTableBodyNone">Установка нового пароля  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">CALC  </td><td class="markdownTableBodyNone">выражение  </td><td class="markdownTableBodyNone">Вычисление значения функции  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">GRAPH  </td><td class="markdownTableBodyNone">выражение, x_min, x_max, шаг  </td><td class="markdownTableBodyNone">Генерация данных графика  </td></tr>
+</table>
+<p>Ответ сервера: <span class="tt">OK||данные</span> или <span class="tt">ERROR||сообщение</span></p>
+<h1 class="doxsection"><a class="anchor" id="tech"></a>
+Технологии</h1>
+<ul>
+<li>C++17, Qt 5 (Widgets, Network, SQL)</li>
+<li>SQLite, TCP (порт 33333), SMTP (Gmail, SSL)</li>
+<li>Docker (Ubuntu 22.04), Qt Test, Doxygen </li>
+</ul>
+</div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"></a>
-</div><!-- contents -->
 </div><!-- doc-content -->
+</div><!-- contents -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
 </div><!-- container -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

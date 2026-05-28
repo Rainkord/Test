@@ -1,10 +1,13 @@
 var searchData=
 [
-  ['data_0',['data',['../structqt__meta__stringdata__MyTcpServer__t.html#abc2c50fb63b0c02fc16cf943e081f609',1,'qt_meta_stringdata_MyTcpServer_t::data'],['../structqt__meta__stringdata__AuthWidget__t.html#a59dc35993afaf37a656fd510fb96a373',1,'qt_meta_stringdata_AuthWidget_t::data'],['../structqt__meta__stringdata__ClientSingleton__t.html#a9edfdddcee3a6f2eb6d462911fe87336',1,'qt_meta_stringdata_ClientSingleton_t::data'],['../structqt__meta__stringdata__GraphWidget__t.html#ac7f94f2afbe2382c1542d98a4052dc51',1,'qt_meta_stringdata_GraphWidget_t::data'],['../structqt__meta__stringdata__MainAppWidget__t.html#a14b5afc6abf1861248994a5b13ae08c9',1,'qt_meta_stringdata_MainAppWidget_t::data'],['../structqt__meta__stringdata__MainWindow__t.html#ac259c7966282d5ec55e63f7aa7a36ded',1,'qt_meta_stringdata_MainWindow_t::data'],['../structqt__meta__stringdata__OtpInput__t.html#a5ef0674a57eebc611e3d931ad933e77a',1,'qt_meta_stringdata_OtpInput_t::data'],['../structqt__meta__stringdata__RegWidget__t.html#ac4520a2a40ccbcd02725ce46f15a4b9b',1,'qt_meta_stringdata_RegWidget_t::data'],['../structqt__meta__stringdata__ResetWidget__t.html#a9f971a7cc2d9aaba30b1b3dfd36ea8fc',1,'qt_meta_stringdata_ResetWidget_t::data'],['../structqt__meta__stringdata__FlowchartWidget__t.html#a75266c665f1b7a6e5643a0954c346aca',1,'qt_meta_stringdata_FlowchartWidget_t::data'],['../structqt__meta__stringdata__SchemaDialog__t.html#aa75f9f8d53aedbd2d6913589cac7fcf1',1,'qt_meta_stringdata_SchemaDialog_t::data'],['../structqt__meta__stringdata__TaskDialog__t.html#a7bbb487700e179ab20a461bb4ef30877',1,'qt_meta_stringdata_TaskDialog_t::data'],['../structqt__meta__stringdata__VerifyWidget__t.html#a50336983da8db89479b2cf2c0e73909e',1,'qt_meta_stringdata_VerifyWidget_t::data']]],
-  ['database_1',['Database',['../classDatabase.html',1,'']]],
-  ['database_2ecpp_2',['database.cpp',['../database_8cpp.html',1,'']]],
-  ['database_2eh_3',['database.h',['../database_8h.html',1,'']]],
-  ['dim_4',['DIM',['../namespaceAnsi.html#a83834815cf8bb29871f3de4fe44bc8bf',1,'Ansi']]],
-  ['disconnectfromserver_5',['disconnectFromServer',['../classClientSingleton.html#a79e501736a61dff6d2fba78fb7673adb',1,'ClientSingleton']]],
-  ['divider_6',['divider',['../classLogger.html#a3ba7f1d63af5ce94da74b362bba9ac64',1,'Logger']]]
+  ['backtoauth_0',['backToAuth',['../classResetWidget.html#ab91dbf8ffee8a31a2a45d32733512ee6',1,'ResetWidget::backToAuth()'],['../classVerifyWidget.html#a809975925f75296a1437c82f08d42efa',1,'VerifyWidget::backToAuth()']]],
+  ['banner_1',['banner',['../classLogger.html#a265c4692f217acfc4113518735ddb9b8',1,'Logger']]],
+  ['bblue_2',['BBLUE',['../namespaceAnsi.html#a39e01616a359c70a09462bad9652b4d9',1,'Ansi']]],
+  ['bcyan_3',['BCYAN',['../namespaceAnsi.html#a607582746861ef9ee4bab264b5cba050',1,'Ansi']]],
+  ['bgreen_4',['BGREEN',['../namespaceAnsi.html#abd289bcee97ac4852904fe19463cc42f',1,'Ansi']]],
+  ['bmagenta_5',['BMAGENTA',['../namespaceAnsi.html#aaca110d93aede2527b0656f97eb597c8',1,'Ansi']]],
+  ['bold_6',['BOLD',['../namespaceAnsi.html#acb828abc6e23eb58e143416ae92588b0',1,'Ansi']]],
+  ['bred_7',['BRED',['../namespaceAnsi.html#a529cc8e77415c6cc2f0d0aeabd6805c1',1,'Ansi']]],
+  ['bwhite_8',['BWHITE',['../namespaceAnsi.html#ad0d8a4541b392337d107f2884aa3b08a',1,'Ansi']]],
+  ['byellow_9',['BYELLOW',['../namespaceAnsi.html#abc7a52e1aae80d050daeec9aaede5c6e',1,'Ansi']]]
 ];

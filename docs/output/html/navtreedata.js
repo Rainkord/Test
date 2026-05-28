@@ -25,6 +25,13 @@
 var NAVTREE =
 [
   [ "ТМП Подгруппа 5 — Функция 9", "index.html", [
+    [ "Описание", "index.html#intro", null ],
+    [ "Кусочная функция (вариант 9)", "index.html#func", null ],
+    [ "Архитектура", "index.html#arch", null ],
+    [ "Компоненты сервера", "index.html#server", null ],
+    [ "Компоненты клиента", "index.html#client", null ],
+    [ "Протокол обмена", "index.html#protocol", null ],
+    [ "Технологии", "index.html#tech", null ],
     [ "Пространства имен", "namespaces.html", [
       [ "Пространства имен", "namespaces.html", "namespaces_dup" ],
       [ "Члены пространств имен", "namespacemembers.html", [
@@ -58,9 +65,9 @@ var NAVTREEINDEX =
 "annotated.html",
 "client_2moc__predefs_8h.html#a43c037cf54e7474a2be1d46c4f785fe9",
 "client_2moc__predefs_8h.html#ac8f3d7ccf3171f01b90429a13cddec2b",
-"otpinput_8cpp.html#acc5dccec8bafc5dbeaea7b70631308b1",
-"server_2moc__predefs_8h.html#a5aed2c2843dad661012dac2d465f89e1",
-"server_2moc__predefs_8h.html#ad8885a68f76fac734a20349f9b8cac69"
+"otpinput_8cpp.html#a38738d697be4294cef70da505776fd3a",
+"server_2moc__predefs_8h.html#a56e81e5fec09084ed0e8ed0cccddf3a0",
+"server_2moc__predefs_8h.html#ad378f6ccbd0d54016bda020b78adbbcb"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';

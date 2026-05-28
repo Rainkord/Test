@@ -3,9 +3,9 @@ PROJECT_BRIEF          = "Клиент-серверное приложение �
 
 # Запускать из корня репозитория: doxygen docs/Doxyfile
 OUTPUT_DIRECTORY       = docs/output
-INPUT                  = server client
+INPUT                  = server client docs/mainpage.dox
 RECURSIVE              = YES
-FILE_PATTERNS          = *.cpp *.h
+FILE_PATTERNS          = *.cpp *.h *.dox
 GENERATE_HTML          = YES
 GENERATE_LATEX         = NO
 EXTRACT_ALL            = YES
