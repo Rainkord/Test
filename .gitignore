@@ -30,7 +30,7 @@ build/echoServer
 /client
 build/client
 # tests binary
-/tests
+tests/tests
 build/tests
 
 # ── Database ──────────────────────────────────────────────────────────────────
