@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.16.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ТМП Подгруппа 5 — Функция 9: ТМП Подгруппа 5 — Функция 9</title>
+<title>ТМП Подгруппа 5 — Функция 9: ТИМП Подгруппа 5 — Функция 9</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,15 +89,16 @@ $(function(){initNavTree('index.html','',''); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">ТМП Подгруппа 5 — Функция 9 </div></div>
+  <div class="headertitle"><div class="title">ТИМП Подгруппа 5 — Функция 9 </div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><h1 class="doxsection"><a class="anchor" id="func"></a>
 Кусочная функция (вариант 9)</h1>
-<div class="fragment"><div class="line">f(x) = { x² + 1,          при x &lt; -2</div>
-<div class="line">       { 3·sin(x) + 2,    при -2 ≤ x ≤ 1</div>
-<div class="line">       { e^(0.5·x) - 1,   при x &gt; 1</div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="arch"></a>
+<div class="fragment"><div class="line">f(x) = { |x·a| - 2,        при x &lt; -2</div>
+<div class="line">       { b·x² + x + 1,    при -2 ≤ x &lt; 2</div>
+<div class="line">       { |x - 2| + c,     при x ≥ 2</div>
+</div><!-- fragment --><p>где a, b, c — параметры функции.</p>
+<h1 class="doxsection"><a class="anchor" id="arch"></a>
 Архитектура</h1>
 <p>Приложение состоит из двух независимых компонент:</p>
 <ul>

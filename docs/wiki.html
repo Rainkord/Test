@@ -116,9 +116,10 @@ a:hover{text-decoration:underline}
   <li>Построение и отрисовка графика кусочной функции:</li>
 </ul>
 
-<pre><code>f(x) = { x² + 1,          при x &lt; -2
-       { 3·sin(x) + 2,    при -2 ≤ x ≤ 1
-       { e^(0.5·x) - 1,   при x > 1</code></pre>
+<pre><code>f(x) = { |x·a| - 2,        при x &lt; -2
+       { b·x² + x + 1,    при -2 ≤ x &lt; 2
+       { |x - 2| + c,     при x ≥ 2</code></pre>
+<p style="color:#8b949e; font-size:9pt;">где a, b, c — параметры функции</p>
 
 <ul>
   <li>Просмотр условия задания и блок-схемы алгоритма</li>
@@ -146,8 +147,8 @@ a:hover{text-decoration:underline}
   <thead><tr><th>Участник</th><th>Роль</th></tr></thead>
   <tbody>
     <tr><td>Ринат</td><td>Серверная часть: TCP-сервер, база данных, SMTP-клиент, протокол, логирование</td></tr>
-    <tr><td>Участник 2</td><td>Клиентская часть: виджеты авторизации, регистрации, 2FA, ввод OTP</td></tr>
-    <tr><td>Участник 3</td><td>Клиентская часть: построение графика, диалоги, главный экран, Singleton</td></tr>
+    <tr><td>Карелин Кирилл, Серёгина Елизавета</td><td>Клиентская часть: виджеты авторизации, регистрации, 2FA, ввод OTP</td></tr>
+    <tr><td>Воробьёва Елизавета, Сарафанов Алексей</td><td>Клиентская часть: построение графика, диалоги, главный экран, Singleton</td></tr>
   </tbody>
 </table>
 
@@ -495,7 +496,7 @@ docker run -d --name timp-server -p 33333:33333 rainkord/timp-server:latest</cod
       </td>
     </tr>
     <tr>
-      <td><strong>Участник 2</strong></td>
+      <td><strong>Карелин Кирилл, Серёгина Елизавета</strong></td>
       <td>Клиент: авторизация</td>
       <td>
         <code>authwidget.cpp/h</code> — экран входа<br>
@@ -506,7 +507,7 @@ docker run -d --name timp-server -p 33333:33333 rainkord/timp-server:latest</cod
       </td>
     </tr>
     <tr>
-      <td><strong>Участник 3</strong></td>
+      <td><strong>Воробьёва Елизавета, Сарафанов Алексей</strong></td>
       <td>Клиент: основной интерфейс</td>
       <td>
         <code>mainwindow.cpp/h</code> — главное окно, навигация<br>
@@ -717,9 +718,10 @@ docker run -d --name timp-server -p 33333:33333 rainkord/timp-server:latest</cod
 
 <h2>Вариант 9 — Кусочная функция</h2>
 
-<pre><code>f(x) = { x² + 1,          при x &lt; -2
-        { 3·sin(x) + 2,    при -2 ≤ x ≤ 1
-        { e^(0.5·x) - 1,   при x &gt; 1</code></pre>
+<pre><code>f(x) = { |x·a| - 2,        при x &lt; -2
+        { b·x² + x + 1,    при -2 ≤ x &lt; 2
+        { |x - 2| + c,     при x ≥ 2</code></pre>
+<p style="color:#8b949e; font-size:9pt;">где a, b, c — параметры функции</p>
 
 <p>Задача: реализовать клиент-серверное приложение для построения графика данной функции с системой авторизации и двухфакторной аутентификации.</p>
 
