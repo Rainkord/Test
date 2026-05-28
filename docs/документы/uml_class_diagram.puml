@@ -1,0 +1,103 @@
+@startuml
+!theme plain
+skinparam classAttributeIconSize 0
+
+class DatabaseSingleton {
+    - static DatabaseSingleton* instance
+    - QSqlDatabase db
+    + static getInstance() DatabaseSingleton*
+    + init(QString path) bool
+    + query(QString sql) QSqlQuery
+}
+
+class ClientSingleton {
+    - static ClientSingleton* instance
+    - QTcpSocket* socket
+    - QString host
+    - int port
+    + static getInstance() ClientSingleton*
+    + connectToServer(QString host, int port) bool
+    + sendRequestAsync(QString request)
+    + disconnect()
+}
+
+class MyTCPServer {
+    - QTcpServer* server
+    - QMap<int, QTcpSocket*> sockets
+    - int serverStatus
+    + MyTCPServer()
+    + slotNewConnection()
+    + slotServerRead()
+    + slotClientDisconnected()
+}
+
+class FunctionsForServer {
+    - DatabaseSingleton* db
+    - QMap<QString, QString> pendingCodes
+    + parsing(QString inData, int socketDescriptor) QString
+    + registration(QString login, QString password, QString email) QString
+    + authorization(QString login, QString password) QString
+    + resetPassword(QString email) QString
+    + setNewPassword(QString email, QString newPasswordHash) QString
+}
+
+class AuthWidget {
+    - QString m_login
+    - int failedAttempts
+    - bool isLocked
+    - QTimer* lockTimer
+    + onAuthClicked()
+    + onAuthResponseReceived(QString response)
+}
+
+class RegWidget {
+    + onRegisterClicked()
+    + onRegResponseReceived(QString response)
+}
+
+class VerifyWidget {
+    - QString m_pendingCodeHash
+    - int failedAttempts
+    - bool isLocked
+    + setLogin(QString login, QString codeHash)
+    + onVerifyClicked()
+}
+
+class ResetWidget {
+    - bool m_waitingForCodeHash
+    - bool m_waitingForSave
+    + clearFields()
+    + onContinueClicked()
+    + onVerifyCodeClicked()
+    + onSavePasswordClicked()
+}
+
+class GraphWidget {
+    + plotFunction()
+}
+
+class MainWindow {
+    - QStackedWidget* stackedWidget
+    + showAuth()
+    + showReg()
+    + showVerify(QString login, QString codeHash)
+    + showReset()
+    + showGraph()
+}
+
+MyTCPServer "1" *-- "1" FunctionsForServer
+MyTCPServer "1" o-- "*" QTcpSocket
+FunctionsForServer ..> DatabaseSingleton
+FunctionsForServer ..> "email сервис"
+
+AuthWidget ..> ClientSingleton
+RegWidget ..> ClientSingleton
+ResetWidget ..> ClientSingleton
+VerifyWidget ..> ClientSingleton
+
+MainWindow "1" *-- "1" AuthWidget
+MainWindow "1" *-- "1" RegWidget
+MainWindow "1" *-- "1" VerifyWidget
+MainWindow "1" *-- "1" ResetWidget
+MainWindow "1" *-- "1" GraphWidget
+@enduml
