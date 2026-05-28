@@ -1,5 +1,98 @@
 #include "clientsingleton.h"
 #include <QDebug>
+#include <QByteArray>
+#include <QString>
+#include <QFile>
+#include <QTextStream>
+#include <QCoreApplication>
+#include <QDir>
+#include <cstdlib>
+
+/**
+ * @brief Определяет адрес хоста сервера
+ *
+ * Порядок поиска адреса сервера:
+ *   1. Переменная окружения TIMP_SERVER_HOST
+ *   2. Файл server.conf рядом с исполняемым файлом (или на уровень выше),
+ *      строка вида host=192.168.x.x
+ *   3. Значение по умолчанию 127.0.0.1 (локальный запуск)
+ *
+ * @return адрес сервера (IP или домен)
+ */
+static QString resolveServerHost()
+{
+    // 1. Переменная окружения
+    const char *env = std::getenv("TIMP_SERVER_HOST");
+    if (env && *env)
+        return QString::fromUtf8(env).trimmed();
+
+    // 2. Файл server.conf (host=...)
+    QStringList paths = {
+        QCoreApplication::applicationDirPath() + "/server.conf",
+        QCoreApplication::applicationDirPath() + "/../server.conf",
+        QDir::currentPath() + "/server.conf"
+    };
+    for (const QString &path : paths) {
+        QFile f(path);
+        if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+            continue;
+        QTextStream in(&f);
+        while (!in.atEnd()) {
+            QString line = in.readLine().trimmed();
+            if (line.startsWith('#')) continue;
+            int sep = line.indexOf('=');
+            if (sep < 0) continue;
+            if (line.left(sep).trimmed() == "host")
+                return line.mid(sep + 1).trimmed();
+        }
+    }
+
+    // 3. По умолчанию — локальный сервер
+    return QStringLiteral("127.0.0.1");
+}
+
+/**
+ * @brief Определяет порт сервера
+ *
+ * Порядок поиска: переменная окружения TIMP_SERVER_PORT,
+ * затем строка port=... в файле server.conf, иначе 33333.
+ *
+ * @return номер порта сервера
+ */
+static quint16 resolveServerPort()
+{
+    const char *env = std::getenv("TIMP_SERVER_PORT");
+    if (env && *env) {
+        bool ok = false;
+        quint16 p = QString::fromUtf8(env).trimmed().toUShort(&ok);
+        if (ok && p != 0) return p;
+    }
+
+    QStringList paths = {
+        QCoreApplication::applicationDirPath() + "/server.conf",
+        QCoreApplication::applicationDirPath() + "/../server.conf",
+        QDir::currentPath() + "/server.conf"
+    };
+    for (const QString &path : paths) {
+        QFile f(path);
+        if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+            continue;
+        QTextStream in(&f);
+        while (!in.atEnd()) {
+            QString line = in.readLine().trimmed();
+            if (line.startsWith('#')) continue;
+            int sep = line.indexOf('=');
+            if (sep < 0) continue;
+            if (line.left(sep).trimmed() == "port") {
+                bool ok = false;
+                quint16 p = line.mid(sep + 1).trimmed().toUShort(&ok);
+                if (ok && p != 0) return p;
+            }
+        }
+    }
+
+    return 33333;
+}
 
 /**
  * @brief Конструктор класса ClientSingleton
@@ -97,7 +190,7 @@ bool ClientSingleton::isConnected() const
 QString ClientSingleton::sendRequest(const QString &request)
 {
     if (socket->state() != QAbstractSocket::ConnectedState) {
-        socket->connectToHost("127.0.0.1", 33333);
+        socket->connectToHost(resolveServerHost(), resolveServerPort());
         if (!socket->waitForConnected(3000))
             return QString();
     }
@@ -135,7 +228,10 @@ void ClientSingleton::sendRequestAsync(const QString &request)
     qDebug() << "[CS] sendRequestAsync, socket state:" << socket->state();
 
     if (socket->state() != QAbstractSocket::ConnectedState) {
-        socket->connectToHost("127.0.0.1", 33333);
+        const QString host = resolveServerHost();
+        const quint16 port = resolveServerPort();
+        qDebug() << "[CS] Connecting to" << host << ":" << port;
+        socket->connectToHost(host, port);
         if (!socket->waitForConnected(3000)) {
             qDebug() << "[CS] Connection failed:" << socket->errorString();
             emit responseReceived("");
