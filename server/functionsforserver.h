@@ -126,15 +126,20 @@ private:
     /**
      * @brief Обработчик команды получения графика
      *
-     * @param parts список частей сообщения (get_graph||...)
-     * @return "graph_error" (заглушка)
+     * Парсит параметры (xMin, xMax, step, a, b, c) и вызывает
+     * Calculator::generateGraphData для генерации данных графика.
+     *
+     * @param parts список частей: ["get_graph", xMin, xMax, step, a, b, c]
+     * @return строка "graph||x;y||..." или "graph_error"
      */
     static QString handleGetGraph(const QStringList &parts);
 
     /**
      * @brief Обработчик команды получения задания
      *
-     * @return "task_error" (заглушка)
+     * Возвращает описание задания и формулу кусочной функции.
+     *
+     * @return строка "task||описание||формула"
      */
     static QString handleGetTask();
 

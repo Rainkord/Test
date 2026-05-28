@@ -2,6 +2,7 @@
 #include "database.h"
 #include "smtpclient.h"
 #include "logger.h"
+#include "calculator.h"
 
 #include <QRandomGenerator>
 #include <QCryptographicHash>
@@ -236,15 +237,35 @@ QString FunctionsForServer::handleRegistrationConfirm(const QStringList &parts)
 /**
  * @brief Обработчик команды получения графика
  *
- * Заглушка — возвращает ошибку.
+ * Парсит параметры из сообщения (xMin, xMax, step, a, b, c),
+ * валидирует их и вызывает Calculator::generateGraphData для
+ * генерации данных графика.
  *
- * @param parts список частей сообщения
- * @return "graph_error"
+ * @param parts список частей: ["get_graph", xMin, xMax, step, a, b, c]
+ * @return строка "graph||x;y||..." при успехе; "graph_error" при ошибке
  */
 QString FunctionsForServer::handleGetGraph(const QStringList &parts)
 {
-    Q_UNUSED(parts)
-    return "graph_error";
+    if (parts.size() < 7) return "graph_error";
+
+    bool okXMin, okXMax, okStep, okA, okB, okC;
+    double xMin = parts[1].toDouble(&okXMin);
+    double xMax = parts[2].toDouble(&okXMax);
+    double step = parts[3].toDouble(&okStep);
+    double a    = parts[4].toDouble(&okA);
+    double b    = parts[5].toDouble(&okB);
+    double c    = parts[6].toDouble(&okC);
+
+    if (!okXMin || !okXMax || !okStep || !okA || !okB || !okC)
+        return "graph_error";
+
+    if (xMin >= xMax)
+        return "graph_error";
+
+    if (step <= 0.0)
+        return "graph_error";
+
+    return Calculator::generateGraphData(xMin, xMax, step, a, b, c);
 }
 
 // ── handleGetTask ──────────────────────────────────────────────────────────────
@@ -252,13 +273,17 @@ QString FunctionsForServer::handleGetGraph(const QStringList &parts)
 /**
  * @brief Обработчик команды получения задания
  *
- * Заглушка — возвращает ошибку.
+ * Возвращает описание задания и формулу кусочной функции.
  *
- * @return "task_error"
+ * @return строка с описанием задания в формате "task||описание||формула"
  */
 QString FunctionsForServer::handleGetTask()
 {
-    return "task_error";
+    return QString::fromUtf8(
+        "task||"
+        "Графическое отображение ветвящейся функции в рамках клиент-серверного проекта||"
+        "Функция №9: f(x) = |x*a|-2 при x<-2; b*(x^2)+x+1 при -2<=x<2; |x-2|+1*c при x>=2"
+    );
 }
 
 // ── handleResetPassword ───────────────────────────────────────────────────────
