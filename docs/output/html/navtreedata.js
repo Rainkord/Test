@@ -25,7 +25,6 @@
 var NAVTREE =
 [
   [ "ТМП Подгруппа 5 — Функция 9", "index.html", [
-    [ "Описание", "index.html#intro", null ],
     [ "Кусочная функция (вариант 9)", "index.html#func", null ],
     [ "Архитектура", "index.html#arch", null ],
     [ "Компоненты сервера", "index.html#server", null ],
@@ -65,9 +64,9 @@ var NAVTREEINDEX =
 "annotated.html",
 "client_2moc__predefs_8h.html#a43c037cf54e7474a2be1d46c4f785fe9",
 "client_2moc__predefs_8h.html#ac8f3d7ccf3171f01b90429a13cddec2b",
-"otpinput_8cpp.html#a38738d697be4294cef70da505776fd3a",
-"server_2moc__predefs_8h.html#a56e81e5fec09084ed0e8ed0cccddf3a0",
-"server_2moc__predefs_8h.html#ad378f6ccbd0d54016bda020b78adbbcb"
+"otpinput_8cpp.html#a3f41e9ed648666d340ff98c2540c95ff",
+"server_2moc__predefs_8h.html#a57e1156511d5ca1e45a5505f24518c87",
+"server_2moc__predefs_8h.html#ad3907b8d9bb2265255e6e0d66d91d165"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';
